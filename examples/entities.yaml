@@ -11,9 +11,11 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: example-website
+  name: example-service
+  annotations:
+    backstage.io/kubernetes-id: podinfo
 spec:
-  type: website
+  type: service
   lifecycle: experimental
   owner: guests
   system: examples
