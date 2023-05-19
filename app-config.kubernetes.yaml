@@ -1,0 +1,20 @@
+# Backstage override configuration for your local development environment
+#
+kubernetes:
+  # Show matching helmreleases in the kubernetes panel
+  customResources:
+    - group: 'helm.toolkit.fluxcd.io'
+      apiVersion: 'v2beta1'
+      plural: 'helmreleases'
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: ${K8S_API_ENDPOINT}
+          name: demo-cluster
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ${K8S_ACCESS_TOKEN}
+          caData: ${K8S_CA_DATA}

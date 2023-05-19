@@ -875,7 +875,7 @@
     "@aws-sdk/types" "3.329.0"
     tslib "^2.5.0"
 
-"@aws-sdk/signature-v4@3.329.0":
+"@aws-sdk/signature-v4@3.329.0", "@aws-sdk/signature-v4@^3.310.0":
   version "3.329.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/signature-v4/-/signature-v4-3.329.0.tgz#8d40683189678f49504169c923e8342247b1da70"
   integrity sha512-9EnLoyOD5nFtCRAp+QRllDgQASCfY7jLHVhwht7jzwE80wE65Z9Ym5Z/mwTd4IyTz/xXfCvcE2VwClsBt0Ybdw==
@@ -1208,7 +1208,7 @@
     "@azure/abort-controller" "^1.0.0"
     tslib "^2.2.0"
 
-"@azure/identity@^2.1.0":
+"@azure/identity@^2.0.4", "@azure/identity@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@azure/identity/-/identity-2.1.0.tgz#89f0bfc1d1264dfd3d0cb19837c33a9c6706d548"
   integrity sha512-BPDz1sK7Ul9t0l9YKLEa8PHqWU4iCfhGJ+ELJl6c8CP3TpJt2urNCbm0ZHsthmxRsYoMPbz2Dvzj30zXZVmAFw==
@@ -3049,6 +3049,82 @@
     luxon "^3.0.0"
     react-use "^17.2.4"
 
+"@backstage/plugin-kubernetes-backend@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@backstage/plugin-kubernetes-backend/-/plugin-kubernetes-backend-0.11.0.tgz#9658db0406917ca7163e7b4adf7fc5006783a80f"
+  integrity sha512-OLkjxw78YPWWGvBRfdPLOyRxaxqyTjcPClzcceDSn9mg6+CXbPdG12s5vO9oAquq29kxP+phuBK2GNN5wJ1gGA==
+  dependencies:
+    "@aws-crypto/sha256-js" "^3.0.0"
+    "@aws-sdk/credential-providers" "^3.310.0"
+    "@aws-sdk/signature-v4" "^3.310.0"
+    "@azure/identity" "^2.0.4"
+    "@backstage/backend-common" "^0.18.5"
+    "@backstage/backend-plugin-api" "^0.5.2"
+    "@backstage/catalog-client" "^1.4.1"
+    "@backstage/catalog-model" "^1.3.0"
+    "@backstage/config" "^1.0.7"
+    "@backstage/errors" "^1.1.5"
+    "@backstage/integration-aws-node" "^0.1.3"
+    "@backstage/plugin-auth-node" "^0.2.14"
+    "@backstage/plugin-catalog-node" "^1.3.6"
+    "@backstage/plugin-kubernetes-common" "^0.6.3"
+    "@backstage/plugin-permission-common" "^0.7.5"
+    "@backstage/plugin-permission-node" "^0.7.8"
+    "@google-cloud/container" "^4.0.0"
+    "@jest-mock/express" "^2.0.1"
+    "@kubernetes/client-node" "0.18.1"
+    "@types/express" "^4.17.6"
+    "@types/luxon" "^3.0.0"
+    compression "^1.7.4"
+    cors "^2.8.5"
+    express "^4.17.1"
+    express-promise-router "^4.1.0"
+    fs-extra "10.1.0"
+    helmet "^6.0.0"
+    http-proxy-middleware "^2.0.6"
+    lodash "^4.17.21"
+    luxon "^3.0.0"
+    morgan "^1.10.0"
+    node-fetch "^2.6.7"
+    stream-buffers "^3.0.2"
+    winston "^3.2.1"
+    yn "^4.0.0"
+
+"@backstage/plugin-kubernetes-common@^0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@backstage/plugin-kubernetes-common/-/plugin-kubernetes-common-0.6.3.tgz#3e3876a28b06c581c235dc81998aad42aa191028"
+  integrity sha512-WhX2Ib7LjfwBB3p7a/sp2RMwN+ITvZQurvjFAbv4IKV+rN0VBCx5jGPwuMN35klbwKhIggCp7oNl1oT9sFQxcA==
+  dependencies:
+    "@backstage/catalog-model" "^1.3.0"
+    "@backstage/plugin-permission-common" "^0.7.5"
+    "@kubernetes/client-node" "0.18.1"
+
+"@backstage/plugin-kubernetes@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@backstage/plugin-kubernetes/-/plugin-kubernetes-0.9.0.tgz#861cff107aa463026abe4208ebde3d68cadb6649"
+  integrity sha512-u7TV0+fisB4tDGkaGkBhYC+AlcKEXeODyVGpKbHgt7OGsZabMlGna+sGgsUNa37SYH+OB4o47OPrJZUEjC0wxQ==
+  dependencies:
+    "@backstage/catalog-model" "^1.3.0"
+    "@backstage/config" "^1.0.7"
+    "@backstage/core-components" "^0.13.1"
+    "@backstage/core-plugin-api" "^1.5.1"
+    "@backstage/errors" "^1.1.5"
+    "@backstage/plugin-catalog-react" "^1.6.0"
+    "@backstage/plugin-kubernetes-common" "^0.6.3"
+    "@backstage/theme" "^0.3.0"
+    "@kubernetes-models/apimachinery" "^1.1.0"
+    "@kubernetes/client-node" "0.18.1"
+    "@material-ui/core" "^4.12.2"
+    "@material-ui/icons" "^4.9.1"
+    "@material-ui/lab" "4.0.0-alpha.61"
+    "@types/react" "^16.13.1 || ^17.0.0"
+    cronstrue "^2.2.0"
+    js-yaml "^4.0.0"
+    kubernetes-models "^4.1.0"
+    lodash "^4.17.21"
+    luxon "^3.0.0"
+    react-use "^17.2.4"
+
 "@backstage/plugin-org@^0.6.8":
   version "0.6.8"
   resolved "https://registry.yarnpkg.com/@backstage/plugin-org/-/plugin-org-0.6.8.tgz#13dd01cb6b910c370e8f9c0e4f21fbb2276a2f3b"
@@ -4149,6 +4225,13 @@
     qs "^6.10.1"
     xcase "^2.0.1"
 
+"@google-cloud/container@^4.0.0":
+  version "4.11.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/container/-/container-4.11.0.tgz#001cc583a13871241f3de0b0e141d3ebff3d7c1d"
+  integrity sha512-Y7J3bcVyF8Zyo1HeZGXzj1AHoqQFBHtyhVA9qLapXb+gWs9+8RfSEHg1yByhWrD/KYmuFkmXwGXLNrTfaPBIaQ==
+  dependencies:
+    google-gax "^3.5.8"
+
 "@google-cloud/firestore@^6.0.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@google-cloud/firestore/-/firestore-6.5.0.tgz#5049740e40eca75956264377ca9ffaab2c0f345d"
@@ -4297,6 +4380,13 @@
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
   integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
+
+"@jest-mock/express@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@jest-mock/express/-/express-2.0.1.tgz#5985ad42e00394a375592596bcf15f00064bac20"
+  integrity sha512-DvW4WMGoNBEOGx1XRCe8yZyQ7ju5dWmBN57H0zPio7AqQo27QawI+o30f9xVdLnS0bAF2wbmQQfS61LxL/t8bQ==
+  dependencies:
+    "@types/express" "^4.17.13"
 
 "@jest/console@^29.5.0":
   version "29.5.0"
@@ -4597,6 +4687,34 @@
   integrity sha512-WweuUZqZN2ETcseV6r1AEum1qG6eR5poNhkZ4CIpWBOjMasT2ArTKWyIPxxYllKUS2A8wKv1l8+AqH6Jpzk7Ug==
   dependencies:
     ioredis "^5.3.2"
+
+"@kubernetes-models/apimachinery@^1.1.0", "@kubernetes-models/apimachinery@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@kubernetes-models/apimachinery/-/apimachinery-1.2.0.tgz#3199192962c354ed64f8401a51c1a7a071eace25"
+  integrity sha512-y9ls/waQMX0/2yzc5D05yC3AOvOx/xhDq8OvywnhcU/0p7OOT1F1tx76Uvtke1GotwZzmxzIKLud/S7qwqW4XQ==
+  dependencies:
+    "@kubernetes-models/base" "^4.0.2"
+    "@kubernetes-models/validate" "^3.1.0"
+    tslib "^2.4.0"
+
+"@kubernetes-models/base@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@kubernetes-models/base/-/base-4.0.2.tgz#c23f6b7064c3f97ea2626a7cd9d5b6e3f9f71862"
+  integrity sha512-V4FIMk9VZbEMnOdvB3HxiYmsnt36KaUtUDOpZrfEqWCkAD90bQgT1YjflgOAFEJujdNfA/EDrozK+AzrzopsQA==
+  dependencies:
+    "@kubernetes-models/validate" "^3.1.0"
+    is-plain-object "^5.0.0"
+    tslib "^2.4.0"
+
+"@kubernetes-models/validate@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@kubernetes-models/validate/-/validate-3.1.0.tgz#eb924063433d6ec410b093ec5b12030a802b7010"
+  integrity sha512-JFKbb3o5hxTfy36qutPSkblUrU2TkXnIiZEbrhRewQJkvI95rJvjzyAAEp1qlLq2q3bkZpD4lGqFyRwudhQQEw==
+  dependencies:
+    ajv "^8.11.0"
+    ajv-formats "^2.1.1"
+    ajv-formats-draft2019 "^1.6.1"
+    tslib "^2.4.0"
 
 "@kubernetes/client-node@0.18.1":
   version "0.18.1"
@@ -7280,7 +7398,7 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
   integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
 
-"@types/react-dom@*", "@types/react-dom@<18.0.0", "@types/react-dom@^17":
+"@types/react-dom@*", "@types/react-dom@<18.0.0":
   version "17.0.20"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.20.tgz#e0c8901469d732b36d8473b40b679ad899da1b53"
   integrity sha512-4pzIjSxDueZZ90F52mU3aPoogkHIoSIDG+oQ+wQK7Cy2B9S+MvOqY0uEA/qawKz381qrEDkvpwyt8Bm31I8sbA==
@@ -7891,6 +8009,16 @@ aggregate-error@^3.0.0, aggregate-error@^3.1.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
+ajv-formats-draft2019@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/ajv-formats-draft2019/-/ajv-formats-draft2019-1.6.1.tgz#6affe2220e7828360793776f1976de0420acccfb"
+  integrity sha512-JQPvavpkWDvIsBp2Z33UkYCtXCSpW4HD3tAZ+oL4iEFOk9obQZffx0yANwECt6vzr6ET+7HN5czRyqXbnq/u0Q==
+  dependencies:
+    punycode "^2.1.1"
+    schemes "^1.4.0"
+    smtp-address-parser "^1.0.3"
+    uri-js "^4.4.1"
+
 ajv-formats@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/ajv-formats/-/ajv-formats-2.1.1.tgz#6e669400659eb74973bbf2e33327180a0996b520"
@@ -7920,7 +8048,7 @@ ajv@^6.10.0, ajv@^6.10.1, ajv@^6.12.2, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.5, aj
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.0, ajv@^8.10.0, ajv@^8.12.0, ajv@^8.9.0:
+ajv@^8.0.0, ajv@^8.10.0, ajv@^8.11.0, ajv@^8.12.0, ajv@^8.9.0:
   version "8.12.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.12.0.tgz#d1a0527323e22f53562c567c00991577dfbe19d1"
   integrity sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==
@@ -8016,6 +8144,7 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     "@backstage/plugin-catalog-import" "^0.9.8"
     "@backstage/plugin-catalog-react" "^1.6.0"
     "@backstage/plugin-github-actions" "^0.5.18"
+    "@backstage/plugin-kubernetes" "^0.9.0"
     "@backstage/plugin-org" "^0.6.8"
     "@backstage/plugin-permission-react" "^0.4.12"
     "@backstage/plugin-scaffolder" "^1.13.1"
@@ -9425,7 +9554,7 @@ command-exists@^1.2.9:
   resolved "https://registry.yarnpkg.com/command-exists/-/command-exists-1.2.9.tgz#c50725af3808c8ab0260fd60b01fbfa25b954f69"
   integrity sha512-LTQ/SGc+s0Xc0Fu5WaKnR0YiygZkm9eKFvyS+fRsU7/ZWFF8ykFM6Pc9aCVf1+xasOOZpO3BAVgVrKvsqKHV7w==
 
-commander@^2.20.0:
+commander@^2.19.0, commander@^2.20.0:
   version "2.20.3"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
@@ -9877,6 +10006,11 @@ cron@^2.0.0:
   integrity sha512-ZN5HP8zDY41sJolMsbc+GksRATcbvkPKF5wR/qc8FrV4NBVi9ORQa1HmYa5GydaysUB80X9XpRlRkooa5uEtTA==
   dependencies:
     luxon "^3.2.1"
+
+cronstrue@^2.2.0:
+  version "2.27.0"
+  resolved "https://registry.yarnpkg.com/cronstrue/-/cronstrue-2.27.0.tgz#a69fff0efe891ca33bf6b397e61cec13fd533cbc"
+  integrity sha512-p+w818EttA27EfIeZP5Z3k3ps9hy6DlRv3txbWxysTIlWEAE6DdYIjCaaeZhWaNfcowuXZrg0HVFWLTqGb85hg==
 
 cross-env@^7.0.0:
   version "7.0.3"
@@ -10578,6 +10712,11 @@ dir-glob@^3.0.1:
   integrity sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==
   dependencies:
     path-type "^4.0.0"
+
+discontinuous-range@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/discontinuous-range/-/discontinuous-range-1.0.0.tgz#e38331f0844bba49b9a9cb71c771585aab1bc65a"
+  integrity sha512-c68LpLbO+7kP/b1Hr1qs8/BJ09F5khZGTxqxZuhzxpmwJKOgRFHJWIb9/KmqnqHhLdO55aOxFH/EGBvUQbL/RQ==
 
 dns-equal@^1.0.0:
   version "1.0.0"
@@ -12379,7 +12518,7 @@ google-auth-library@^8.0.0, google-auth-library@^8.0.1, google-auth-library@^8.0
     jws "^4.0.0"
     lru-cache "^6.0.0"
 
-google-gax@^3.5.7:
+google-gax@^3.5.7, google-gax@^3.5.8:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-3.6.0.tgz#0f4ae350159737fe0aa289815c0d92838b19f6af"
   integrity sha512-2fyb61vWxUonHiArRNJQmE4tx5oY1ni8VPo08fzII409vDSCWG7apDX4qNOQ2GXXT82gLBn3d3P1Dydh7pWjyw==
@@ -12804,7 +12943,7 @@ http-proxy-agent@^5.0.0:
     agent-base "6"
     debug "4"
 
-http-proxy-middleware@^2.0.0, http-proxy-middleware@^2.0.3:
+http-proxy-middleware@^2.0.0, http-proxy-middleware@^2.0.3, http-proxy-middleware@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-2.0.6.tgz#e1a4dd6979572c7ab5a4e4b55095d1f32a74963f"
   integrity sha512-ya/UeJ6HVBYxrgYotAZo1KvPWlgB48kUJLDePFeneHsVujFaW5WNj2NgWCAE//B1Dl02BIfYlpNgBy8Kf8Rjmw==
@@ -14571,6 +14710,16 @@ knex@^2.0.0, knex@^2.3.0:
     tarn "^3.0.2"
     tildify "2.0.0"
 
+kubernetes-models@^4.1.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/kubernetes-models/-/kubernetes-models-4.3.0.tgz#3866f18db9aab139d96314c16825fbf13797a0b6"
+  integrity sha512-mR8q6MjHVtO0hArWxai0RgZsg3HHiP+vFPgTDmOiO1/Q1OhpG6CkEuNqAt4WSjD3He7lS8Ti/nAQ0f5xDkGPoQ==
+  dependencies:
+    "@kubernetes-models/apimachinery" "^1.2.0"
+    "@kubernetes-models/base" "^4.0.2"
+    "@kubernetes-models/validate" "^3.1.0"
+    tslib "^2.4.0"
+
 kuler@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/kuler/-/kuler-2.0.0.tgz#e2c570a3800388fb44407e851531c1d670b061b3"
@@ -15941,6 +16090,11 @@ modify-values@^1.0.0:
   resolved "https://registry.yarnpkg.com/modify-values/-/modify-values-1.0.1.tgz#b3939fa605546474e3e3e3c63d64bd43b4ee6022"
   integrity sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==
 
+moo@^0.5.0:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/moo/-/moo-0.5.2.tgz#f9fe82473bc7c184b0d32e2215d3f6e67278733c"
+  integrity sha512-iSAJLHYKnX41mKcJKjqvnAN9sf0LMDTXDEvFv+ffuRR9a1MIuXLjMNL6EsnDHSkKLTWNqQQ5uo61P4EbU4NU+Q==
+
 morgan@^1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.10.0.tgz#091778abc1fc47cd3509824653dae1faab6b17d7"
@@ -16064,6 +16218,16 @@ ndjson@^2.0.0:
     readable-stream "^3.6.0"
     split2 "^3.0.0"
     through2 "^4.0.0"
+
+nearley@^2.20.1:
+  version "2.20.1"
+  resolved "https://registry.yarnpkg.com/nearley/-/nearley-2.20.1.tgz#246cd33eff0d012faf197ff6774d7ac78acdd474"
+  integrity sha512-+Mc8UaAebFzgV+KpI5n7DasuuQCHA89dmwm7JXw3TV43ukfNQ9DnBH3Mdb2g/I4Fdxc26pwimBWvjIw0UAILSQ==
+  dependencies:
+    commander "^2.19.0"
+    moo "^0.5.0"
+    railroad-diagrams "^1.0.0"
+    randexp "0.4.6"
 
 negotiator@0.6.3, negotiator@^0.6.2, negotiator@^0.6.3:
   version "0.6.3"
@@ -18064,6 +18228,11 @@ raf-schd@^4.0.2:
   resolved "https://registry.yarnpkg.com/raf-schd/-/raf-schd-4.0.3.tgz#5d6c34ef46f8b2a0e880a8fcdb743efc5bfdbc1a"
   integrity sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==
 
+railroad-diagrams@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/railroad-diagrams/-/railroad-diagrams-1.0.0.tgz#eb7e6267548ddedfb899c1b90e57374559cddb7e"
+  integrity sha512-cz93DjNeLY0idrCNOH6PviZGRN9GJhsdm9hpn1YCS879fj4W+x5IFJhhkRZcwVgMmFF7R82UA/7Oh+R8lLZg6A==
+
 ramda-adjunct@=4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-4.0.0.tgz#99873cc707e86207ec7e757385144b3f235b7c59"
@@ -18073,6 +18242,14 @@ ramda@=0.29.0:
   version "0.29.0"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.29.0.tgz#fbbb67a740a754c8a4cbb41e2a6e0eb8507f55fb"
   integrity sha512-BBea6L67bYLtdbOqfp8f58fPMqEwx0doL+pAi8TZyp2YWz8R9G8z9x75CZI8W+ftqhFHCpEX2cRnUUXK130iKA==
+
+randexp@0.4.6:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/randexp/-/randexp-0.4.6.tgz#e986ad5e5e31dae13ddd6f7b3019aa7c87f60ca3"
+  integrity sha512-80WNmd9DA0tmZrw9qQa62GPPWfuXJknrmVmLcxvq4uZBdYqb1wYoKTmnlGUchvVWe0XiLupYkBoXVOxz3C8DYQ==
+  dependencies:
+    discontinuous-range "1.0.0"
+    ret "~0.1.10"
 
 randexp@^0.5.3:
   version "0.5.3"
@@ -18907,6 +19084,11 @@ ret@^0.2.0:
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.2.2.tgz#b6861782a1f4762dce43402a71eb7a283f44573c"
   integrity sha512-M0b3YWQs7R3Z917WRQy1HHA7Ba7D8hvZg6UE5mLykJxQVE2ju0IXbGlaHPPlkY+WN7wFP+wUMXmBFA0aV6vYGQ==
 
+ret@~0.1.10:
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
+  integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
+
 retry-request@^5.0.0:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/retry-request/-/retry-request-5.0.2.tgz#143d85f90c755af407fcc46b7166a4ba520e44da"
@@ -19178,6 +19360,13 @@ schema-utils@^4.0.0:
     ajv-formats "^2.1.1"
     ajv-keywords "^5.1.0"
 
+schemes@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/schemes/-/schemes-1.4.0.tgz#9d03302275e562488dd3afa7b654ed42e00569ec"
+  integrity sha512-ImFy9FbCsQlVgnE3TCWmLPCFnVzx0lHL/l+umHplDqAKd0dzFpnS6lFZIpagBlYhKwzVmlV36ec0Y1XTu8JBAQ==
+  dependencies:
+    extend "^3.0.0"
+
 screenfull@^5.1.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/screenfull/-/screenfull-5.2.0.tgz#6533d524d30621fc1283b9692146f3f13a93d1ba"
@@ -19448,6 +19637,13 @@ smart-buffer@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-4.2.0.tgz#6e1d71fa4f18c05f7d0ff216dd16a481d0e8d9ae"
   integrity sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==
+
+smtp-address-parser@^1.0.3:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/smtp-address-parser/-/smtp-address-parser-1.0.10.tgz#9fc4ed6021f13dc3d8f591e0ad0d50454073025e"
+  integrity sha512-Osg9LmvGeAG/hyao4mldbflLOkkr3a+h4m1lwKCK5U8M6ZAr7tdXEz/+/vr752TSGE4MNUlUl9cIK2cB8cgzXg==
+  dependencies:
+    nearley "^2.20.1"
 
 sockjs@^0.3.24:
   version "0.3.24"
@@ -21014,7 +21210,7 @@ update-browserslist-db@^1.0.10:
     escalade "^3.1.1"
     picocolors "^1.0.0"
 
-uri-js@^4.2.2:
+uri-js@^4.2.2, uri-js@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/uri-js/-/uri-js-4.4.1.tgz#9b1a52595225859e55f669d928f88c6c57f2a77e"
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
