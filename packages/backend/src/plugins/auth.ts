@@ -39,6 +39,7 @@ export default async function createPlugin(
         signIn: {
           resolver(_, ctx) {
             const userRef = 'user:default/guest'; // Must be a full entity reference
+            console.log('hi');
             return ctx.issueToken({
               claims: {
                 sub: userRef, // The user's own identity

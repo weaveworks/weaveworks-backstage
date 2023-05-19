@@ -1,7 +1,12 @@
 import React from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
+import { Entity } from '@backstage/catalog-model';
 import _ from 'lodash';
-import { kubernetesApiRef } from '@backstage/plugin-kubernetes';
+import {
+  kubernetesApiRef,
+  useCustomResources,
+} from '@backstage/plugin-kubernetes';
+import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 
 import {
   InfoCard,
@@ -25,6 +30,7 @@ import {
 import { ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
 import Grid from '@material-ui/core/Grid';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const WeaveGitopsContext = ({ children }: { children: ReactNode }) => {
   const queryOptions: QueryClientConfig = {
@@ -106,23 +112,46 @@ const HelmReleaseSummary = ({
   );
 };
 
-const useQueryHelmRelease = (
-  name: string,
-  namespace: string,
+const useQueryCustomResource = (
+  entity: Entity,
+  customerResourceMatcher: CustomResourceMatcher,
   clusterName: string,
 ) => {
+  const entityName =
+    entity.metadata?.annotations?.['backstage.io/kubernetes-id'] ||
+    entity.metadata?.name;
+
+  const labelSelector: string =
+    entity.metadata?.annotations?.['backstage.io/kubernetes-label-selector'] ||
+    `backstage.io/kubernetes-id=${entityName}`;
+
+  const namespace =
+    entity.metadata?.annotations?.['backstage.io/kubernetes-namespace'];
+
+  const basePath = [
+    '/apis',
+    customerResourceMatcher.group,
+    customerResourceMatcher.apiVersion,
+    ...(namespace ? [`namespaces/${namespace}`] : []),
+    customerResourceMatcher.plural,
+  ].join('/');
+  const path = `${basePath}?labelSelector=${encodeURIComponent(labelSelector)}`;
+
   const kubernetesApi = useApi(kubernetesApiRef);
   return useQuery<HelmRelease, Error>(
-    ['helmrelease', name, namespace, clusterName],
+    ['helmrelease', entityName, clusterName],
     async () => {
-      const path = `/apis/helm.toolkit.fluxcd.io/v2beta1/namespaces/${namespace}/helmreleases/${name}`;
       const res = await kubernetesApi.proxy({ clusterName, path });
       if (!res.ok) {
         throw new Error(
-          `Failed to fetch HelmRelease ${namespace}/${name}: ${res.statusText}`,
+          `Failed to fetch HelmRelease ${entityName}: ${res.statusText}`,
         );
       }
-      const payload = await res.text();
+      const helmReleaseList = await res.json();
+      if (!helmReleaseList.items.length) {
+        throw new Error(`No HelmRelease found with name ${entityName}`);
+      }
+      const payload = JSON.stringify(helmReleaseList.items[0]);
       return new HelmRelease({ payload });
     },
     { retry: false, refetchInterval: 5000 },
@@ -130,30 +159,34 @@ const useQueryHelmRelease = (
 };
 
 const HelmReleasePanel = () => {
-  // defaults
   const clusterName = 'demo-cluster';
-  const helmReleaseNamespace = 'default';
-  const helmReleasesName = 'podinfo';
+  const { entity } = useEntity();
 
-  // FIXME: read the above from entity annotations
-  //   const { entity } = useEntity();
-  //   console.log('entity', entity);
-
-  // FIXME: figure out how to use these apis, perhaps they are OIDC only
-  //   const res = useCustomResources(entity, [
-  //     {
-  //       apiVersion: 'v2beta1',
-  //       group: 'helm.toolkit.fluxcd.io',
-  //       plural: 'helmreleases',
-  //     },
-  //   ]);
-  //   console.log('res', res);
+  // Does not work without setting up some id provider
+  // https://github.com/backstage/backstage/issues/12394
+  //
+  // const res = useCustomResources(entity, [
+  //   {
+  //     apiVersion: 'v2beta1',
+  //     group: 'helm.toolkit.fluxcd.io',
+  //     plural: 'helmreleases',
+  //   },
+  // ]);
+  // console.log('res', res);
 
   const {
     data: helmRelease,
     isLoading,
     error,
-  } = useQueryHelmRelease(helmReleasesName, helmReleaseNamespace, clusterName);
+  } = useQueryCustomResource(
+    entity,
+    {
+      apiVersion: 'v2beta1',
+      group: 'helm.toolkit.fluxcd.io',
+      plural: 'helmreleases',
+    },
+    clusterName,
+  );
 
   if (isLoading) {
     return <Progress />;
