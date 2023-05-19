@@ -56,6 +56,7 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
+import { WeaveFluxPage } from '@internal/plugin-weave-flux';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -139,6 +140,10 @@ const serviceEntityPage = (
 
     <EntityLayout.Route path="/kubernetes" title="Kubernetes">
       <EntityKubernetesContent refreshIntervalMs={30000} />
+    </EntityLayout.Route>
+
+    <EntityLayout.Route path="/weaveflux" title="Weave Flux">
+      <WeaveFluxPage />
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/ci-cd" title="CI/CD">
