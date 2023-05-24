@@ -1,1 +1,1 @@
-export { weaveFluxPlugin, WeaveFluxPage } from './plugin';
+export { weaveFluxPlugin, WeaveFluxCard } from './plugin';

@@ -1,12 +1,12 @@
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { weaveFluxPlugin, WeaveFluxPage } from '../src/plugin';
+import { weaveFluxPlugin, WeaveFluxCard } from '../src/plugin';
 
 createDevApp()
   .registerPlugin(weaveFluxPlugin)
   .addPage({
-    element: <WeaveFluxPage />,
+    element: <WeaveFluxCard />,
     title: 'Root Page',
-    path: '/weave-flux'
+    path: '/weave-flux',
   })
   .render();

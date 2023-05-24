@@ -2,14 +2,12 @@ import React from 'react';
 import { useApi, configApiRef } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import _ from 'lodash';
-import {
-  kubernetesApiRef,
-  useCustomResources,
-} from '@backstage/plugin-kubernetes';
+import { kubernetesApiRef } from '@backstage/plugin-kubernetes';
 import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 
 import {
   InfoCard,
+  InfoCardVariants,
   Progress,
   StructuredMetadataTable,
 } from '@backstage/core-components';
@@ -29,7 +27,6 @@ import {
 } from '@weaveworks/weave-gitops';
 import { ReactNode } from 'react';
 import { ThemeProvider } from 'styled-components';
-import Grid from '@material-ui/core/Grid';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const WeaveGitopsContext = ({ children }: { children: ReactNode }) => {
@@ -68,14 +65,17 @@ function weaveGitopsHelmReleaseLink(
 const HelmReleaseSummary = ({
   data,
   clusterName,
+  variant,
 }: {
   data: HelmRelease;
   clusterName: string;
+  variant?: InfoCardVariants;
 }) => {
   const { name, namespace } = data;
   const metadata = {
     kind: data.type,
     chart: data.helmChart.chart,
+    cluster: clusterName,
     chartVersion: data.helmChart.version,
     lastAppliedRevision: data.lastAppliedRevision,
     lastAttemptedRevision: data.lastAttemptedRevision,
@@ -88,24 +88,28 @@ const HelmReleaseSummary = ({
     })`,
   };
 
-  let header = (
-    <span>
-      HelmRelease {namespace}/{name}
-    </span>
-  );
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
+  let deepLink = undefined;
   if (baseUrl) {
-    const href = weaveGitopsHelmReleaseLink(baseUrl, data, clusterName);
-    header = <a href={href}>{header}</a>;
+    deepLink = {
+      title: 'Go to Weave GitOps',
+      link: weaveGitopsHelmReleaseLink(baseUrl, data, clusterName),
+    };
   }
 
   return (
     <InfoCard
-      title={header}
+      title={
+        <span>
+          HelmRelease {namespace}/{name}
+        </span>
+      }
+      variant={variant}
       subheader={
         <PageStatus conditions={data.conditions} suspended={data.suspended} />
       }
+      deepLink={deepLink}
     >
       <StructuredMetadataTable metadata={metadata} />
     </InfoCard>
@@ -158,9 +162,17 @@ const useQueryCustomResource = (
   );
 };
 
-const HelmReleasePanel = () => {
-  const clusterName = 'demo-cluster';
+type Props = {
+  clusterName?: string;
+  labelSelector?: string;
+  namespace?: string;
+  entityName?: string;
+  variant?: InfoCardVariants;
+};
+
+const HelmReleasePanel = (props: Props) => {
   const { entity } = useEntity();
+  const clusterName = props.clusterName || 'demo-cluster';
 
   // Does not work without setting up some id provider
   // https://github.com/backstage/backstage/issues/12394
@@ -200,15 +212,17 @@ const HelmReleasePanel = () => {
     return <div>No HelmRelease found</div>;
   }
 
-  return <HelmReleaseSummary clusterName={clusterName} data={helmRelease} />;
+  return (
+    <HelmReleaseSummary
+      variant={props.variant}
+      clusterName={clusterName}
+      data={helmRelease}
+    />
+  );
 };
 
-export const WeaveFluxPage = () => (
-  <Grid container spacing={4}>
-    <Grid item xs={4}>
-      <WeaveGitopsContext>
-        <HelmReleasePanel />
-      </WeaveGitopsContext>
-    </Grid>
-  </Grid>
+export const WeaveFluxCard = (props: Props) => (
+  <WeaveGitopsContext>
+    <HelmReleasePanel {...props} />
+  </WeaveGitopsContext>
 );

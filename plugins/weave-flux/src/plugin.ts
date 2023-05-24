@@ -12,11 +12,11 @@ export const weaveFluxPlugin = createPlugin({
   },
 });
 
-export const WeaveFluxPage = weaveFluxPlugin.provide(
+export const WeaveFluxCard = weaveFluxPlugin.provide(
   createRoutableExtension({
-    name: 'WeaveFluxPage',
+    name: 'WeaveFluxCard',
     component: () =>
-      import('./components/WeaveFluxPage').then(m => m.WeaveFluxPage),
+      import('./components/WeaveFluxCard').then(m => m.WeaveFluxCard),
     mountPoint: rootRouteRef,
   }),
 );
