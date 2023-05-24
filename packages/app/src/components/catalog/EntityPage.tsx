@@ -124,7 +124,7 @@ const overviewContent = (
     </Grid>
 
     <Grid item md={4} xs={12}>
-      <WeaveFluxCard variant="gridItem" />
+      <WeaveFluxCard />
     </Grid>
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
