@@ -62,6 +62,21 @@ function weaveGitopsHelmReleaseLink(
   return `${baseUrl}/helm_release/details?${queryString}`;
 }
 
+const useWeaveFluxDeepLink = (
+  helmRelease: HelmRelease,
+  clusterName: string,
+) => {
+  const config = useApi(configApiRef);
+  const baseUrl = config.getOptionalString('gitops.baseUrl');
+  if (!baseUrl) {
+    return undefined;
+  }
+  return {
+    title: 'Go to Weave GitOps',
+    link: weaveGitopsHelmReleaseLink(baseUrl, helmRelease, clusterName),
+  };
+};
+
 const HelmReleaseSummary = ({
   data,
   clusterName,
@@ -73,30 +88,12 @@ const HelmReleaseSummary = ({
 }) => {
   const { name, namespace } = data;
   const metadata = {
-    kind: data.type,
-    chart: data.helmChart.chart,
+    chartVersion: `${data.helmChart.chart}/${data.lastAppliedRevision}`,
     cluster: clusterName,
-    chartVersion: data.helmChart.version,
-    lastAppliedRevision: data.lastAppliedRevision,
-    lastAttemptedRevision: data.lastAttemptedRevision,
-    interval: <Interval interval={data.interval} />,
     lastUpdated: <Timestamp time={automationLastUpdated(data)} />,
-    name,
-    namespace,
-    sourceRef: `${data.sourceRef?.name || 'no-name'} (${
-      data.sourceRef?.kind || 'no-kind'
-    })`,
   };
 
-  const config = useApi(configApiRef);
-  const baseUrl = config.getOptionalString('gitops.baseUrl');
-  let deepLink = undefined;
-  if (baseUrl) {
-    deepLink = {
-      title: 'Go to Weave GitOps',
-      link: weaveGitopsHelmReleaseLink(baseUrl, data, clusterName),
-    };
-  }
+  const deepLink = useWeaveFluxDeepLink(data, clusterName);
 
   return (
     <InfoCard
