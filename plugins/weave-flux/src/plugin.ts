@@ -12,11 +12,13 @@ export const weaveFluxPlugin = createPlugin({
   },
 });
 
-export const WeaveFluxCard = weaveFluxPlugin.provide(
+export const FluxHelmReleaseCard = weaveFluxPlugin.provide(
   createRoutableExtension({
-    name: 'WeaveFluxCard',
+    name: 'FluxHelmReleaseCard',
     component: () =>
-      import('./components/WeaveFluxCard').then(m => m.WeaveFluxCard),
+      import('./components/FluxHelmReleaseCard').then(
+        m => m.FluxHelmReleaseCard,
+      ),
     mountPoint: rootRouteRef,
   }),
 );
