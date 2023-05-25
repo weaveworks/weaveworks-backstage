@@ -63,7 +63,9 @@ export function useQueryHelmRelease(entity: Entity, clusterName: string) {
       if (!helmReleaseList.items.length) {
         throw new Error(`No HelmRelease found with name ${entityName}`);
       }
+
       const payload = JSON.stringify(helmReleaseList.items[0]);
+
       return new HelmRelease({ payload });
     },
     { retry: false, refetchInterval: 5000 },

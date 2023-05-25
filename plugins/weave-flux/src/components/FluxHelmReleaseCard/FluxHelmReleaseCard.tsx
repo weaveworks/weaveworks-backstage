@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 
 import {
@@ -24,8 +23,9 @@ import {
 import { ThemeProvider } from 'styled-components';
 import { useWeaveFluxDeepLink } from '../../hooks/external-link';
 import { useQueryHelmRelease } from '../../hooks/query';
+import { automationLastUpdated } from './utils';
 
-export const WeaveGitopsContext = ({ children }: { children: ReactNode }) => {
+export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
   const queryOptions: QueryClientConfig = {
     queryCache: new QueryCache(),
   };
@@ -37,10 +37,6 @@ export const WeaveGitopsContext = ({ children }: { children: ReactNode }) => {
     </ThemeProvider>
   );
 };
-
-export function automationLastUpdated(a: HelmRelease): string {
-  return _.get(_.find(a?.conditions, { type: 'Ready' }), 'timestamp') || '';
-}
 
 const HelmReleaseSummary = ({
   data,
@@ -111,7 +107,7 @@ const HelmReleasePanel = (props: Props) => {
 };
 
 export const FluxHelmReleaseCard = (props: Props) => (
-  <WeaveGitopsContext>
+  <WeaveGitOpsContext>
     <HelmReleasePanel {...props} />
-  </WeaveGitopsContext>
+  </WeaveGitOpsContext>
 );
