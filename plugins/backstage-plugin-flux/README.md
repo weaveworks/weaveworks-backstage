@@ -1,13 +1,13 @@
-# weave-flux
+# Flux Plugin for Backstage
 
-Welcome to the weave-flux plugin!
+Display the state of your Flux resources in Backstage.
 
-_This plugin was created through the Backstage CLI_
+Flux is a set of continuous and progressive delivery solutions for Kubernetes that are open and extensible.
 
-## Getting started
+This readme will show you how to:
 
-Your plugin has been added to the example app in this repository, meaning you'll be able to access it by running `yarn start` in the root directory, and then navigating to [/weave-flux](http://localhost:3000/weave-flux).
+ - Setup and integrate the plugin into Backstage
+ - Configure the plugin to link back into your Weave GitOps (or Weave GitOps Enterprise) installation.
+ - Add the annotations to your Backstage component's metadata.
 
-You can also serve the plugin in isolation by running `yarn start` in the plugin directory.
-This method of serving the plugin provides quicker iteration speed and a faster startup and hot reloads.
-It is only meant for local development, and the setup for it can be found inside the [/dev](./dev) directory.
+

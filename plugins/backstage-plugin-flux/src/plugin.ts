@@ -1,18 +1,37 @@
 import {
+  createApiFactory,
   createPlugin,
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
+import { kubernetesApiRef, KubernetesApi } from '@backstage/plugin-kubernetes';
 
 import { rootRouteRef } from './routes';
+import { fluxApiRef, FluxClient } from './api';
 
-export const weaveFluxPlugin = createPlugin({
-  id: 'weave-flux',
+/**
+ * The Flux plugin.
+ * @public
+ */
+export const weaveworksFluxPlugin = createPlugin({
+  id: 'weaveworks-flux',
+  apis: [
+    createApiFactory({
+      api: fluxApiRef,
+      deps: { kubernetesApi: kubernetesApiRef },
+      factory: ({ kubernetesApi }: {kubernetesApi: KubernetesApi}) =>
+        new FluxClient({kubernetesApi}),
+    }),
+  ],
   routes: {
     root: rootRouteRef,
   },
 });
 
-export const FluxHelmReleaseCard = weaveFluxPlugin.provide(
+/**
+ * Card used to show the state of a Flux HelmRelease.
+ * @public
+ */
+export const FluxHelmReleaseCard = weaveworksFluxPlugin.provide(
   createRoutableExtension({
     name: 'FluxHelmReleaseCard',
     component: () =>
