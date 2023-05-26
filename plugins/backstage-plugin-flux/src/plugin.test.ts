@@ -1,7 +1,7 @@
-import { weaveFluxPlugin } from './plugin';
+import { weaveworksFluxPlugin } from './plugin';
 
-describe('weave-flux', () => {
+describe('weaveworks-flux', () => {
   it('should export plugin', () => {
-    expect(weaveFluxPlugin).toBeDefined();
+    expect(weaveworksFluxPlugin).toBeDefined();
   });
 });
