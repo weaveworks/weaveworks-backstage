@@ -145,7 +145,7 @@ const serviceEntityPage = (
       <EntityKubernetesContent refreshIntervalMs={30000} />
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/weaveflux" title="Weave Flux">
+    <EntityLayout.Route path="/weavewporks-flux" title="Weave Flux">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={4}>
           <FluxHelmReleaseCard />

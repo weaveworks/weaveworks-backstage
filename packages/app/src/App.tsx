@@ -92,7 +92,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-    <Route path="/weave-flux" element={<FluxHelmReleaseCard />} />
+    <Route path="/weaveworks-flux" element={<FluxHelmReleaseCard />} />
   </FlatRoutes>
 );
 
