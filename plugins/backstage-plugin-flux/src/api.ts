@@ -12,6 +12,15 @@ const helmReleaseGVK: CustomResourceMatcher = {
   plural: 'helmreleases',
 };
 
+
+/**
+ * Get the kubernetes-id Backstage annotation, or if it doesn't exist, the
+ * Entity name.
+ */
+export const kubernetesIdOrNameFromEntity = (entity: Entity): string => {
+    return entity.metadata?.annotations?.['backstage.io/kubernetes-id'] || entity.metadata?.name;
+};
+
 /**
  * @public
  */
@@ -45,7 +54,7 @@ export class FluxClient implements FluxApi {
   }
 
   async getHelmReleaseInCluster(clusterName: string, entity: Entity): Promise<HelmRelease> {
-    const res = await this.kubernetesApi.proxy({ clusterName: clusterName, path: pathForHelmRelease(entity) });
+    const res = await this.kubernetesApi.proxy({ clusterName: clusterName, path: pathForResource(entity, helmReleaseGVK) });
     if (!res.ok) {
       throw new Error(
         `Failed to fetch HelmRelease for ${entity.metadata.name}: ${res.statusText}`,
@@ -63,10 +72,8 @@ export class FluxClient implements FluxApi {
   }
 };
 
-const pathForHelmRelease = (entity: Entity): string => {
-  const entityName =
-    entity.metadata?.annotations?.['backstage.io/kubernetes-id'] ||
-    entity.metadata?.name;
+const pathForResource = (entity: Entity, gvk: CustomResourceMatcher): string => {
+  const entityName = kubernetesIdOrNameFromEntity(entity);
 
   const labelSelector: string =
     entity.metadata?.annotations?.['backstage.io/kubernetes-label-selector'] ||
@@ -77,10 +84,10 @@ const pathForHelmRelease = (entity: Entity): string => {
 
   const basePath = [
     '/apis',
-    helmReleaseGVK.group,
-    helmReleaseGVK.apiVersion,
+    gvk.group,
+    gvk.apiVersion,
     ...(namespace ? [`namespaces/${namespace}`] : []),
-    helmReleaseGVK.plural,
+    gvk.plural,
   ].join('/');
 
   return `${basePath}?labelSelector=${encodeURIComponent(labelSelector)}`;

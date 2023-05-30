@@ -25,9 +25,7 @@ describe('<FluxHelmReleaseCard />', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-  })
-
-  afterEach(() => jest.resetAllMocks());
+  });
 
   it('shows the state of a HelmRelease', async () => {
     const entity: Entity = {
@@ -44,40 +42,40 @@ describe('<FluxHelmReleaseCard />', () => {
     callProxyMock.mockResolvedValue(new HelmRelease({
       payload: JSON.stringify(
         {
-          apiVersion: "helm.toolkit.fluxcd.io/v2beta1",
-          kind: "HelmRelease",
+          apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
+          kind: 'HelmRelease',
           metadata: {
             annotations: {
-              "metadata.weave.works/test": "value",
+              'metadata.weave.works/test': 'value',
             },
-            creationTimestamp: "2023-05-25T14:14:46Z",
-            finalizers: ["finalizers.fluxcd.io"],
-            name: "normal",
-            namespace: "default",
+            creationTimestamp: '2023-05-25T14:14:46Z',
+            finalizers: ['finalizers.fluxcd.io'],
+            name: 'normal',
+            namespace: 'default',
           },
           spec: {
-            interval: "5m",
+            interval: '5m',
             chart: {
               spec: {
-                chart: "kube-prometheus-stack",
-                version: "45.x",
+                chart: 'kube-prometheus-stack',
+                version: '45.x',
                 sourceRef: {
-                  kind: "HelmRepository",
-                  name: "prometheus-community",
-                  namespace: "default",
+                  kind: 'HelmRepository',
+                  name: 'prometheus-community',
+                  namespace: 'default',
                 },
-                interval: "60m",
+                interval: '60m',
               },
             },
           },
           status: {
             conditions: [
               {
-                lastTransitionTime: "2023-05-25T15:03:33Z",
-                message: "pulled \'test\' chart with version \'1.0.0\'",
-                reason: "ChartPullSucceeded",
-                status: "True",
-                type: "Ready",
+                lastTransitionTime: '2023-05-25T15:03:33Z',
+                message: 'pulled "test" chart with version "1.0.0"',
+                reason: 'ChartPullSucceeded',
+                status: 'True',
+                type: 'Ready',
               },
             ],
           },
