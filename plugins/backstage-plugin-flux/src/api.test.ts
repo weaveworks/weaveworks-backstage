@@ -12,10 +12,10 @@ const newEntity = (name: string): Entity => {
       type: 'service',
       lifecycle: 'production',
       owner: 'sockshop-team',
-      system: 'carts'
-    }
+      system: 'carts',
+    },
   };
-}
+};
 
 describe('kubernetesIdOrNameFromEntity', () => {
   it('returns the name when the kubernete-id does not exist', () => {
@@ -26,7 +26,9 @@ describe('kubernetesIdOrNameFromEntity', () => {
 
   it('returns the annotation when the kubernetes-id exists', () => {
     const entity = newEntity('testing');
-    entity.metadata.annotations = { 'backstage.io/kubernetes-id': 'test-kubernetes-id' };
+    entity.metadata.annotations = {
+      'backstage.io/kubernetes-id': 'test-kubernetes-id',
+    };
 
     const name = kubernetesIdOrNameFromEntity(entity);
 
@@ -79,9 +81,9 @@ describe('FluxClient', () => {
             interval: '60m',
           },
         },
-      }
+      },
     };
-  }
+  };
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -89,22 +91,30 @@ describe('FluxClient', () => {
 
   test('getHelmReleaseInCluster returns a HelmRelease', async () => {
     const helmRelease = newHelmReleaseResponse('testing');
+    const helmRelease2 = newHelmReleaseResponse('test-1');
 
     const entity = newEntity('testing');
-    entity.metadata.annotations = { 'backstage.io/kubernetes-id': 'test-kubernetes-id' };
+    entity.metadata.annotations = {
+      'backstage.io/kubernetes-id': 'test-kubernetes-id',
+    };
 
     const fluxClient = new FluxClient({ kubernetesApi: mockKubernetesApi });
     callProxyMock.mockResolvedValue({
       ok: true,
-      json: jest.fn().mockResolvedValue({ items: [helmRelease, newHelmReleaseResponse('test-1')] }),
+      json: jest.fn().mockResolvedValue({
+        items: [helmRelease, helmRelease2],
+      }),
     });
 
     const result = await fluxClient.getHelmReleaseInCluster('testing', entity);
 
-    expect(result).toEqual(new HelmRelease({ payload: JSON.stringify(helmRelease) }));
+    expect(result).toEqual([
+      new HelmRelease({ payload: JSON.stringify(helmRelease) }),
+      new HelmRelease({ payload: JSON.stringify(helmRelease2) }),
+    ]);
     expect(callProxyMock).toHaveBeenCalledWith({
       clusterName: 'testing',
-      path: '/apis/helm.toolkit.fluxcd.io/v2beta1/helmreleases?labelSelector=backstage.io%2Fkubernetes-id%3Dtest-kubernetes-id'
+      path: '/apis/helm.toolkit.fluxcd.io/v2beta1/helmreleases?labelSelector=backstage.io%2Fkubernetes-id%3Dtest-kubernetes-id',
     });
   });
 });

@@ -39,9 +39,9 @@ describe('<FluxHelmReleaseCard />', () => {
       },
     };
 
-    callProxyMock.mockResolvedValue(new HelmRelease({
-      payload: JSON.stringify(
-        {
+    callProxyMock.mockResolvedValue(
+      new HelmRelease({
+        payload: JSON.stringify({
           apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
           kind: 'HelmRelease',
           metadata: {
@@ -79,8 +79,9 @@ describe('<FluxHelmReleaseCard />', () => {
               },
             ],
           },
-        })
-    }));
+        }),
+      }),
+    );
 
     const { getByText } = await renderInTestApp(
       <Wrapper>
@@ -91,6 +92,6 @@ describe('<FluxHelmReleaseCard />', () => {
     );
 
     expect(getByText(/kube-prometheus-stack/i)).toBeInTheDocument();
-    expect(getByText(/HelmRelease default\/normal/i)).toBeInTheDocument();
+    expect(getByText(/default\/normal/i)).toBeInTheDocument();
   });
 });

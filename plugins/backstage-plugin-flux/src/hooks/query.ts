@@ -23,7 +23,7 @@ export function useQueryHelmRelease(entity: Entity, clusterName: string) {
   const fluxApi = useApi(fluxApiRef);
   const entityName = kubernetesIdOrNameFromEntity(entity);
 
-  return useQuery<HelmRelease, Error>(
+  return useQuery<HelmRelease[], Error>(
     ['helmrelease', entityName, clusterName],
     async () => {
       return await fluxApi.getHelmReleaseInCluster(clusterName, entity);

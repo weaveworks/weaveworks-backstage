@@ -24,6 +24,7 @@ import { ThemeProvider } from 'styled-components';
 import { useWeaveFluxDeepLink } from '../../hooks/external-link';
 import { useQueryHelmRelease } from '../../hooks/query';
 import { automationLastUpdated } from './utils';
+import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
 
 export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
   const queryOptions: QueryClientConfig = {
@@ -43,34 +44,18 @@ const HelmReleaseSummary = ({
   clusterName,
   variant,
 }: {
-  data: HelmRelease;
+  data: HelmRelease[];
   clusterName: string;
   variant?: InfoCardVariants;
 }) => {
-  const { name, namespace } = data;
-  const metadata = {
-    chartVersion: `${data.helmChart.chart}/${data.lastAppliedRevision}`,
-    cluster: clusterName,
-    lastUpdated: <Timestamp time={automationLastUpdated(data)} />,
-  };
-
-  const deepLink = useWeaveFluxDeepLink(data, clusterName);
+  // const deepLink = useWeaveFluxDeepLink(data, clusterName);
 
   return (
-    <InfoCard
-      title={
-        <span>
-          HelmRelease {namespace}/{name}
-        </span>
-      }
-      variant={variant}
-      subheader={
-        <PageStatus conditions={data.conditions} suspended={data.suspended} />
-      }
-      deepLink={deepLink}
-    >
-      <StructuredMetadataTable metadata={metadata} />
-    </InfoCard>
+    <FluxHelmReleasesTable
+      helmReleases={data}
+      isLoading={false}
+      columns={defaultColumns}
+    />
   );
 };
 
