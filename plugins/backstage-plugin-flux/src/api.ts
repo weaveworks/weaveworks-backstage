@@ -28,6 +28,27 @@ export const fluxApiRef = createApiRef<FluxApi>({
   id: 'plugin.flux.service',
 });
 
+const pathForResource = (entity: Entity, gvk: CustomResourceMatcher): string => {
+  const entityName = kubernetesIdOrNameFromEntity(entity);
+
+  const labelSelector: string =
+    entity.metadata?.annotations?.['backstage.io/kubernetes-label-selector'] ||
+    `backstage.io/kubernetes-id=${entityName}`;
+
+  const namespace =
+    entity.metadata?.annotations?.['backstage.io/kubernetes-namespace'];
+
+  const basePath = [
+    '/apis',
+    gvk.group,
+    gvk.apiVersion,
+    ...(namespace ? [`namespaces/${namespace}`] : []),
+    gvk.plural,
+  ].join('/');
+
+  return `${basePath}?labelSelector=${encodeURIComponent(labelSelector)}`;
+};
+
 /**
  * Interface for the FluxApi.
  * @public
@@ -70,25 +91,4 @@ export class FluxClient implements FluxApi {
 
     return new HelmRelease({ payload });
   }
-};
-
-const pathForResource = (entity: Entity, gvk: CustomResourceMatcher): string => {
-  const entityName = kubernetesIdOrNameFromEntity(entity);
-
-  const labelSelector: string =
-    entity.metadata?.annotations?.['backstage.io/kubernetes-label-selector'] ||
-    `backstage.io/kubernetes-id=${entityName}`;
-
-  const namespace =
-    entity.metadata?.annotations?.['backstage.io/kubernetes-namespace'];
-
-  const basePath = [
-    '/apis',
-    gvk.group,
-    gvk.apiVersion,
-    ...(namespace ? [`namespaces/${namespace}`] : []),
-    gvk.plural,
-  ].join('/');
-
-  return `${basePath}?labelSelector=${encodeURIComponent(labelSelector)}`;
 };
