@@ -60,13 +60,26 @@ const fakeHelmRelease: HelmRelease = {
   status: {
     conditions: [
       {
-        lastTransitionTime: '2023-05-25T15:03:33Z',
-        message: 'pulled "test" chart with version "1.0.0"',
-        reason: 'ChartPullSucceeded',
-        status: 'True',
-        type: 'Ready',
+        lastTransitionTime: "2023-06-16T12:48:22Z",
+        message: "Release reconciliation succeeded",
+        reason: "ReconciliationSucceeded",
+        status: "True",
+        type: "Ready"
       },
+      {
+        lastTransitionTime: "2023-06-16T12:48:22Z",
+        message: "Helm upgrade succeeded",
+        reason: "UpgradeSucceeded",
+        status: "True",
+        type: "Released"
+      }
     ],
+    helmChart: "default/default-podinfo",
+    lastAppliedRevision: "6.3.5",
+    lastAttemptedRevision: "6.3.5",
+    lastAttemptedValuesChecksum: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    lastReleaseRevision: 6,
+    observedGeneration: 12
   },
 };
 

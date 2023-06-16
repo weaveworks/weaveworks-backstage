@@ -7,6 +7,46 @@ import { FluxHelmReleaseCard } from './FluxHelmReleaseCard';
 import { FluxApi, fluxApiRef } from '../../api';
 import { HelmRelease } from '@weaveworks/weave-gitops';
 
+const testHelmRelease = {
+  apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
+    kind: 'HelmRelease',
+    metadata: {
+      annotations: {
+        'metadata.weave.works/test': 'value',
+      },
+      creationTimestamp: '2023-05-25T14:14:46Z',
+      finalizers: ['finalizers.fluxcd.io'],
+      name: 'normal',
+      namespace: 'default',
+    },
+    spec: {
+      interval: '5m',
+      chart: {
+        spec: {
+          chart: 'kube-prometheus-stack',
+          version: '45.x',
+          sourceRef: {
+            kind: 'HelmRepository',
+            name: 'prometheus-community',
+            namespace: 'default',
+          },
+          interval: '60m',
+        },
+      },
+    },
+    status: {
+      conditions: [
+        {
+          lastTransitionTime: '2023-05-25T15:03:33Z',
+          message: 'pulled "test" chart with version "1.0.0"',
+          reason: 'ChartPullSucceeded',
+          status: 'True',
+          type: 'Ready',
+        },
+      ],
+    },
+};
+
 describe('<FluxHelmReleaseCard />', () => {
   const callProxyMock = jest.fn();
   const fluxApi: jest.Mocked<FluxApi> = {
@@ -40,46 +80,7 @@ describe('<FluxHelmReleaseCard />', () => {
     };
 
     callProxyMock.mockResolvedValue(new HelmRelease({
-      payload: JSON.stringify(
-        {
-          apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
-          kind: 'HelmRelease',
-          metadata: {
-            annotations: {
-              'metadata.weave.works/test': 'value',
-            },
-            creationTimestamp: '2023-05-25T14:14:46Z',
-            finalizers: ['finalizers.fluxcd.io'],
-            name: 'normal',
-            namespace: 'default',
-          },
-          spec: {
-            interval: '5m',
-            chart: {
-              spec: {
-                chart: 'kube-prometheus-stack',
-                version: '45.x',
-                sourceRef: {
-                  kind: 'HelmRepository',
-                  name: 'prometheus-community',
-                  namespace: 'default',
-                },
-                interval: '60m',
-              },
-            },
-          },
-          status: {
-            conditions: [
-              {
-                lastTransitionTime: '2023-05-25T15:03:33Z',
-                message: 'pulled "test" chart with version "1.0.0"',
-                reason: 'ChartPullSucceeded',
-                status: 'True',
-                type: 'Ready',
-              },
-            ],
-          },
-        })
+      payload: JSON.stringify(testHelmRelease)
     }));
 
     const { getByText } = await renderInTestApp(

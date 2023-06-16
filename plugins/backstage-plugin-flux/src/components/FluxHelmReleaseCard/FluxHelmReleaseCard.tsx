@@ -21,8 +21,8 @@ import {
   QueryClientProvider,
 } from 'react-query';
 import { ThemeProvider } from 'styled-components';
-import { useWeaveFluxDeepLink } from '../../hooks/external-link';
-import { useQueryHelmRelease } from '../../hooks/query';
+import { useWeaveFluxDeepLink } from '../../hooks';
+import { useQueryHelmRelease } from '../../hooks';
 import { automationLastUpdated } from './utils';
 
 export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {

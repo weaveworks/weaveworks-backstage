@@ -19,7 +19,7 @@ import { fluxApiRef, kubernetesIdOrNameFromEntity } from '../api';
 //
 // So we re-implement the hook here:
 
-export function useQueryHelmRelease(entity: Entity, clusterName: string) {
+export const useQueryHelmRelease = (entity: Entity, clusterName: string)  => {
   const fluxApi = useApi(fluxApiRef);
   const entityName = kubernetesIdOrNameFromEntity(entity);
 
@@ -30,4 +30,4 @@ export function useQueryHelmRelease(entity: Entity, clusterName: string) {
     },
     { retry: false, refetchInterval: 5000 },
   );
-}
+};
