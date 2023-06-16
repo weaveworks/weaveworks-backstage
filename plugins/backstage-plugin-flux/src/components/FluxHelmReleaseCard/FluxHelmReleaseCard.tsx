@@ -14,47 +14,30 @@ import {
   theme,
 } from '@weaveworks/weave-gitops';
 import { ReactNode } from 'react';
-import {
-  QueryCache,
-  QueryClient,
-  QueryClientConfig,
-  QueryClientProvider,
-} from 'react-query';
 import { ThemeProvider } from 'styled-components';
 import { useWeaveFluxDeepLink } from '../../hooks';
-import { useQueryHelmRelease } from '../../hooks';
+import { useHelmReleases } from '../../hooks';
 import { automationLastUpdated } from './utils';
 
 export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
-  const queryOptions: QueryClientConfig = {
-    queryCache: new QueryCache(),
-  };
-  const queryClient = new QueryClient(queryOptions);
-
-  return (
-    <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </ThemeProvider>
-  );
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };
 
 const HelmReleaseSummary = ({
   data,
-  clusterName,
   variant,
 }: {
   data: HelmRelease;
-  clusterName: string;
   variant?: InfoCardVariants;
 }) => {
   const { name, namespace } = data;
   const metadata = {
     chartVersion: `${data.helmChart.chart}/${data.lastAppliedRevision}`,
-    cluster: clusterName,
+    cluster: data.clusterName,
     lastUpdated: <Timestamp time={automationLastUpdated(data)} />,
   };
 
-  const deepLink = useWeaveFluxDeepLink(data, clusterName);
+  const deepLink = useWeaveFluxDeepLink(data);
 
   return (
     <InfoCard
@@ -81,29 +64,31 @@ type Props = {
 
 const HelmReleasePanel = (props: Props) => {
   const { entity } = useEntity();
-  const clusterName = props.clusterName || 'demo-cluster';
 
-  const { data, isLoading, error } = useQueryHelmRelease(entity, clusterName);
+  const { data, loading, errors } = useHelmReleases(entity);
 
-  if (isLoading) {
+  if (loading) {
     return <Progress />;
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  if (errors) {
+    return (
+      <div>
+        Errors:
+        <ul>
+          {errors.map(err => (
+            <li>{err.message}</li>
+          ))}
+        </ul>
+      </div>
+    );
   }
 
   if (!data) {
     return <div>No HelmRelease found</div>;
   }
 
-  return (
-    <HelmReleaseSummary
-      variant={props.variant}
-      clusterName={clusterName}
-      data={data}
-    />
-  );
+  return <HelmReleaseSummary variant={props.variant} data={data[0]} />;
 };
 
 export const FluxHelmReleaseCard = (props: Props) => (

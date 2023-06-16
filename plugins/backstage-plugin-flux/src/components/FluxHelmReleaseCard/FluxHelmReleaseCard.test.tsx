@@ -2,10 +2,12 @@ import React from 'react';
 
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
+import { renderInTestApp } from '@backstage/test-utils';
 import { FluxHelmReleaseCard } from './FluxHelmReleaseCard';
-import { FluxApi, fluxApiRef } from '../../api';
 import { HelmRelease } from '@weaveworks/weave-gitops';
+import { useHelmReleases } from '../../hooks';
+
+jest.mock('../../hooks');
 
 const testHelmRelease = {
   apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
@@ -48,18 +50,11 @@ const testHelmRelease = {
 };
 
 describe('<FluxHelmReleaseCard />', () => {
-  const callProxyMock = jest.fn();
-  const fluxApi: jest.Mocked<FluxApi> = {
-    getHelmReleaseInCluster: callProxyMock,
-  };
-
   let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
   beforeEach(() => {
     Wrapper = ({ children }: { children?: React.ReactNode }) => (
-      <TestApiProvider apis={[[fluxApiRef, fluxApi]]}>
-        {children}
-      </TestApiProvider>
+      <div>{children}</div>
     );
   });
 
@@ -79,9 +74,13 @@ describe('<FluxHelmReleaseCard />', () => {
       },
     };
 
-    callProxyMock.mockResolvedValue(new HelmRelease({
-      payload: JSON.stringify(testHelmRelease)
-    }));
+    (useHelmReleases as any).mockReturnValue({
+      data: [
+        new HelmRelease({
+          payload: JSON.stringify(testHelmRelease),
+        }),
+      ],
+    });
 
     const { getByText } = await renderInTestApp(
       <Wrapper>

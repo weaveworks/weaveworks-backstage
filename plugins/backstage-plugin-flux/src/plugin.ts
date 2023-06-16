@@ -1,12 +1,9 @@
 import {
-  createApiFactory,
   createPlugin,
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
-import { kubernetesApiRef, KubernetesApi } from '@backstage/plugin-kubernetes';
 
 import { rootRouteRef } from './routes';
-import { fluxApiRef, FluxClient } from './api';
 
 /**
  * The Flux plugin.
@@ -14,14 +11,6 @@ import { fluxApiRef, FluxClient } from './api';
  */
 export const weaveworksFluxPlugin = createPlugin({
   id: 'weaveworks-flux',
-  apis: [
-    createApiFactory({
-      api: fluxApiRef,
-      deps: { kubernetesApi: kubernetesApiRef },
-      factory: ({ kubernetesApi }: {kubernetesApi: KubernetesApi}) =>
-        new FluxClient({kubernetesApi}),
-    }),
-  ],
   routes: {
     root: rootRouteRef,
   },

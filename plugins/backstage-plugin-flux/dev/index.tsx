@@ -2,16 +2,21 @@ import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
-import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
+import {
+  KubernetesApi,
+  KubernetesAuthProvidersApi,
+  kubernetesApiRef,
+  kubernetesAuthProvidersApiRef,
+} from '@backstage/plugin-kubernetes';
 import {
   KubernetesRequestBody,
   ObjectsByEntityResponse,
   WorkloadsByEntityRequest,
-  CustomObjectsByEntityRequest
+  CustomObjectsByEntityRequest,
 } from '@backstage/plugin-kubernetes-common';
 
 import { weaveworksFluxPlugin, FluxHelmReleaseCard } from '../src/plugin';
-import { HelmRelease } from '@weaveworks/weave-gitops';
+import { TestApiProvider } from '@backstage/test-utils';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -30,7 +35,7 @@ const fakeEntity: Entity = {
   },
 };
 
-const fakeHelmRelease: HelmRelease = {
+const fakeHelmRelease = {
   apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
   kind: 'HelmRelease',
   metadata: {
@@ -84,37 +89,81 @@ const fakeHelmRelease: HelmRelease = {
 };
 
 class StubKubernetesClient implements KubernetesApi {
-  getObjectsByEntity(_: KubernetesRequestBody): Promise<ObjectsByEntityResponse> {
+  getObjectsByEntity(
+    _: KubernetesRequestBody,
+  ): Promise<ObjectsByEntityResponse> {
     throw new Error('getObjectsByEntityMethod not implemented.');
   }
-  getClusters(): Promise<{ name: string; authProvider: string; oidcTokenProvider?: string | undefined; }[]> {
-    throw new Error('getClustersMethod not implemented.');
+
+  async getClusters(): Promise<{ name: string; authProvider: string }[]> {
+    return [{ name: 'mock-cluster', authProvider: 'serviceAccount' }];
   }
-  getWorkloadsByEntity(_: WorkloadsByEntityRequest): Promise<ObjectsByEntityResponse> {
+
+  getWorkloadsByEntity(
+    _: WorkloadsByEntityRequest,
+  ): Promise<ObjectsByEntityResponse> {
     throw new Error('getWorkloadsByEntityMethod not implemented.');
   }
-  getCustomObjectsByEntity(_: CustomObjectsByEntityRequest): Promise<ObjectsByEntityResponse> {
-    throw new Error('getCustomObjectsByEntity Method not implemented.');
+  getCustomObjectsByEntity(
+    _: CustomObjectsByEntityRequest,
+  ): Promise<ObjectsByEntityResponse> {
+    return Promise.resolve({
+      items: [
+        {
+          cluster: {
+            name: 'demo-cluster',
+          },
+          podMetrics: [],
+          errors: [],
+          resources: [
+            {
+              type: 'customresources',
+              resources: [fakeHelmRelease],
+            },
+          ],
+        },
+      ],
+    });
   }
-  async proxy(_options: { clusterName: string; path: string; init?: RequestInit | undefined; }): Promise<any> {
-    return { ok: true, json: () => Promise.resolve({ items: [fakeHelmRelease] }) };
+  async proxy(_options: {
+    clusterName: string;
+    path: string;
+    init?: RequestInit | undefined;
+  }): Promise<any> {
+    throw new Error('proxy not implemented.');
   }
-};
+}
+
+class StubKubernetesAuthProvidersApi implements KubernetesAuthProvidersApi {
+  decorateRequestBodyForAuth(
+    _: string,
+    requestBody: KubernetesRequestBody,
+  ): Promise<KubernetesRequestBody> {
+    return Promise.resolve(requestBody);
+  }
+  getCredentials(_: string): Promise<{
+    token?: string;
+  }> {
+    return Promise.resolve({ token: 'mock-token' });
+  }
+}
 
 createDevApp()
-  .registerApi({
-    api: kubernetesApiRef,
-    deps: {},
-    factory: () => new StubKubernetesClient(),
-  })
-  .registerPlugin(weaveworksFluxPlugin)
   .addPage({
     title: 'Root Page',
     path: '/weaveworks-flux',
     element: (
-      <EntityProvider entity={fakeEntity}>
-        <FluxHelmReleaseCard />
-      </EntityProvider>
+      <TestApiProvider
+        apis={[
+          [kubernetesApiRef, new StubKubernetesClient()],
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <FluxHelmReleaseCard />
+        </EntityProvider>
+      </TestApiProvider>
     ),
   })
+  .registerPlugin(weaveworksFluxPlugin)
   .render();
