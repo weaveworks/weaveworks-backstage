@@ -18,7 +18,7 @@ const helmReleaseGVK: CustomResourceMatcher = {
  * Entity name.
  */
 export const kubernetesIdOrNameFromEntity = (entity: Entity): string => {
-    return entity.metadata?.annotations?.['backstage.io/kubernetes-id'] || entity.metadata?.name;
+  return entity.metadata?.annotations?.['backstage.io/kubernetes-id'] || entity.metadata?.name;
 };
 
 /**
