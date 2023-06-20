@@ -24,20 +24,21 @@ export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
 };
 
 const HelmReleaseSummary = ({
-  data,
+  helmRelease,
   variant,
 }: {
-  data: HelmRelease;
+  helmRelease: HelmRelease;
   variant?: InfoCardVariants;
 }) => {
-  const { name, namespace } = data;
+  const { name, namespace } = helmRelease;
+
   const metadata = {
-    chartVersion: `${data.helmChart.chart}/${data.lastAppliedRevision}`,
-    cluster: data.clusterName,
-    lastUpdated: <Timestamp time={automationLastUpdated(data)} />,
+    chartVersion: `${helmRelease.helmChart.chart}/${helmRelease.lastAppliedRevision}`,
+    cluster: helmRelease.clusterName,
+    lastUpdated: <Timestamp time={automationLastUpdated(helmRelease)} />,
   };
 
-  const deepLink = useWeaveFluxDeepLink(data);
+  const deepLink = useWeaveFluxDeepLink(helmRelease);
 
   return (
     <InfoCard
@@ -48,7 +49,7 @@ const HelmReleaseSummary = ({
       }
       variant={variant}
       subheader={
-        <PageStatus conditions={data.conditions} suspended={data.suspended} />
+        <PageStatus conditions={helmRelease.conditions} suspended={helmRelease.suspended} />
       }
       deepLink={deepLink}
     >
@@ -88,7 +89,7 @@ const HelmReleasePanel = (props: Props) => {
     return <div>No HelmRelease found</div>;
   }
 
-  return <HelmReleaseSummary variant={props.variant} data={data[0]} />;
+  return <HelmReleaseSummary variant={props.variant} helmRelease={data[0]} />;
 };
 
 export const FluxHelmReleaseCard = (props: Props) => (
