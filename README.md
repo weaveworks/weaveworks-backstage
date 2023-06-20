@@ -2,6 +2,29 @@
 
 This is your newly scaffolded Backstage App, Good Luck!
 
+For local dev we'll need to set up a Github OAuth app and a local kubernetes cluster.
+
+## Configure Github OAuth
+
+Follow the [Backstage instructions to create a Github OAuth app](https://backstage.io/docs/auth/github/provider#create-an-oauth-app-on-github), relevant bit here:
+
+> To add GitHub authentication create an OAuth App from the GitHub [developer settings](https://github.com/settings/developers). The Homepage URL should point to Backstage's frontend, while the Authorization callback URL will point to the auth backend.
+>
+> - **Application name**: Backstage
+> - **Homepage URL**: http://localhost:3000
+> - **Authorization callback URL**: http://localhost:7007/api/auth/github/handler/frame
+
+Save the clientId and clientSecret that Github generates into a `.env` file or your `~/.bashrc` / `~/.zshrc`:
+
+```bash
+export AUTH_GITHUB_CLIENT_ID=abc123
+export AUTH_GITHUB_CLIENT_SECRET=abc123
+```
+
+They're referenced in the `app-config.kubernetes.yaml` file.
+
+## Start a local kubernetes cluster
+
 To start the app, run:
 
 ```sh
