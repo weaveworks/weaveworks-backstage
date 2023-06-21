@@ -1,13 +1,9 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { HelmRelease } from '@weaveworks/weave-gitops';
 
-function weaveGitopsHelmReleaseLink(
-  baseUrl: string,
-  a: HelmRelease,
-  clusterName: string,
-): string {
+function weaveGitopsHelmReleaseLink(baseUrl: string, a: HelmRelease): string {
   const queryStringData = {
-    clusterName,
+    clusterName: a.clusterName,
     name: a.name,
     namespace: a.namespace,
   };
@@ -17,10 +13,7 @@ function weaveGitopsHelmReleaseLink(
   return `${baseUrl}/helm_release/details?${queryString}`;
 }
 
-export const useWeaveFluxDeepLink = (
-  helmRelease: HelmRelease,
-  clusterName: string,
-) => {
+export const useWeaveFluxDeepLink = (helmRelease: HelmRelease) => {
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
   if (!baseUrl) {
@@ -28,6 +21,6 @@ export const useWeaveFluxDeepLink = (
   }
   return {
     title: 'Go to Weave GitOps',
-    link: weaveGitopsHelmReleaseLink(baseUrl, helmRelease, clusterName),
+    link: weaveGitopsHelmReleaseLink(baseUrl, helmRelease),
   };
 };

@@ -1,12 +1,169 @@
 import React from 'react';
 import { createDevApp } from '@backstage/dev-utils';
-import { weaveFluxPlugin, FluxHelmReleaseCard } from '../src/plugin';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+import { Entity } from '@backstage/catalog-model';
+import {
+  KubernetesApi,
+  KubernetesAuthProvidersApi,
+  kubernetesApiRef,
+  kubernetesAuthProvidersApiRef,
+} from '@backstage/plugin-kubernetes';
+import {
+  KubernetesRequestBody,
+  ObjectsByEntityResponse,
+  WorkloadsByEntityRequest,
+  CustomObjectsByEntityRequest,
+} from '@backstage/plugin-kubernetes-common';
+
+import { weaveworksFluxPlugin, FluxHelmReleaseCard } from '../src/plugin';
+import { TestApiProvider } from '@backstage/test-utils';
+
+const fakeEntity: Entity = {
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  metadata: {
+    name: 'backstage',
+    description: 'backstage.io',
+    annotations: {
+      'backstage.io/kubernetes-id': 'fake-service',
+    },
+  },
+  spec: {
+    lifecycle: 'production',
+    type: 'service',
+    owner: 'user:guest',
+  },
+};
+
+const fakeHelmRelease = {
+  apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
+  kind: 'HelmRelease',
+  metadata: {
+    annotations: {
+      'metadata.weave.works/test': 'value',
+    },
+    creationTimestamp: '2023-05-25T14:14:46Z',
+    finalizers: ['finalizers.fluxcd.io'],
+    name: 'normal',
+    namespace: 'default',
+  },
+  spec: {
+    interval: '5m',
+    chart: {
+      spec: {
+        chart: 'kube-prometheus-stack',
+        version: '45.x',
+        sourceRef: {
+          kind: 'HelmRepository',
+          name: 'prometheus-community',
+          namespace: 'default',
+        },
+        interval: '60m',
+      },
+    },
+  },
+  status: {
+    conditions: [
+      {
+        lastTransitionTime: "2023-06-16T12:48:22Z",
+        message: "Release reconciliation succeeded",
+        reason: "ReconciliationSucceeded",
+        status: "True",
+        type: "Ready"
+      },
+      {
+        lastTransitionTime: "2023-06-16T12:48:22Z",
+        message: "Helm upgrade succeeded",
+        reason: "UpgradeSucceeded",
+        status: "True",
+        type: "Released"
+      }
+    ],
+    helmChart: "default/default-podinfo",
+    lastAppliedRevision: "6.3.5",
+    lastAttemptedRevision: "6.3.5",
+    lastAttemptedValuesChecksum: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    lastReleaseRevision: 6,
+    observedGeneration: 12
+  },
+};
+
+class StubKubernetesClient implements KubernetesApi {
+  getObjectsByEntity(
+    _: KubernetesRequestBody,
+  ): Promise<ObjectsByEntityResponse> {
+    throw new Error('getObjectsByEntityMethod not implemented.');
+  }
+
+  async getClusters(): Promise<{ name: string; authProvider: string }[]> {
+    return [{ name: 'mock-cluster', authProvider: 'serviceAccount' }];
+  }
+
+  getWorkloadsByEntity(
+    _: WorkloadsByEntityRequest,
+  ): Promise<ObjectsByEntityResponse> {
+    throw new Error('getWorkloadsByEntityMethod not implemented.');
+  }
+  getCustomObjectsByEntity(
+    _: CustomObjectsByEntityRequest,
+  ): Promise<ObjectsByEntityResponse> {
+    return Promise.resolve({
+      items: [
+        {
+          cluster: {
+            name: 'demo-cluster',
+          },
+          podMetrics: [],
+          errors: [],
+          resources: [
+            {
+              type: 'customresources',
+              resources: [fakeHelmRelease],
+            },
+          ],
+        },
+      ],
+    });
+  }
+  async proxy(_options: {
+    clusterName: string;
+    path: string;
+    init?: RequestInit | undefined;
+  }): Promise<any> {
+    throw new Error('proxy not implemented.');
+  }
+}
+
+class StubKubernetesAuthProvidersApi implements KubernetesAuthProvidersApi {
+  decorateRequestBodyForAuth(
+    _: string,
+    requestBody: KubernetesRequestBody,
+  ): Promise<KubernetesRequestBody> {
+    return Promise.resolve(requestBody);
+  }
+  getCredentials(_: string): Promise<{
+    token?: string;
+  }> {
+    return Promise.resolve({ token: 'mock-token' });
+  }
+}
 
 createDevApp()
-  .registerPlugin(weaveFluxPlugin)
   .addPage({
-    element: <FluxHelmReleaseCard />,
     title: 'Root Page',
-    path: '/weave-flux',
+    path: '/weaveworks-flux',
+    element: (
+      <TestApiProvider
+        apis={[
+          [kubernetesApiRef, new StubKubernetesClient()],
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <FluxHelmReleaseCard />
+        </EntityProvider>
+      </TestApiProvider>
+    ),
   })
+  .registerPlugin(weaveworksFluxPlugin)
   .render();

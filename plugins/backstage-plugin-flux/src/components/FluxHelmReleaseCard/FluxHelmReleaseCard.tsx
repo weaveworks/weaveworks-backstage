@@ -1,18 +1,8 @@
 import React from 'react';
 
-import {
-  InfoCard,
-  InfoCardVariants,
-  Progress,
-  StructuredMetadataTable,
-} from '@backstage/core-components';
+import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import {
-  HelmRelease,
-  PageStatus,
-  Timestamp,
-  theme,
-} from '@weaveworks/weave-gitops';
+import { HelmRelease, theme } from '@weaveworks/weave-gitops';
 import { ReactNode } from 'react';
 import {
   QueryCache,
@@ -21,9 +11,7 @@ import {
   QueryClientProvider,
 } from 'react-query';
 import { ThemeProvider } from 'styled-components';
-import { useWeaveFluxDeepLink } from '../../hooks/external-link';
-import { useQueryHelmRelease } from '../../hooks/query';
-import { automationLastUpdated } from './utils';
+import { useHelmReleases } from '../../hooks/query';
 import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
 
 export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
@@ -39,15 +27,7 @@ export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const HelmReleaseSummary = ({
-  data,
-  clusterName,
-  variant,
-}: {
-  data: HelmRelease[];
-  clusterName: string;
-  variant?: InfoCardVariants;
-}) => {
+const HelmReleaseSummary = ({ data }: { data: HelmRelease[] }) => {
   // const deepLink = useWeaveFluxDeepLink(data, clusterName);
 
   return (
@@ -59,40 +39,37 @@ const HelmReleaseSummary = ({
   );
 };
 
-type Props = {
-  clusterName?: string;
-  variant?: InfoCardVariants;
-};
-
-const HelmReleasePanel = (props: Props) => {
+const HelmReleasePanel = () => {
   const { entity } = useEntity();
-  const clusterName = props.clusterName || 'demo-cluster';
 
-  const { data, isLoading, error } = useQueryHelmRelease(entity, clusterName);
+  const { data, loading, errors } = useHelmReleases(entity);
 
-  if (isLoading) {
+  if (loading) {
     return <Progress />;
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  if (errors) {
+    return (
+      <div>
+        Errors:
+        <ul>
+          {errors.map(err => (
+            <li>{err.message}</li>
+          ))}
+        </ul>
+      </div>
+    );
   }
 
   if (!data) {
     return <div>No HelmRelease found</div>;
   }
 
-  return (
-    <HelmReleaseSummary
-      variant={props.variant}
-      clusterName={clusterName}
-      data={data}
-    />
-  );
+  return <HelmReleaseSummary data={data} />;
 };
 
-export const FluxHelmReleaseCard = (props: Props) => (
+export const FluxHelmReleaseCard = () => (
   <WeaveGitOpsContext>
-    <HelmReleasePanel {...props} />
+    <HelmReleasePanel />
   </WeaveGitOpsContext>
 );
