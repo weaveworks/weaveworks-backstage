@@ -1,9 +1,10 @@
 import React from 'react';
 import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography, makeStyles } from '@material-ui/core';
-import { Table, TableColumn } from '@backstage/core-components';
+import { Link, Table, TableColumn } from '@backstage/core-components';
 import { automationLastUpdated } from './utils';
 import { DateTime } from 'luxon';
+import { useWeaveFluxDeepLink } from '../../hooks';
 
 const useStyles = makeStyles(theme => ({
   empty: {
@@ -13,12 +14,21 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const NameLabel = ({ helmRelease }: { helmRelease: HelmRelease }) => {
+  const { name, namespace } = helmRelease;
+  const deepLink = useWeaveFluxDeepLink(helmRelease);
+  const label = `${namespace}/${name}`;
+  if (!deepLink) {
+    return <span>{label}</span>;
+  }
+
+  return <Link to={deepLink}>{label}</Link>;
+};
+
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   {
     title: 'Name',
-    render: (hr: HelmRelease) => {
-      return `${hr.namespace}/${hr.name}`;
-    },
+    render: (hr: HelmRelease) => <NameLabel helmRelease={hr} />,
   },
   {
     title: 'Chart',
@@ -69,6 +79,9 @@ export const FluxHelmReleasesTable = ({
 
   const data = helmReleases.map(hr => {
     return {
+      // make material-table happy and add an id to each row
+      // FIXME: maybe we can tell material-table to use a custome key?
+      id: `${hr.clusterName}/${hr.namespace}/${hr.name}`,
       conditions: hr.conditions,
       suspended: hr.suspended,
       name: hr.name,
@@ -76,7 +89,7 @@ export const FluxHelmReleasesTable = ({
       helmChart: hr.helmChart,
       lastAppliedRevision: hr.lastAppliedRevision,
       clusterName: hr.clusterName,
-    } as HelmRelease;
+    } as HelmRelease & { id: string };
   });
 
   return (

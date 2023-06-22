@@ -162,16 +162,34 @@ describe('<FluxHelmReleaseCard />', () => {
         </Wrapper>,
       );
 
-      const { getByText, getAllByText } = result;
+      const { getByText } = result;
 
-      expect(getByText(/kube-prometheus-stack\/6.3.5/i)).toBeInTheDocument();
-      expect(getByText(/default\/normal/i)).toBeInTheDocument();
-      expect(getByText(/redis\/1.2.3/i)).toBeInTheDocument();
-      expect(getByText(/default\/redis/i)).toBeInTheDocument();
+      const testCases = [
+        {
+          name: 'default/normal',
+          version: 'kube-prometheus-stack/6.3.5',
+          cluster: 'demo-cluster',
+        },
+        {
+          name: 'default/redis',
+          version: 'redis/1.2.3',
+          cluster: 'demo-cluster',
+        },
+      ];
 
-      expect(getAllByText(/demo-cluster/i)).toHaveLength(2);
+      for (const testCase of testCases) {
+        const cell = getByText(testCase.name);
+        expect(cell).toBeInTheDocument();
 
-      // expect(getByText(/Go to Weave GitOps/i)).toBeInTheDocument();
+        const td = cell.closest('td');
+        expect(td).toBeInTheDocument();
+        expect(td!.querySelector('a')).toBeInTheDocument();
+
+        const tr = cell.closest('tr');
+        expect(tr).toBeInTheDocument();
+        expect(tr).toHaveTextContent(testCase.version);
+        expect(tr).toHaveTextContent(testCase.cluster);
+      }
     });
   });
 
@@ -196,15 +214,13 @@ describe('<FluxHelmReleaseCard />', () => {
         </Wrapper>,
       );
 
-      const { getByText, queryByText, getAllByText } = rendered;
+      const { getByText } = rendered;
 
-      expect(getByText(/kube-prometheus-stack\/6.3.5/i)).toBeInTheDocument();
-      expect(getByText(/default\/normal/i)).toBeInTheDocument();
-      expect(getByText(/redis\/1.2.3/i)).toBeInTheDocument();
-      expect(getByText(/default\/redis/i)).toBeInTheDocument();
-
-      expect(getAllByText(/demo-cluster/i)).toHaveLength(2);
-      // expect(queryByText(/Go to Weave GitOps/i)).not.toBeInTheDocument();
+      const cell = getByText('default/normal');
+      expect(cell).toBeInTheDocument();
+      const td = cell.closest('td');
+      expect(td).toBeInTheDocument();
+      expect(td!.querySelector('a')).toBeNull();
     });
   });
 });

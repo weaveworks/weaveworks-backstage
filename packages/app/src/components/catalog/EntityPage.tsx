@@ -123,7 +123,7 @@ const overviewContent = (
       <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
 
-    <Grid item md={4} xs={12}>
+    <Grid item md={8} xs={12}>
       <FluxHelmReleaseCard />
     </Grid>
     <Grid item md={4} xs={12}>
@@ -145,9 +145,9 @@ const serviceEntityPage = (
       <EntityKubernetesContent refreshIntervalMs={30000} />
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/weavewporks-flux" title="Weave Flux">
+    <EntityLayout.Route path="/weaveworks-flux" title="Weave Flux">
       <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={4}>
+        <Grid item md={12}>
           <FluxHelmReleaseCard />
         </Grid>
       </Grid>
