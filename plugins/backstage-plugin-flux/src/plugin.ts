@@ -17,15 +17,15 @@ export const weaveworksFluxPlugin = createPlugin({
 });
 
 /**
- * Card used to show the state of a Flux HelmRelease.
+ * Card used to show the state of Flux HelmReleases for an Entity.
  * @public
  */
-export const FluxHelmReleasesCard = weaveworksFluxPlugin.provide(
+export const FluxEntityHelmReleasesCard = weaveworksFluxPlugin.provide(
   createRoutableExtension({
-    name: 'FluxHelmReleasesCard',
+    name: 'FluxEntityHelmReleasesCard',
     component: () =>
-      import('./components/FluxHelmReleasesCard').then(
-        m => m.FluxHelmReleasesCard,
+      import('./components/FluxEntityHelmReleasesCard').then(
+        m => m.FluxEntityHelmReleasesCard,
       ),
     mountPoint: rootRouteRef,
   }),

@@ -96,7 +96,7 @@ export const FluxHelmReleasesTable = ({
     <Table
       columns={columns}
       options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
-      title="HelmReleases"
+      title="Helm Releases"
       data={data}
       isLoading={isLoading}
       emptyContent={

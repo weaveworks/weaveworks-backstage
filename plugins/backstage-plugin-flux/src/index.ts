@@ -1,1 +1,1 @@
-export { weaveworksFluxPlugin, FluxHelmReleasesCard } from './plugin';
+export { weaveworksFluxPlugin, FluxEntityHelmReleasesCard } from './plugin';

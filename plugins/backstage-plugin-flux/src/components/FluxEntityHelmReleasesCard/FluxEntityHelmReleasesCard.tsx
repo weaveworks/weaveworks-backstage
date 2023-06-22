@@ -28,8 +28,6 @@ export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
 };
 
 const HelmReleaseSummary = ({ data }: { data: HelmRelease[] }) => {
-  // const deepLink = useWeaveFluxDeepLink(data, clusterName);
-
   return (
     <FluxHelmReleasesTable
       helmReleases={data}
@@ -68,7 +66,12 @@ const HelmReleasePanel = () => {
   return <HelmReleaseSummary data={data} />;
 };
 
-export const FluxHelmReleasesCard = () => (
+/**
+ * Render the HelmReleases associated with the current Entity.
+ *
+ * @public
+ */
+export const FluxEntityHelmReleasesCard = () => (
   <WeaveGitOpsContext>
     <HelmReleasePanel />
   </WeaveGitOpsContext>
