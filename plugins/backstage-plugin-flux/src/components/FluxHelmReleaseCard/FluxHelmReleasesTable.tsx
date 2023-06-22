@@ -27,6 +27,12 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
     },
   },
   {
+    title: 'Cluster',
+    render: (hr: HelmRelease) => {
+      return hr.clusterName;
+    },
+  },
+  {
     title: 'Status',
     render: (hr: HelmRelease) => {
       return (
@@ -69,6 +75,7 @@ export const FluxHelmReleasesTable = ({
       namespace: hr.namespace,
       helmChart: hr.helmChart,
       lastAppliedRevision: hr.lastAppliedRevision,
+      clusterName: hr.clusterName,
     } as HelmRelease;
   });
 

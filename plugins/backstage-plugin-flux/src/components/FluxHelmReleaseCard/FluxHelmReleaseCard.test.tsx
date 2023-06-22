@@ -162,12 +162,15 @@ describe('<FluxHelmReleaseCard />', () => {
         </Wrapper>,
       );
 
-      const { getByText } = result;
+      const { getByText, getAllByText } = result;
 
       expect(getByText(/kube-prometheus-stack\/6.3.5/i)).toBeInTheDocument();
       expect(getByText(/default\/normal/i)).toBeInTheDocument();
       expect(getByText(/redis\/1.2.3/i)).toBeInTheDocument();
       expect(getByText(/default\/redis/i)).toBeInTheDocument();
+
+      expect(getAllByText(/demo-cluster/i)).toHaveLength(2);
+
       // expect(getByText(/Go to Weave GitOps/i)).toBeInTheDocument();
     });
   });
@@ -193,12 +196,14 @@ describe('<FluxHelmReleaseCard />', () => {
         </Wrapper>,
       );
 
-      const { getByText, queryByText } = rendered;
+      const { getByText, queryByText, getAllByText } = rendered;
 
       expect(getByText(/kube-prometheus-stack\/6.3.5/i)).toBeInTheDocument();
       expect(getByText(/default\/normal/i)).toBeInTheDocument();
       expect(getByText(/redis\/1.2.3/i)).toBeInTheDocument();
       expect(getByText(/default\/redis/i)).toBeInTheDocument();
+
+      expect(getAllByText(/demo-cluster/i)).toHaveLength(2);
       // expect(queryByText(/Go to Weave GitOps/i)).not.toBeInTheDocument();
     });
   });
