@@ -68,7 +68,7 @@ const HelmReleasePanel = () => {
   return <HelmReleaseSummary data={data} />;
 };
 
-export const FluxHelmReleaseCard = () => (
+export const FluxHelmReleasesCard = () => (
   <WeaveGitOpsContext>
     <HelmReleasePanel />
   </WeaveGitOpsContext>

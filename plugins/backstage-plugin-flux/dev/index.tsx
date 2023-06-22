@@ -17,7 +17,7 @@ import {
   CustomObjectsByEntityRequest,
 } from '@backstage/plugin-kubernetes-common';
 
-import { weaveworksFluxPlugin, FluxHelmReleaseCard } from '../src/plugin';
+import { weaveworksFluxPlugin, FluxHelmReleasesCard } from '../src/plugin';
 import { TestApiProvider } from '@backstage/test-utils';
 
 const fakeEntity: Entity = {
@@ -177,7 +177,7 @@ createDevApp()
         ]}
       >
         <EntityProvider entity={fakeEntity}>
-          <FluxHelmReleaseCard />
+          <FluxHelmReleasesCard />
         </EntityProvider>
       </TestApiProvider>
     ),

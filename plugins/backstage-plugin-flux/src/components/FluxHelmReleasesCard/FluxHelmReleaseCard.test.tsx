@@ -3,7 +3,7 @@ import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { FluxHelmReleaseCard } from './FluxHelmReleaseCard';
+import { FluxHelmReleasesCard } from './FluxHelmReleasesCard';
 import { configApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
@@ -123,7 +123,7 @@ const entity: Entity = {
   },
 };
 
-describe('<FluxHelmReleaseCard />', () => {
+describe('<FluxHelmReleasesCard />', () => {
   let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
   beforeEach(() => {
@@ -156,7 +156,7 @@ describe('<FluxHelmReleaseCard />', () => {
             ]}
           >
             <EntityProvider entity={entity}>
-              <FluxHelmReleaseCard />
+              <FluxHelmReleasesCard />
             </EntityProvider>
           </TestApiProvider>
         </Wrapper>,
@@ -208,7 +208,7 @@ describe('<FluxHelmReleaseCard />', () => {
             ]}
           >
             <EntityProvider entity={entity}>
-              <FluxHelmReleaseCard />
+              <FluxHelmReleasesCard />
             </EntityProvider>
           </TestApiProvider>
         </Wrapper>,

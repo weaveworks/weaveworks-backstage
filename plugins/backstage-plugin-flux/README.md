@@ -2,11 +2,11 @@
 
 The Flux plugin for Backstage provides views of [Flux](https://fluxcd.io/) resources available in Kubernetes clusters.
 
-![FluxHelmReleaseCard](helm_release_card.png)
+![FluxHelmReleasesCard](helm_release_card.png)
 
 ## Content
 
-- FluxHelmReleaseCard - displays the state of HelmReleases for the Entity.
+- FluxHelmReleasesCard - displays the state of HelmReleases for the Entity.
 
 ## Prerequisite
 
@@ -45,7 +45,7 @@ yarn add --cwd packages/app @weaveworks/backstage-plugin-flux
 1. Add the card  to your app EntityPage.tsx
 ```tsx
 // In packages/app/src/components/catalog/EntityPage.tsx
-import { FluxHelmReleaseCard } from '@weaveworks/backstage-plugin-flux';
+import { FluxHelmReleasesCard } from '@weaveworks/backstage-plugin-flux';
 
 // You can add the tab to any number of pages, the service page is shown as an
 // example here
@@ -53,7 +53,7 @@ const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
       // ...
     <Grid item md={4} xs={12}>
-      <FluxHelmReleaseCard />
+      <FluxHelmReleasesCard />
     </Grid>
       // ...
   </Grid>
