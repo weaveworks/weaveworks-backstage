@@ -56,7 +56,7 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
-import { FluxEntityHelmReleasesCard } from '@weaveworks/backstage-plugin-flux';
+import { FluxEntityHelmReleasesCard } from '@weaveworksoss/backstage-plugin-flux';
 
 const techdocsContent = (
   <EntityTechdocsContent>

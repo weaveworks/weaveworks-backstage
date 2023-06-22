@@ -8306,7 +8306,7 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     "@backstage/theme" "^0.3.0"
     "@material-ui/core" "^4.12.2"
     "@material-ui/icons" "^4.9.1"
-    "@weaveworks/backstage-plugin-flux" "^0.1.0"
+    "@weaveworksoss/backstage-plugin-flux" "^0.1.0"
     history "^5.0.0"
     react "^17.0.2"
     react-dom "^17.0.2"
