@@ -39,6 +39,7 @@ kubectl apply -f ./demo
 
 # install deps
 yarn install
+(node version 14 || >=16.14 required)
 
 # copy the kubernetes config to local config (.gitignore'd)
 cp ./app-config.kubernetes.yaml ./app-config.local.yaml
