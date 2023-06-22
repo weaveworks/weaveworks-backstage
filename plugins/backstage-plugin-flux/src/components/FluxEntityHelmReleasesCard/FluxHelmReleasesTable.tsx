@@ -2,7 +2,7 @@ import React from 'react';
 import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography, makeStyles } from '@material-ui/core';
 import { Link, Table, TableColumn } from '@backstage/core-components';
-import { automationLastUpdated } from './utils';
+import { automationLastUpdated } from '../utils';
 import { DateTime } from 'luxon';
 import { useWeaveFluxDeepLink } from '../../hooks';
 

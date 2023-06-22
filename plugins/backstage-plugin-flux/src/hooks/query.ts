@@ -6,12 +6,18 @@ import {
   KubernetesFetchError,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-import { HelmRelease } from '@weaveworks/weave-gitops';
+import { GitRepository, HelmRelease } from '@weaveworks/weave-gitops';
 
 const helmReleaseGVK: CustomResourceMatcher = {
   apiVersion: 'v2beta1',
   group: 'helm.toolkit.fluxcd.io',
   plural: 'helmreleases',
+};
+
+const gitRepositoriesGVK: CustomResourceMatcher = {
+  apiVersion: 'v1beta2',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'gitrepositories',
 };
 
 function toErrors(
@@ -57,12 +63,52 @@ function toHelmReleases(kubernetesObjects?: ObjectsByEntityResponse) {
   return { helmReleases, errors: errors.length > 0 ? errors : undefined };
 }
 
-interface HelmReleasesResponse {
+function toGitRepositories(kubernetesObjects?: ObjectsByEntityResponse) {
+  if (!kubernetesObjects) {
+    return {
+      data: undefined,
+      errors: undefined,
+    };
+  }
+
+  const gitRepositories = kubernetesObjects.items.flatMap(
+    ({ cluster, resources }) => {
+      return resources?.flatMap(resourceKind => {
+        return resourceKind.resources.map(resource => new GitRepository({
+            clusterName: cluster.name,
+            payload: JSON.stringify(resource),
+          })
+        )
+      });
+    },
+  );
+
+  const errors = kubernetesObjects.items.flatMap(item =>
+    toErrors(item.cluster, item.errors),
+  );
+
+  return { gitRepositories, errors: errors.length > 0 ? errors : undefined };
+}
+
+/**
+ * @public
+ */
+export interface HelmReleasesResponse {
   data?: HelmRelease[];
   loading: boolean;
   errors?: Error[];
-}
+};
 
+export interface GitRepositoriesResponse {
+  data?: GitRepository[];
+  loading: boolean;
+  errors?: Error[];
+};
+
+/**
+ * Query for the HelmReleases associated with this Entity.
+ * @public 
+ */
 export function useHelmReleases(entity: Entity): HelmReleasesResponse {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
     helmReleaseGVK,
@@ -78,4 +124,26 @@ export function useHelmReleases(entity: Entity): HelmReleasesResponse {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
-}
+};
+
+
+/**
+ * Query for the GitRepositories associated with this Entity.
+ * @public 
+ */
+export function useGitRepositories(entity: Entity): GitRepositoriesResponse {
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    gitRepositoriesGVK,
+  ]);
+
+  const { gitRepositories: data, errors: kubernetesErrors } =
+    toGitRepositories(kubernetesObjects);
+
+  return {
+    data,
+    loading,
+    errors: error
+      ? [new Error(error), ...(kubernetesErrors || [])]
+      : kubernetesErrors,
+  };
+};

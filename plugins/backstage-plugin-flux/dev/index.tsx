@@ -19,6 +19,7 @@ import {
 
 import { weaveworksFluxPlugin, FluxEntityHelmReleasesCard } from '../src/plugin';
 import { TestApiProvider } from '@backstage/test-utils';
+import { FluxEntityGitRepositoriesCard } from '../src/components/FluxEntityGitRepositoriesCard';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -37,7 +38,61 @@ const fakeEntity: Entity = {
   },
 };
 
-const newFakeHelmRelease = (name: string, chart: string, version: string, ready: string="True") => {
+const fakeGitRepository = {
+  apiVersion: "source.toolkit.fluxcd.io/v1",
+  kind: "GitRepository",
+  metadata: {
+    creationTimestamp: "2023-06-22T17:58:23Z",
+    finalizers: [
+      "finalizers.fluxcd.io"
+    ],
+    generation: 1,
+    name: "podinfo",
+    namespace: "default",
+    resourceVersion: "132764",
+    uid: "068ec137-b2a0-4b35-90ea-4e9a8a2fe5f6"
+  },
+  spec: {
+    interval: "1m",
+    ref: {
+      branch: "master"
+    },
+    timeout: "60s",
+    url: "https://github.com/stefanprodan/podinfo"
+  },
+  status: {
+    artifact: {
+      digest: "sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51",
+      lastUpdateTime: "2023-06-22T17:58:24Z",
+      path: "gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz",
+      revision: "master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a",
+      size: 80053,
+      url: "http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz"
+    },
+    conditions: [
+      {
+        lastTransitionTime: "2023-06-22T17:58:24Z",
+        message: "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
+        observedGeneration: 1,
+        reason: "Succeeded",
+        status: "True",
+        type: "Ready"
+      },
+      {
+        lastTransitionTime: "2023-06-22T17:58:24Z",
+        message: "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
+        observedGeneration: 1,
+        reason: "Succeeded",
+        status: "True",
+        type: "ArtifactInStorage"
+      }
+    ],
+    observedGeneration: 1
+  }
+};
+
+
+const newFakeHelmRelease = (name: string, chart: string, version: string, ready: string = "True") => {
   return {
     apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
     kind: 'HelmRelease',
@@ -93,6 +148,12 @@ const newFakeHelmRelease = (name: string, chart: string, version: string, ready:
 };
 
 class StubKubernetesClient implements KubernetesApi {
+  private resources: any[];
+
+  constructor(resources: any[]) {
+    this.resources = resources;
+  }
+
   getObjectsByEntity(
     _: KubernetesRequestBody,
   ): Promise<ObjectsByEntityResponse> {
@@ -122,15 +183,7 @@ class StubKubernetesClient implements KubernetesApi {
           resources: [
             {
               type: 'customresources',
-              resources: [
-                newFakeHelmRelease('prometheus1', 'kube-prometheus-stack', '6.3.5'),
-                newFakeHelmRelease('prometheus2', 'kube-prometheus-stack', '6.3.5'),
-                newFakeHelmRelease('prometheus3', 'kube-prometheus-stack', '6.3.5'),
-                newFakeHelmRelease('redis1', 'redis', '7.0.1', "False"),
-                newFakeHelmRelease('redis2', 'redis', '7.0.1'),
-                newFakeHelmRelease('http-api', 'redis', '1.2.5', "False"),
-                newFakeHelmRelease('queue-runner', 'redis', '1.0.1'),
-              ],
+              resources: this.resources,
             },
           ],
         },
@@ -162,8 +215,8 @@ class StubKubernetesAuthProvidersApi implements KubernetesAuthProvidersApi {
 
 createDevApp()
   .addPage({
-    title: 'Root Page',
-    path: '/weaveworks-flux',
+    title: 'Helm Releases',
+    path: '/helm-releases',
     element: (
       <TestApiProvider
         apis={[
@@ -172,12 +225,41 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego' },
             }),
           ],
-          [kubernetesApiRef, new StubKubernetesClient()],
+          [kubernetesApiRef, new StubKubernetesClient([
+            newFakeHelmRelease('prometheus1', 'kube-prometheus-stack', '6.3.5'),
+            newFakeHelmRelease('prometheus2', 'kube-prometheus-stack', '6.3.5'),
+            newFakeHelmRelease('prometheus3', 'kube-prometheus-stack', '6.3.5'),
+            newFakeHelmRelease('redis1', 'redis', '7.0.1', "False"),
+            newFakeHelmRelease('redis2', 'redis', '7.0.1'),
+            newFakeHelmRelease('http-api', 'redis', '1.2.5', "False"),
+            newFakeHelmRelease('queue-runner', 'redis', '1.0.1')])],
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
         <EntityProvider entity={fakeEntity}>
           <FluxEntityHelmReleasesCard />
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
+  .addPage({
+    title: 'Git Repositories',
+    path: '/git-repositories',
+    element: (
+      <TestApiProvider
+        apis={[
+          [configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego' },
+            }),
+          ],
+          [kubernetesApiRef, new StubKubernetesClient([
+            fakeGitRepository])],
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <FluxEntityGitRepositoriesCard />
         </EntityProvider>
       </TestApiProvider>
     ),

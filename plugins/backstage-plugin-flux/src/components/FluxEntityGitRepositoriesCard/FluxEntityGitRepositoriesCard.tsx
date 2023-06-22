@@ -1,26 +1,26 @@
 import React from 'react';
-
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { HelmRelease } from '@weaveworks/weave-gitops';
-import { useHelmReleases } from '../../hooks/query';
-import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
+import { GitRepository } from '@weaveworks/weave-gitops';
+
+import { useGitRepositories } from '../../hooks/query';
+import { FluxGitRepositoriesTable, defaultColumns } from './FluxGitRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 
-const HelmReleaseSummary = ({ data }: { data: HelmRelease[] }) => {
+const GitRepositoriesSummary = ({ data }: { data: GitRepository[] }) => {
   return (
-    <FluxHelmReleasesTable
-      helmReleases={data}
+    <FluxGitRepositoriesTable
+      gitRepositories={data}
       isLoading={false}
       columns={defaultColumns}
     />
   );
 };
 
-const HelmReleasePanel = () => {
+const GitRepositoriesPanel = () => {
   const { entity } = useEntity();
 
-  const { data, loading, errors } = useHelmReleases(entity);
+  const { data, loading, errors } = useGitRepositories(entity);
 
   if (loading) {
     return <Progress />;
@@ -43,16 +43,16 @@ const HelmReleasePanel = () => {
     return <div>No HelmRelease found</div>;
   }
 
-  return <HelmReleaseSummary data={data} />;
+  return <GitRepositoriesSummary data={data} />;
 };
 
 /**
- * Render the HelmReleases associated with the current Entity.
+ * Render the GitRepositories associated with the current Entity.
  *
  * @public
  */
-export const FluxEntityHelmReleasesCard = () => (
+export const FluxEntityGitRepositoriesCard = () => (
   <WeaveGitOpsContext>
-    <HelmReleasePanel />
+    <GitRepositoriesPanel />
   </WeaveGitOpsContext>
 );

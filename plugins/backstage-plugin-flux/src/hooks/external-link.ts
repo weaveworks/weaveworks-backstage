@@ -1,7 +1,7 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { HelmRelease } from '@weaveworks/weave-gitops';
+import { FluxObject, GitRepository, HelmRelease } from '@weaveworks/weave-gitops';
 
-function weaveGitopsHelmReleaseLink(baseUrl: string, a: HelmRelease): string {
+function typedUrl(baseUrl: string, a: FluxObject, type: string): string {
   const queryStringData = {
     clusterName: a.clusterName,
     name: a.name,
@@ -10,14 +10,32 @@ function weaveGitopsHelmReleaseLink(baseUrl: string, a: HelmRelease): string {
   const queryString = Object.entries(queryStringData)
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
-  return `${baseUrl}/helm_release/details?${queryString}`;
+
+  return `${baseUrl}/${type}/details?${queryString}`;
 }
 
-export const useWeaveFluxDeepLink = (helmRelease: HelmRelease) => {
+function weaveGitopsHelmReleaseLink(baseUrl: string, a: HelmRelease): string {
+  return typedUrl(baseUrl, a, 'helm_release');
+}
+
+function weaveGitopsGitRepositoryLink(baseUrl: string, a: GitRepository): string {
+  return typedUrl(baseUrl, a, 'git_repository');
+}
+
+export const useWeaveFluxDeepLink = (resource: HelmRelease | GitRepository): string | undefined => {
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
+
   if (!baseUrl) {
     return undefined;
   }
-  return weaveGitopsHelmReleaseLink(baseUrl, helmRelease);
+
+  switch (resource.type) {
+    case "HelmRelease":
+      return weaveGitopsHelmReleaseLink(baseUrl, resource as HelmRelease);
+    case "GitRepository":
+      return weaveGitopsGitRepositoryLink(baseUrl, resource as GitRepository);
+  }
+
+  return undefined;
 };
