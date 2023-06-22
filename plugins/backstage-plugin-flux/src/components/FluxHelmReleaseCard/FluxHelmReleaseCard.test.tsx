@@ -18,50 +18,48 @@ import {
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
 
-const testHelmRelease = (
-  name: string,
-  chart: string,
-  lastAppliedRevision: string,
-) => ({
-  apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
-  kind: 'HelmRelease',
-  metadata: {
-    annotations: {
-      'metadata.weave.works/test': 'value',
+const makeTestHelmRelease = (name: string, chart: string, version: string) => {
+  return {
+    apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
+    kind: 'HelmRelease',
+    metadata: {
+      annotations: {
+        'metadata.weave.works/test': 'value',
+      },
+      creationTimestamp: '2023-05-25T14:14:46Z',
+      finalizers: ['finalizers.fluxcd.io'],
+      name: name,
+      namespace: 'default',
     },
-    creationTimestamp: '2023-05-25T14:14:46Z',
-    finalizers: ['finalizers.fluxcd.io'],
-    name,
-    namespace: 'default',
-  },
-  spec: {
-    interval: '5m',
-    chart: {
-      spec: {
-        chart, // : 'kube-prometheus-stack',
-        version: '45.x',
-        sourceRef: {
-          kind: 'HelmRepository',
-          name: 'prometheus-community',
-          namespace: 'default',
+    spec: {
+      interval: '5m',
+      chart: {
+        spec: {
+          chart,
+          version: '45.x',
+          sourceRef: {
+            kind: 'HelmRepository',
+            name: 'prometheus-community',
+            namespace: 'default',
+          },
+          interval: '60m',
         },
-        interval: '60m',
       },
     },
-  },
-  status: {
-    lastAppliedRevision, // : '6.3.5',
-    conditions: [
-      {
-        lastTransitionTime: '2023-05-25T15:03:33Z',
-        message: 'pulled "test" chart with version "1.0.0"',
-        reason: 'ChartPullSucceeded',
-        status: 'True',
-        type: 'Ready',
-      },
-    ],
-  },
-});
+    status: {
+      lastAppliedRevision: version,
+      conditions: [
+        {
+          lastTransitionTime: '2023-05-25T15:03:33Z',
+          message: 'pulled "test" chart with version "1.0.0"',
+          reason: 'ChartPullSucceeded',
+          status: 'True',
+          type: 'Ready',
+        },
+      ],
+    },
+  };
+};
 
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
@@ -87,8 +85,8 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                testHelmRelease('normal1', 'kube-prometheus-stack', '0.10.1'),
-                testHelmRelease('normal2', 'podinfo', '6.3.5'),
+                makeTestHelmRelease('redis', 'redis', '1.2.3'),
+                makeTestHelmRelease('normal', 'kube-prometheus-stack', '6.3.5'),
               ],
             },
           ],
@@ -166,10 +164,10 @@ describe('<FluxHelmReleaseCard />', () => {
 
       const { getByText } = result;
 
-      expect(getByText(/kube-prometheus-stack\/0.10.1/i)).toBeInTheDocument();
-      expect(getByText(/default\/normal1/i)).toBeInTheDocument();
-      expect(getByText(/podinfo\/6.3.5/i)).toBeInTheDocument();
-      expect(getByText(/default\/normal2/i)).toBeInTheDocument();
+      expect(getByText(/kube-prometheus-stack\/6.3.5/i)).toBeInTheDocument();
+      expect(getByText(/default\/normal/i)).toBeInTheDocument();
+      expect(getByText(/redis\/1.2.3/i)).toBeInTheDocument();
+      expect(getByText(/default\/redis/i)).toBeInTheDocument();
       // expect(getByText(/Go to Weave GitOps/i)).toBeInTheDocument();
     });
   });
@@ -197,10 +195,10 @@ describe('<FluxHelmReleaseCard />', () => {
 
       const { getByText, queryByText } = rendered;
 
-      expect(getByText(/kube-prometheus-stack\/0.10.1/i)).toBeInTheDocument();
-      expect(getByText(/default\/normal1/i)).toBeInTheDocument();
-      expect(getByText(/podinfo\/6.3.5/i)).toBeInTheDocument();
-      expect(getByText(/default\/normal2/i)).toBeInTheDocument();
+      expect(getByText(/kube-prometheus-stack\/6.3.5/i)).toBeInTheDocument();
+      expect(getByText(/default\/normal/i)).toBeInTheDocument();
+      expect(getByText(/redis\/1.2.3/i)).toBeInTheDocument();
+      expect(getByText(/default\/redis/i)).toBeInTheDocument();
       // expect(queryByText(/Go to Weave GitOps/i)).not.toBeInTheDocument();
     });
   });
