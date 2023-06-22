@@ -37,7 +37,7 @@ const fakeEntity: Entity = {
   },
 };
 
-const newFakeHelmRelease = (name: string, chart: string, version: string) => {
+const newFakeHelmRelease = (name: string, chart: string, version: string, ready: string="True") => {
   return {
     apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
     kind: 'HelmRelease',
@@ -71,7 +71,7 @@ const newFakeHelmRelease = (name: string, chart: string, version: string) => {
           lastTransitionTime: "2023-06-16T12:48:22Z",
           message: "Release reconciliation succeeded",
           reason: "ReconciliationSucceeded",
-          status: "True",
+          status: ready,
           type: "Ready"
         },
         {
@@ -126,9 +126,9 @@ class StubKubernetesClient implements KubernetesApi {
                 newFakeHelmRelease('prometheus1', 'kube-prometheus-stack', '6.3.5'),
                 newFakeHelmRelease('prometheus2', 'kube-prometheus-stack', '6.3.5'),
                 newFakeHelmRelease('prometheus3', 'kube-prometheus-stack', '6.3.5'),
-                newFakeHelmRelease('redis1', 'redis', '7.0.1'),
+                newFakeHelmRelease('redis1', 'redis', '7.0.1', "False"),
                 newFakeHelmRelease('redis2', 'redis', '7.0.1'),
-                newFakeHelmRelease('http-api', 'redis', '1.2.5'),
+                newFakeHelmRelease('http-api', 'redis', '1.2.5', "False"),
                 newFakeHelmRelease('queue-runner', 'redis', '1.0.1'),
               ],
             },
