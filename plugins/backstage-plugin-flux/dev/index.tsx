@@ -16,10 +16,11 @@ import {
   WorkloadsByEntityRequest,
   CustomObjectsByEntityRequest,
 } from '@backstage/plugin-kubernetes-common';
+import { TestApiProvider } from '@backstage/test-utils';
 
 import { weaveworksFluxPlugin, FluxEntityHelmReleasesCard } from '../src/plugin';
-import { TestApiProvider } from '@backstage/test-utils';
-import { FluxEntityGitRepositoriesCard } from '../src/components/FluxEntityGitRepositoriesCard';
+import { FluxEntityGitRepositoriesCard, FluxEntityOciRepositoriesCard } from '../src/components';
+import { newTestHelmRelease, newTestOciRepository } from './helpers';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -88,61 +89,6 @@ const fakeGitRepository = {
       }
     ],
     observedGeneration: 1
-  }
-};
-
-const newFakeHelmRelease = (name: string, chart: string, version: string, ready: string = "True") => {
-  return {
-    apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
-    kind: 'HelmRelease',
-    metadata: {
-      annotations: {
-        'metadata.weave.works/test': 'value',
-      },
-      creationTimestamp: '2023-05-25T14:14:46Z',
-      finalizers: ['finalizers.fluxcd.io'],
-      name: name,
-      namespace: 'default',
-    },
-    spec: {
-      interval: '5m',
-      chart: {
-        spec: {
-          chart: chart,
-          version: '45.x',
-          sourceRef: {
-            kind: 'HelmRepository',
-            name: 'prometheus-community',
-            namespace: 'default',
-          },
-          interval: '60m',
-        },
-      },
-    },
-    status: {
-      conditions: [
-        {
-          lastTransitionTime: "2023-06-16T12:48:22Z",
-          message: "Release reconciliation succeeded",
-          reason: "ReconciliationSucceeded",
-          status: ready,
-          type: "Ready"
-        },
-        {
-          lastTransitionTime: "2023-06-16T12:48:22Z",
-          message: "Helm upgrade succeeded",
-          reason: "UpgradeSucceeded",
-          status: "True",
-          type: "Released"
-        }
-      ],
-      helmChart: "default/default-podinfo",
-      lastAppliedRevision: version,
-      lastAttemptedRevision: version,
-      lastAttemptedValuesChecksum: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
-      lastReleaseRevision: 6,
-      observedGeneration: 12
-    },
   }
 };
 
@@ -225,13 +171,13 @@ createDevApp()
             }),
           ],
           [kubernetesApiRef, new StubKubernetesClient([
-            newFakeHelmRelease('prometheus1', 'kube-prometheus-stack', '6.3.5'),
-            newFakeHelmRelease('prometheus2', 'kube-prometheus-stack', '6.3.5'),
-            newFakeHelmRelease('prometheus3', 'kube-prometheus-stack', '6.3.5'),
-            newFakeHelmRelease('redis1', 'redis', '7.0.1', "False"),
-            newFakeHelmRelease('redis2', 'redis', '7.0.1'),
-            newFakeHelmRelease('http-api', 'redis', '1.2.5', "False"),
-            newFakeHelmRelease('queue-runner', 'redis', '1.0.1')])],
+            newTestHelmRelease('prometheus1', 'kube-prometheus-stack', '6.3.5'),
+            newTestHelmRelease('prometheus2', 'kube-prometheus-stack', '6.3.5'),
+            newTestHelmRelease('prometheus3', 'kube-prometheus-stack', '6.3.5'),
+            newTestHelmRelease('redis1', 'redis', '7.0.1', "False"),
+            newTestHelmRelease('redis2', 'redis', '7.0.1'),
+            newTestHelmRelease('http-api', 'redis', '1.2.5', "False"),
+            newTestHelmRelease('queue-runner', 'redis', '1.0.1')])],
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
@@ -259,6 +205,28 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <FluxEntityGitRepositoriesCard />
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
+  .addPage({
+    title: 'Oci Repositories',
+    path: '/oci-repositories',
+    element: (
+      <TestApiProvider
+        apis={[
+          [configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego' },
+            }),
+          ],
+          [kubernetesApiRef, new StubKubernetesClient([
+            newTestOciRepository('podinfo', 'oci://ghcr.io/stefanprodan/manifests/podinfo')])],
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <FluxEntityOciRepositoriesCard />
         </EntityProvider>
       </TestApiProvider>
     ),

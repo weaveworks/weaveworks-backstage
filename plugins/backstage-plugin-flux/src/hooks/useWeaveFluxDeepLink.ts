@@ -15,12 +15,6 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
   return `${baseUrl}/${type}/details?${queryString}`;
 }
 
-const weaveGitopsHelmReleaseLink = (baseUrl: string, a: HelmRelease): string => 
-  typedUrl(baseUrl, a, 'helm_release');
-
-const weaveGitopsGitRepositoryLink = (baseUrl: string, a: GitRepository): string => 
-  typedUrl(baseUrl, a, 'git_repository');
-
 export const useWeaveFluxDeepLink = (resource: HelmRelease | GitRepository | OciRepository): string | undefined => {
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
@@ -31,9 +25,9 @@ export const useWeaveFluxDeepLink = (resource: HelmRelease | GitRepository | Oci
 
   switch (resource.type) {
     case "HelmRelease":
-      return weaveGitopsHelmReleaseLink(baseUrl, resource as HelmRelease);
+      return typedUrl(baseUrl, resource as HelmRelease, 'helm_release');
     case "GitRepository":
-      return weaveGitopsGitRepositoryLink(baseUrl, resource as GitRepository);
+      return typedUrl(baseUrl, resource as GitRepository, 'git_repository');
 
     default:
       return undefined;
