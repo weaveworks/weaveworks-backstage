@@ -18,8 +18,12 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import { TestApiProvider } from '@backstage/test-utils';
 
-import { weaveworksFluxPlugin, FluxEntityHelmReleasesCard } from '../src/plugin';
-import { FluxEntityGitRepositoriesCard, FluxEntityOciRepositoriesCard } from '../src/components';
+import {
+  weaveworksFluxPlugin,
+  FluxEntityHelmReleasesCard,
+  FluxEntityGitRepositoriesCard,
+  FluxEntityOciRepositoriesCard,
+} from '../src/plugin';
 import { newTestHelmRelease, newTestOciRepository } from './helpers';
 
 const fakeEntity: Entity = {
@@ -221,7 +225,13 @@ createDevApp()
             }),
           ],
           [kubernetesApiRef, new StubKubernetesClient([
-            newTestOciRepository('podinfo', 'oci://ghcr.io/stefanprodan/manifests/podinfo')])],
+            newTestOciRepository('podinfo', 'oci://ghcr.io/stefanprodan/manifests/podinfo', true, true),
+            newTestOciRepository('redis', 'oci://registry-1.docker.io/bitnamicharts/redis'),
+            newTestOciRepository('postgresql', 'oci://registry-1.docker.io/bitnamicharts/postgresql', true, false),
+            newTestOciRepository('apache', 'oci://registry-1.docker.io/bitnamicharts/apache'),
+            newTestOciRepository('supabase', 'oci://registry-1.docker.io/bitnamicharts/supabase'),
+            newTestOciRepository('mariadb', 'oci://registry-1.docker.io/bitnamicharts/mariadb', true, false)])],
+
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >

@@ -2,25 +2,28 @@ import React from 'react';
 import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
-import { automationLastUpdated, useStyles } from '../utils';
 import { DateTime } from 'luxon';
 import { NameLabel } from '../helpers';
+import { automationLastUpdated, useStyles } from '../utils';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
+  {
+    title: 'id',
+    field: 'id', 
+    hidden: true
+  },
   {
     title: 'Name',
     render: (hr: HelmRelease) => <NameLabel resource={hr} />,
   },
   {
+    title: 'Cluster',
+    field: 'clusterName',
+  },
+  {
     title: 'Chart',
     render: (hr: HelmRelease) => {
       return `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
-    },
-  },
-  {
-    title: 'Cluster',
-    render: (hr: HelmRelease) => {
-      return hr.clusterName;
     },
   },
   {
@@ -61,8 +64,6 @@ export const FluxHelmReleasesTable = ({
 // TODO: Simplify this to store the ID and HelmRelease
   const data = helmReleases.map(hr => {
     return {
-      // make material-table happy and add an id to each row
-      // FIXME: maybe we can tell material-table to use a custome key?
       id: `${hr.clusterName}/${hr.namespace}/${hr.name}`,
       conditions: hr.conditions,
       suspended: hr.suspended,
@@ -78,7 +79,8 @@ export const FluxHelmReleasesTable = ({
   return (
     <Table
       columns={columns}
-      options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
+      // options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
+      options={{ paging: true, search: true, pageSize: 5 }}
       title="Helm Releases"
       data={data}
       isLoading={isLoading}

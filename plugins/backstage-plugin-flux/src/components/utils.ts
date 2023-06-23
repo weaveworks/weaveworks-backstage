@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core';
 
 import { FluxObject } from '@weaveworks/weave-gitops';
 import { OciRepository } from '../hooks';
+import { Condition } from '@weaveworks/weave-gitops/ui/lib/api/core/types.pb';
 
 /**
  * Find the timestamp of the first "Ready" condition.
@@ -23,12 +24,7 @@ export const useStyles = makeStyles(theme => ({
 }));
 
 /**
- * Returns true when the provided OciRepository has a verified condition and it's True.
+ * Returns the SourceVerified condition if any.
  * @public
  */
-export function isVerified(a: OciRepository): boolean {
-  return (
-    (a.conditions.find(condition => condition.type === 'SourceVerified') || {})
-      .status === 'True'
-  );
-};
+export const findVerificationCondition = (a: OciRepository): Condition | undefined => a.conditions.find(condition => condition.type === 'SourceVerified');

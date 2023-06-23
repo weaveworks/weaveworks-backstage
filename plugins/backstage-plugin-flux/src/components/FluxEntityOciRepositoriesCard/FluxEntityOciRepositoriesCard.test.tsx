@@ -199,6 +199,8 @@ describe('<FluxOciRepositoriesCard />', () => {
         },
       ];
 
+      // TODO: test for presence of the Icon?
+
       for (const testCase of testCases) {
         const cell = getByText(testCase.name);
         expect(cell).toBeInTheDocument();

@@ -8,27 +8,26 @@ import { NameLabel } from '../helpers';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
   {
+    title: 'id',
+    field: 'id', 
+    hidden: true
+  },
+  {
     title: 'Name',
     render: (repo: GitRepository) => <NameLabel resource={repo} />,
   },
   {
+    title: 'Cluster',
+    field: 'clusterName',
+  },
+  {
     title: 'URL',
-    render: (repo: GitRepository) => {
-      return `${repo.url}`;
-    },
+    field: 'url',
   },
   {
     title: 'Revision',
-    render: (repo: GitRepository) => {
-      // TODO This should pull from the status.artifact.revision
-      return `${repo.reference.branch}`;
-    },
-  },
-  {
-    title: 'Cluster',
-    render: (repo: GitRepository) => {
-      return repo.clusterName;
-    },
+    // TODO This should pull from the status.artifact.revision
+    field: 'reference.branch'
   },
   {
     title: 'Status',

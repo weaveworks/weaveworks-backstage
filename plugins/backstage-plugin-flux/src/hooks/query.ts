@@ -47,11 +47,11 @@ function toResponse<T extends FluxObject>(create: resourceCreator<T>, kubernetes
   if (!kubernetesObjects) {
     return {
       data: undefined,
-      errors: undefined,
+      kubernetesErrors: undefined,
     };
   }
 
-  const objects = kubernetesObjects.items.flatMap(
+  const data = kubernetesObjects.items.flatMap(
     ({ cluster, resources }) => {
       return resources?.flatMap(resourceKind => {
         return resourceKind.resources.map(resource => create({
@@ -63,11 +63,11 @@ function toResponse<T extends FluxObject>(create: resourceCreator<T>, kubernetes
     },
   );
 
-  const errors = kubernetesObjects.items.flatMap(item =>
+  const kubernetesErrors = kubernetesObjects.items.flatMap(item =>
     toErrors(item.cluster, item.errors),
   );
 
-  return { objects, errors: errors.length > 0 ? errors : undefined };
+  return { data, errors: kubernetesErrors.length > 0 ? kubernetesErrors : undefined };
 }
 
 /**
@@ -106,7 +106,7 @@ export function useHelmReleases(entity: Entity): HelmReleasesResponse {
     helmReleaseGVK,
   ]);
 
-  const { objects: data, errors: kubernetesErrors } = 
+  const { data, kubernetesErrors } = 
     toResponse<HelmRelease>((item) => new HelmRelease(item), kubernetesObjects);
 
   return {
@@ -127,7 +127,7 @@ export function useGitRepositories(entity: Entity): GitRepositoriesResponse {
     gitRepositoriesGVK,
   ]);
 
-  const { objects: data, errors: kubernetesErrors } = 
+  const { data, kubernetesErrors } = 
     toResponse<GitRepository>((item) => new GitRepository(item), kubernetesObjects);
 
   return {
@@ -148,7 +148,7 @@ export function useOciRepositories(entity: Entity): OciRepositoriesResponse {
     ociRepositoriesGVK,
   ]);
 
-  const { objects: data, errors: kubernetesErrors } = 
+  const { data, kubernetesErrors } = 
     toResponse<OciRepository>((item) => new OciRepository(item), kubernetesObjects);
 
   return {
