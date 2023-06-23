@@ -1,7 +1,7 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { FluxObject, GitRepository, HelmRelease } from '@weaveworks/weave-gitops';
 
-function typedUrl(baseUrl: string, a: FluxObject, type: string): string {
+const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
   const queryStringData = {
     clusterName: a.clusterName,
     name: a.name,
@@ -14,13 +14,11 @@ function typedUrl(baseUrl: string, a: FluxObject, type: string): string {
   return `${baseUrl}/${type}/details?${queryString}`;
 }
 
-function weaveGitopsHelmReleaseLink(baseUrl: string, a: HelmRelease): string {
-  return typedUrl(baseUrl, a, 'helm_release');
-}
+const weaveGitopsHelmReleaseLink = (baseUrl: string, a: HelmRelease): string => 
+  typedUrl(baseUrl, a, 'helm_release');
 
-function weaveGitopsGitRepositoryLink(baseUrl: string, a: GitRepository): string {
-  return typedUrl(baseUrl, a, 'git_repository');
-}
+const weaveGitopsGitRepositoryLink = (baseUrl: string, a: GitRepository): string => 
+  typedUrl(baseUrl, a, 'git_repository');
 
 export const useWeaveFluxDeepLink = (resource: HelmRelease | GitRepository): string | undefined => {
   const config = useApi(configApiRef);

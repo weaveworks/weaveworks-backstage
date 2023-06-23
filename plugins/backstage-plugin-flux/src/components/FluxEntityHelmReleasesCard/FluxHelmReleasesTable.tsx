@@ -77,6 +77,7 @@ export const FluxHelmReleasesTable = ({
 }: Props) => {
   const classes = useStyles();
 
+// TODO: Simplify this to store the ID and HelmRelease
   const data = helmReleases.map(hr => {
     return {
       // make material-table happy and add an id to each row
@@ -89,6 +90,7 @@ export const FluxHelmReleasesTable = ({
       helmChart: hr.helmChart,
       lastAppliedRevision: hr.lastAppliedRevision,
       clusterName: hr.clusterName,
+      type: hr.type,
     } as HelmRelease & { id: string };
   });
 

@@ -18,6 +18,7 @@ const NameLabel = ({ gitRepository }: { gitRepository: GitRepository }) => {
   const { name, namespace } = gitRepository;
   const deepLink = useWeaveFluxDeepLink(gitRepository);
   const label = `${namespace}/${name}`;
+
   if (!deepLink) {
     return <span>{label}</span>;
   }
@@ -31,10 +32,17 @@ export const defaultColumns: TableColumn<GitRepository>[] = [
     render: (repo: GitRepository) => <NameLabel gitRepository={repo} />,
   },
   {
-    title: 'Source',
+    title: 'URL',
     render: (repo: GitRepository) => {
       // TODO: This should figure out branch/sha from the Reference and format appropriately
-      return `${repo.url}@${repo.reference.branch}`;
+      return `${repo.url}`;
+    },
+  },
+  {
+    title: 'Revision',
+    render: (repo: GitRepository) => {
+      // TODO This should pull from the status.artifact.revision
+      return `${repo.reference.branch}`;
     },
   },
   {
@@ -88,6 +96,7 @@ export const FluxGitRepositoriesTable = ({
       url: repo.url,
       reference: repo.reference,
       clusterName: repo.clusterName,
+      type: repo.type,
     } as GitRepository & { id: string };
   });
 

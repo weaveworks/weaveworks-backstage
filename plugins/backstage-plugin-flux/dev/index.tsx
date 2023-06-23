@@ -39,58 +39,57 @@ const fakeEntity: Entity = {
 };
 
 const fakeGitRepository = {
-  apiVersion: "source.toolkit.fluxcd.io/v1",
-  kind: "GitRepository",
+  apiVersion: 'source.toolkit.fluxcd.io/v1',
+  kind: 'GitRepository',
   metadata: {
-    creationTimestamp: "2023-06-22T17:58:23Z",
+    creationTimestamp: '2023-06-22T17:58:23Z',
     finalizers: [
-      "finalizers.fluxcd.io"
+      'finalizers.fluxcd.io'
     ],
     generation: 1,
-    name: "podinfo",
-    namespace: "default",
-    resourceVersion: "132764",
-    uid: "068ec137-b2a0-4b35-90ea-4e9a8a2fe5f6"
+    name: 'podinfo',
+    namespace: 'default',
+    resourceVersion: '132764',
+    uid: '068ec137-b2a0-4b35-90ea-4e9a8a2fe5f6'
   },
   spec: {
-    interval: "1m",
+    interval: '1m',
     ref: {
-      branch: "master"
+      branch: 'master'
     },
-    timeout: "60s",
-    url: "https://github.com/stefanprodan/podinfo"
+    timeout: '60s',
+    url: 'https://github.com/stefanprodan/podinfo'
   },
   status: {
     artifact: {
-      digest: "sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51",
-      lastUpdateTime: "2023-06-22T17:58:24Z",
-      path: "gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz",
-      revision: "master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a",
+      digest: 'sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51',
+      lastUpdateTime: '2023-06-22T17:58:24Z',
+      path: 'gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
+      revision: 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a',
       size: 80053,
-      url: "http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz"
+      url: 'http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz'
     },
     conditions: [
       {
-        lastTransitionTime: "2023-06-22T17:58:24Z",
+        lastTransitionTime: '2023-06-22T17:58:24Z',
         message: "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
         observedGeneration: 1,
-        reason: "Succeeded",
-        status: "True",
-        type: "Ready"
+        reason: 'Succeeded',
+        status: 'True',
+        type: 'Ready'
       },
       {
-        lastTransitionTime: "2023-06-22T17:58:24Z",
+        lastTransitionTime: '2023-06-22T17:58:24Z',
         message: "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
         observedGeneration: 1,
-        reason: "Succeeded",
-        status: "True",
-        type: "ArtifactInStorage"
+        reason: 'Succeeded',
+        status: 'True',
+        type: 'ArtifactInStorage'
       }
     ],
     observedGeneration: 1
   }
 };
-
 
 const newFakeHelmRelease = (name: string, chart: string, version: string, ready: string = "True") => {
   return {

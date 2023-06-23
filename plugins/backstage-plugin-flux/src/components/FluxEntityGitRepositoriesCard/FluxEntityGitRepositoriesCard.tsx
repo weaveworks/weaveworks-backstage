@@ -40,7 +40,7 @@ const GitRepositoriesPanel = () => {
   }
 
   if (!data) {
-    return <div>No HelmRelease found</div>;
+    return <div>No Git Repositories found for this entity.</div>;
   }
 
   return <GitRepositoriesSummary data={data} />;
