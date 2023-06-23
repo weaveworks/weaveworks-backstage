@@ -19,8 +19,5 @@ export const useWeaveFluxDeepLink = (helmRelease: HelmRelease) => {
   if (!baseUrl) {
     return undefined;
   }
-  return {
-    title: 'Go to Weave GitOps',
-    link: weaveGitopsHelmReleaseLink(baseUrl, helmRelease),
-  };
+  return weaveGitopsHelmReleaseLink(baseUrl, helmRelease);
 };

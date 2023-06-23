@@ -56,7 +56,7 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
-import { FluxHelmReleaseCard } from '@weaveworks/backstage-plugin-flux';
+import { FluxEntityHelmReleasesCard } from '@weaveworks/backstage-plugin-flux';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -123,8 +123,8 @@ const overviewContent = (
       <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
 
-    <Grid item md={4} xs={12}>
-      <FluxHelmReleaseCard />
+    <Grid item md={8} xs={12}>
+      <FluxEntityHelmReleasesCard />
     </Grid>
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
@@ -145,10 +145,10 @@ const serviceEntityPage = (
       <EntityKubernetesContent refreshIntervalMs={30000} />
     </EntityLayout.Route>
 
-    <EntityLayout.Route path="/weavewporks-flux" title="Weave Flux">
+    <EntityLayout.Route path="/weaveworks-flux" title="Weave Flux">
       <Grid container spacing={3} alignItems="stretch">
-        <Grid item md={4}>
-          <FluxHelmReleaseCard />
+        <Grid item md={12}>
+          <FluxEntityHelmReleasesCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>

@@ -35,7 +35,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { FluxHelmReleaseCard } from '@weaveworks/backstage-plugin-flux';
+import { FluxEntityHelmReleasesCard } from '@weaveworks/backstage-plugin-flux';
 
 const app = createApp({
   components: {
@@ -110,7 +110,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
-    <Route path="/weaveworks-flux" element={<FluxHelmReleaseCard />} />
+    <Route path="/weaveworks-flux" element={<FluxEntityHelmReleasesCard />} />
   </FlatRoutes>
 );
 
