@@ -1,5 +1,6 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { FluxObject, GitRepository, HelmRelease } from '@weaveworks/weave-gitops';
+import { OciRepository } from './types';
 
 const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
   const queryStringData = {
@@ -20,7 +21,7 @@ const weaveGitopsHelmReleaseLink = (baseUrl: string, a: HelmRelease): string =>
 const weaveGitopsGitRepositoryLink = (baseUrl: string, a: GitRepository): string => 
   typedUrl(baseUrl, a, 'git_repository');
 
-export const useWeaveFluxDeepLink = (resource: HelmRelease | GitRepository): string | undefined => {
+export const useWeaveFluxDeepLink = (resource: HelmRelease | GitRepository | OciRepository): string | undefined => {
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
 
@@ -33,7 +34,8 @@ export const useWeaveFluxDeepLink = (resource: HelmRelease | GitRepository): str
       return weaveGitopsHelmReleaseLink(baseUrl, resource as HelmRelease);
     case "GitRepository":
       return weaveGitopsGitRepositoryLink(baseUrl, resource as GitRepository);
-  }
 
-  return undefined;
+    default:
+      return undefined;
+  }
 };
