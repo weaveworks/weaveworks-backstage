@@ -1,5 +1,5 @@
 import React from 'react';
-import { KubeStatusIndicator } from '@weaveworks/weave-gitops';
+import { Flex, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { Table, TableColumn } from '@backstage/core-components';
@@ -8,14 +8,23 @@ import { DateTime } from 'luxon';
 import { NameLabel } from '../helpers';
 import { OciRepository } from '../../hooks';
 
-const wantVerified = (repo: OciRepository): boolean => repo.verification !== ""
+const wantVerified = (repo: OciRepository): boolean => repo.verification !== '';
 
-export const urlWithVerified = ({ repo }: { repo: OciRepository }): JSX.Element => {
+export const urlWithVerified = ({
+  repo,
+}: {
+  repo: OciRepository;
+}): JSX.Element => {
   if (!wantVerified(repo)) {
     return <span>{repo.url}</span>;
   }
 
-  return <span><VerifiedUserIcon />{repo.url}</span>
+  return (
+    <Flex>
+      <VerifiedUserIcon style={{ marginRight: '12px', color: '#009CCC' }} />
+      {repo.url}
+    </Flex>
+  );
 };
 
 export const defaultColumns: TableColumn<OciRepository>[] = [
@@ -26,7 +35,7 @@ export const defaultColumns: TableColumn<OciRepository>[] = [
   {
     title: 'URL',
     render: (repo: OciRepository) => {
-      return urlWithVerified({repo});
+      return urlWithVerified({ repo });
     },
   },
   {
