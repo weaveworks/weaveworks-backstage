@@ -19,7 +19,6 @@ const GitRepositoriesSummary = ({ data }: { data: GitRepository[] }) => {
 
 const GitRepositoriesPanel = () => {
   const { entity } = useEntity();
-
   const { data, loading, errors } = useGitRepositories(entity);
 
   if (loading) {

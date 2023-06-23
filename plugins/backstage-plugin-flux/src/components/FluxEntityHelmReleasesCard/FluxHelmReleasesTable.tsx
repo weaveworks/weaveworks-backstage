@@ -1,34 +1,15 @@
 import React from 'react';
 import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
-import { Typography, makeStyles } from '@material-ui/core';
-import { Link, Table, TableColumn } from '@backstage/core-components';
-import { automationLastUpdated } from '../utils';
+import { Typography } from '@material-ui/core';
+import { Table, TableColumn } from '@backstage/core-components';
+import { automationLastUpdated, useStyles } from '../utils';
 import { DateTime } from 'luxon';
-import { useWeaveFluxDeepLink } from '../../hooks';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
-
-const NameLabel = ({ helmRelease }: { helmRelease: HelmRelease }) => {
-  const { name, namespace } = helmRelease;
-  const deepLink = useWeaveFluxDeepLink(helmRelease);
-  const label = `${namespace}/${name}`;
-  if (!deepLink) {
-    return <span>{label}</span>;
-  }
-
-  return <Link to={deepLink}>{label}</Link>;
-};
+import { NameLabel } from '../helpers';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   {
     title: 'Name',
-    render: (hr: HelmRelease) => <NameLabel helmRelease={hr} />,
+    render: (hr: HelmRelease) => <NameLabel resource={hr} />,
   },
   {
     title: 'Chart',

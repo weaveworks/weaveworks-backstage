@@ -1,40 +1,19 @@
 import React from 'react';
 import { GitRepository, KubeStatusIndicator } from '@weaveworks/weave-gitops';
-import { Typography, makeStyles } from '@material-ui/core';
-import { Link, Table, TableColumn } from '@backstage/core-components';
-import { automationLastUpdated } from '../utils';
+import { Typography } from '@material-ui/core';
+import { Table, TableColumn } from '@backstage/core-components';
+import { automationLastUpdated, useStyles } from '../utils';
 import { DateTime } from 'luxon';
-import { useWeaveFluxDeepLink } from '../../hooks';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
-
-const NameLabel = ({ gitRepository }: { gitRepository: GitRepository }) => {
-  const { name, namespace } = gitRepository;
-  const deepLink = useWeaveFluxDeepLink(gitRepository);
-  const label = `${namespace}/${name}`;
-
-  if (!deepLink) {
-    return <span>{label}</span>;
-  }
-
-  return <Link to={deepLink}>{label}</Link>;
-};
+import { NameLabel } from '../helpers';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
   {
     title: 'Name',
-    render: (repo: GitRepository) => <NameLabel gitRepository={repo} />,
+    render: (repo: GitRepository) => <NameLabel resource={repo} />,
   },
   {
     title: 'URL',
     render: (repo: GitRepository) => {
-      // TODO: This should figure out branch/sha from the Reference and format appropriately
       return `${repo.url}`;
     },
   },
