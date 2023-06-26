@@ -46,7 +46,7 @@ const makeTestGitRepository = (name: string, url: string, branch: string) => {
         digest: 'sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51',
         lastUpdateTime: '2023-06-22T17:58:24Z',
         path: 'gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
-        revision: 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a',
+        revision: `${branch}@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a`,
         size: 80053,
         url: 'http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz'
       },

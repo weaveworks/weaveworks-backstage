@@ -1,10 +1,11 @@
 import React from 'react';
-import { GitRepository, KubeStatusIndicator } from '@weaveworks/weave-gitops';
+import { KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { automationLastUpdated, useStyles } from '../utils';
 import { DateTime } from 'luxon';
 import { NameLabel } from '../helpers';
+import { GitRepository } from '../../hooks';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
   {
@@ -27,7 +28,7 @@ export const defaultColumns: TableColumn<GitRepository>[] = [
   {
     title: 'Revision',
     // TODO This should pull from the status.artifact.revision
-    field: 'reference.branch'
+    field: 'artifact.revision',
   },
   {
     title: 'Status',
@@ -75,6 +76,7 @@ export const FluxGitRepositoriesTable = ({
       reference: repo.reference,
       clusterName: repo.clusterName,
       type: repo.type,
+      artifact: repo.artifact,
     } as GitRepository & { id: string };
   });
 

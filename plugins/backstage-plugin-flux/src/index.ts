@@ -2,5 +2,5 @@ export {
   weaveworksFluxPlugin,
   FluxEntityHelmReleasesCard,
   FluxEntityGitRepositoriesCard,
-  FluxEntityOciRepositoriesCard,
+  FluxEntityOCIRepositoriesCard,
 } from './plugin';

@@ -22,6 +22,7 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
   },
   {
     title: 'Chart',
+    field: 'helmChart.chart',
     render: (hr: HelmRelease) => {
       return `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
     },
@@ -54,6 +55,9 @@ type Props = {
   columns: TableColumn<HelmRelease>[];
 };
 
+/**
+ * @public
+ */
 export const FluxHelmReleasesTable = ({
   helmReleases,
   isLoading,
@@ -79,8 +83,7 @@ export const FluxHelmReleasesTable = ({
   return (
     <Table
       columns={columns}
-      // options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
-      options={{ paging: true, search: true, pageSize: 5 }}
+      options={{ paging: true, search: true, sorting: true, pageSize: 5 }}
       title="Helm Releases"
       data={data}
       isLoading={isLoading}

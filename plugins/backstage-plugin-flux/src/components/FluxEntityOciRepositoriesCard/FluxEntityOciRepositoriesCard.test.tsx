@@ -16,9 +16,9 @@ import {
   KubernetesRequestBody,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-import { FluxEntityOciRepositoriesCard } from './FluxEntityOciRepositoriesCard';
+import { FluxEntityOCIRepositoriesCard } from './FluxEntityOCIRepositoriesCard';
 
-const makeTestOciRepository = (name: string, url: string) => {
+const makeTestOCIRepository = (name: string, url: string) => {
   return {
     apiVersion: 'source.toolkit.fluxcd.io/v1beta2',
     kind: 'OCIRepository',
@@ -112,7 +112,7 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestOciRepository('podinfo', 'oci://ghcr.io/stefanprodan/manifests/podinfo'),
+                makeTestOCIRepository('podinfo', 'oci://ghcr.io/stefanprodan/manifests/podinfo'),
               ],
             },
           ],
@@ -149,7 +149,7 @@ const entity: Entity = {
   },
 };
 
-describe('<FluxOciRepositoriesCard />', () => {
+describe('<FluxOCIRepositoriesCard />', () => {
   let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
   beforeEach(() => {
@@ -182,7 +182,7 @@ describe('<FluxOciRepositoriesCard />', () => {
             ]}
           >
             <EntityProvider entity={entity}>
-              <FluxEntityOciRepositoriesCard />
+              <FluxEntityOCIRepositoriesCard />
             </EntityProvider>
           </TestApiProvider>
         </Wrapper>,

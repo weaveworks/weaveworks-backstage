@@ -5,19 +5,19 @@ import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { Table, TableColumn } from '@backstage/core-components';
 import { DateTime } from 'luxon';
 import { NameLabel } from '../helpers';
-import { OciRepository } from '../../hooks';
+import { OCIRepository } from '../../hooks';
 import {
   automationLastUpdated,
   findVerificationCondition,
   useStyles
 } from '../utils';
 
-const wantVerified = (repo: OciRepository): boolean => repo.verification !== undefined;
+const wantVerified = (repo: OCIRepository): boolean => repo.verification !== undefined;
 
 export const urlWithVerified = ({
   repo,
 }: {
-  repo: OciRepository;
+  repo: OCIRepository;
 }): JSX.Element => {
   if (!wantVerified(repo)) {
     return <span>{repo.url}</span>;
@@ -43,7 +43,7 @@ export const urlWithVerified = ({
   );
 };
 
-export const defaultColumns: TableColumn<OciRepository>[] = [
+export const defaultColumns: TableColumn<OCIRepository>[] = [
   {
     title: 'id',
     field: 'id', 
@@ -51,7 +51,7 @@ export const defaultColumns: TableColumn<OciRepository>[] = [
   },
   {
     title: 'Name',
-    render: (repo: OciRepository) => <NameLabel resource={repo} />,
+    render: (repo: OCIRepository) => <NameLabel resource={repo} />,
     field: 'name',
     searchable: true,
   },
@@ -62,7 +62,7 @@ export const defaultColumns: TableColumn<OciRepository>[] = [
   },
   {
     title: 'URL',
-    render: (repo: OciRepository) => {
+    render: (repo: OCIRepository) => {
       return urlWithVerified({ repo });
     },
     field: 'url',
@@ -75,7 +75,7 @@ export const defaultColumns: TableColumn<OciRepository>[] = [
   },
   {
     title: 'Status',
-    render: (repo: OciRepository) => {
+    render: (repo: OCIRepository) => {
       return (
         <KubeStatusIndicator
           short
@@ -88,7 +88,7 @@ export const defaultColumns: TableColumn<OciRepository>[] = [
   {
     title: 'Updated',
     field: 'lastUpdatedAt',
-    render: (repo: OciRepository) => {
+    render: (repo: OCIRepository) => {
       return DateTime.fromISO(repo.lastUpdatedAt).toRelative({
         locale: 'en',
       });
@@ -97,19 +97,19 @@ export const defaultColumns: TableColumn<OciRepository>[] = [
 ];
 
 type Props = {
-  ociRepositories: OciRepository[];
+  ociRepositories: OCIRepository[];
   isLoading: boolean;
-  columns: TableColumn<OciRepository>[];
+  columns: TableColumn<OCIRepository>[];
 };
 
-export const FluxOciRepositoriesTable = ({
+export const FluxOCIRepositoriesTable = ({
   ociRepositories,
   isLoading,
   columns,
 }: Props) => {
   const classes = useStyles();
 
-  // TODO: Simplify this to store the ID and OciRepository
+  // TODO: Simplify this to store the ID and OCIRepository
   const data = ociRepositories.map(or => {
     return {
       // make material-table happy and add an id to each row
@@ -126,7 +126,7 @@ export const FluxOciRepositoriesTable = ({
       artifact: or.artifact,
       // can this use lastUpdate: or.lastUpdatedAt ?
       lastUpdatedAt: automationLastUpdated(or),
-    } as OciRepository & { id: string; lastUpdatedAt: string };
+    } as OCIRepository & { id: string; lastUpdatedAt: string };
   });
 
   return (
