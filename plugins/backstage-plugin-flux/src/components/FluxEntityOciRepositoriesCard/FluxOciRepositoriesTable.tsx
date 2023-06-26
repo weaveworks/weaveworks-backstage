@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import styled from 'styled-components';
 import { Flex, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Tooltip, Typography } from '@material-ui/core';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
@@ -12,23 +13,26 @@ import {
   useStyles,
 } from '../utils';
 
-const wantVerified = (repo: OciRepository): boolean =>
-  repo.verification !== undefined;
+const UrlWrapper = styled.div`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  direction: rtl;
+  max-width: 250px;
+`;
 
 export const urlWithVerified = ({
   repo,
 }: {
   repo: OciRepository;
 }): JSX.Element => {
-  if (!wantVerified(repo)) {
-    return <span>{repo.url}</span>;
-  }
-
   const condition = findVerificationCondition(repo);
 
-  let color = '#BC3B1D';
+  let color = '#d8d8d8';
   if (condition?.status === 'True') {
     color = '#27AE60';
+  } else if (condition?.status === 'False') {
+    color = '#BC3B1D';
   }
 
   // TODO: shift the style to a "good" or "bad" case?
@@ -41,7 +45,7 @@ export const urlWithVerified = ({
           style={{ marginRight: '12px', color, height: '16px' }}
         />
       </Tooltip>
-      {repo.url}
+      <UrlWrapper title={repo.url}>{repo.url}</UrlWrapper>
     </Flex>
   );
 };
