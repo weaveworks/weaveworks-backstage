@@ -1,12 +1,12 @@
 import React from 'react';
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import { useOCIRepositories } from '../../hooks';
 import {
   FluxOCIRepositoriesTable,
   defaultColumns,
-} from './FluxOCIRepositoriesTable';
-import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
-import { useOCIRepositories } from '../../hooks';
+} from './FluxOciRepositoriesTable';
 
 const OCIRepositoryPanel = () => {
   const { entity } = useEntity();

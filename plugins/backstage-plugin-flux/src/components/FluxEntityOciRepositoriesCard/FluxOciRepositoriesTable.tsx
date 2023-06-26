@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { Flex, KubeStatusIndicator } from '@weaveworks/weave-gitops';
+import { KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Tooltip, Typography } from '@material-ui/core';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { Table, TableColumn } from '@backstage/core-components';
@@ -18,10 +18,10 @@ const UrlWrapper = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
   direction: rtl;
-  max-width: 250px;
+  max-width: 350px;
 `;
 
-export const urlWithVerified = ({
+export const verifiedStatus = ({
   repo,
 }: {
   repo: OCIRepository;
@@ -39,14 +39,9 @@ export const urlWithVerified = ({
   // TODO: Alternative icon?
 
   return (
-    <Flex start align>
-      <Tooltip title={condition?.message || ''}>
-        <VerifiedUserIcon
-          style={{ marginRight: '12px', color, height: '16px' }}
-        />
-      </Tooltip>
-      <UrlWrapper title={repo.url}>{repo.url}</UrlWrapper>
-    </Flex>
+    <Tooltip title={condition?.message || ''}>
+      <VerifiedUserIcon style={{ color, height: '16px' }} />
+    </Tooltip>
   );
 };
 
@@ -68,16 +63,27 @@ export const defaultColumns: TableColumn<OCIRepository>[] = [
     searchable: true,
   },
   {
+    title: 'Verified',
+    render: (repo: OCIRepository) => {
+      return verifiedStatus({ repo });
+    },
+    field: 'verified',
+    searchable: true,
+  },
+  {
     title: 'URL',
     render: (repo: OCIRepository) => {
-      return urlWithVerified({ repo });
+      return <UrlWrapper title={repo.url}>{repo.url}</UrlWrapper>;
     },
     field: 'url',
     searchable: true,
   },
   {
     title: 'Revision',
-    field: 'artifact.revision',
+    render: (repo: OCIRepository) => {
+      return <span>{repo.artifact?.revision.split('@')[0]}</span>;
+    },
+    field: 'revision',
     searchable: true,
   },
   {
@@ -131,6 +137,7 @@ export const FluxOCIRepositoriesTable = ({
       clusterName: or.clusterName,
       type: or.type,
       artifact: or.artifact,
+      revision: or.artifact?.revision,
       // can this use lastUpdate: or.lastUpdatedAt ?
       lastUpdatedAt: automationLastUpdated(or),
     } as OCIRepository & { id: string; lastUpdatedAt: string };

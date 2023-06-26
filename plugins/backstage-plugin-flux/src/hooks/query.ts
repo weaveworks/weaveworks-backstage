@@ -159,9 +159,11 @@ export function useGitRepositories(entity: Entity): GitRepositoriesResponse {
  * @public
  */
 export function useOCIRepositories(entity: Entity): OCIRepositoriesResponse {
-  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    ociRepositoriesGVK,
-  ]);
+  const { kubernetesObjects, loading, error } = useCustomResources(
+    entity,
+    [ociRepositoriesGVK],
+    60000000,
+  );
 
   const { data, kubernetesErrors } = toResponse<OCIRepository>(
     item => new OCIRepository(item),
