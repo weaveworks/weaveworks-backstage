@@ -1,8 +1,10 @@
 import React from 'react';
-
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { FluxOciRepositoriesTable, defaultColumns } from './FluxOciRepositoriesTable';
+import {
+  FluxOciRepositoriesTable,
+  defaultColumns,
+} from './FluxOciRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { useOciRepositories } from '../../hooks';
 
@@ -10,7 +12,7 @@ const OciRepositoryPanel = () => {
   const { entity } = useEntity();
   const { data, loading, errors } = useOciRepositories(entity);
 
-  if (loading) {
+  if (loading && !data) {
     return <Progress />;
   }
 

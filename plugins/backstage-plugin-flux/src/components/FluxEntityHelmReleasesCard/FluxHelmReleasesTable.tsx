@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
@@ -9,8 +9,8 @@ import { automationLastUpdated, useStyles } from '../utils';
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   {
     title: 'id',
-    field: 'id', 
-    hidden: true
+    field: 'id',
+    hidden: true,
   },
   {
     title: 'Name',
@@ -61,7 +61,7 @@ export const FluxHelmReleasesTable = ({
 }: Props) => {
   const classes = useStyles();
 
-// TODO: Simplify this to store the ID and HelmRelease
+  // TODO: Simplify this to store the ID and HelmRelease
   const data = helmReleases.map(hr => {
     return {
       id: `${hr.clusterName}/${hr.namespace}/${hr.name}`,
@@ -76,21 +76,23 @@ export const FluxHelmReleasesTable = ({
     } as HelmRelease & { id: string };
   });
 
-  return (
-    <Table
-      columns={columns}
-      // options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
-      options={{ paging: true, search: true, pageSize: 5 }}
-      title="Helm Releases"
-      data={data}
-      isLoading={isLoading}
-      emptyContent={
-        <div className={classes.empty}>
-          <Typography variant="body1">
-            No Helm Releases found for this entity.
-          </Typography>
-        </div>
-      }
-    />
-  );
+  return useMemo(() => {
+    return (
+      <Table
+        columns={columns}
+        // options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
+        options={{ paging: true, search: true, pageSize: 5 }}
+        title="Helm Releases"
+        data={data}
+        isLoading={isLoading}
+        emptyContent={
+          <div className={classes.empty}>
+            <Typography variant="body1">
+              No Helm Releases found for this entity.
+            </Typography>
+          </div>
+        }
+      />
+    );
+  }, [data, isLoading, columns, classes.empty]);
 };

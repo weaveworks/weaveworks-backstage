@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Flex, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Tooltip, Typography } from '@material-ui/core';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
@@ -9,10 +9,11 @@ import { OciRepository } from '../../hooks';
 import {
   automationLastUpdated,
   findVerificationCondition,
-  useStyles
+  useStyles,
 } from '../utils';
 
-const wantVerified = (repo: OciRepository): boolean => repo.verification !== undefined;
+const wantVerified = (repo: OciRepository): boolean =>
+  repo.verification !== undefined;
 
 export const urlWithVerified = ({
   repo,
@@ -26,7 +27,7 @@ export const urlWithVerified = ({
   const condition = findVerificationCondition(repo);
 
   let color = '#BC3B1D';
-  if (condition?.status === "True") {
+  if (condition?.status === 'True') {
     color = '#27AE60';
   }
 
@@ -34,9 +35,11 @@ export const urlWithVerified = ({
   // TODO: Alternative icon?
 
   return (
-    <Flex>
+    <Flex start align>
       <Tooltip title={condition?.message || ''}>
-        <VerifiedUserIcon style={{ marginRight: '12px', color: color }} />
+        <VerifiedUserIcon
+          style={{ marginRight: '12px', color, height: '16px' }}
+        />
       </Tooltip>
       {repo.url}
     </Flex>
@@ -46,8 +49,8 @@ export const urlWithVerified = ({
 export const defaultColumns: TableColumn<OciRepository>[] = [
   {
     title: 'id',
-    field: 'id', 
-    hidden: true
+    field: 'id',
+    hidden: true,
   },
   {
     title: 'Name',
@@ -129,20 +132,22 @@ export const FluxOciRepositoriesTable = ({
     } as OciRepository & { id: string; lastUpdatedAt: string };
   });
 
-  return (
-    <Table
-      columns={columns}
-      options={{ paging: true, search: true, pageSize: 5 }}
-      title="OCI Repositories"
-      data={data}
-      isLoading={isLoading}
-      emptyContent={
-        <div className={classes.empty}>
-          <Typography variant="body1">
-            No OCI Repositories found for this entity.
-          </Typography>
-        </div>
-      }
-    />
-  );
+  return useMemo(() => {
+    return (
+      <Table
+        columns={columns}
+        options={{ paging: true, search: true, pageSize: 5 }}
+        title="OCI Repositories"
+        data={data}
+        isLoading={isLoading}
+        emptyContent={
+          <div className={classes.empty}>
+            <Typography variant="body1">
+              No OCI Repositories found for this entity.
+            </Typography>
+          </div>
+        }
+      />
+    );
+  }, [data, isLoading, columns, classes.empty]);
 };

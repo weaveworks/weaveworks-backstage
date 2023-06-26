@@ -4,7 +4,10 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { GitRepository } from '@weaveworks/weave-gitops';
 
 import { useGitRepositories } from '../../hooks/query';
-import { FluxGitRepositoriesTable, defaultColumns } from './FluxGitRepositoriesTable';
+import {
+  FluxGitRepositoriesTable,
+  defaultColumns,
+} from './FluxGitRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 
 const GitRepositoriesSummary = ({ data }: { data: GitRepository[] }) => {

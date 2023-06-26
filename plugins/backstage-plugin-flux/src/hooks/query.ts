@@ -6,7 +6,11 @@ import {
   KubernetesFetchError,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-import { FluxObject, GitRepository, HelmRelease } from '@weaveworks/weave-gitops';
+import {
+  FluxObject,
+  GitRepository,
+  HelmRelease,
+} from '@weaveworks/weave-gitops';
 import { OciRepository } from './types';
 
 const helmReleaseGVK: CustomResourceMatcher = {
@@ -41,9 +45,18 @@ function toErrors(
   });
 }
 
-type resourceCreator<T> = ({clusterName, payload}: {clusterName: string; payload: string}) => T;
+type resourceCreator<T> = ({
+  clusterName,
+  payload,
+}: {
+  clusterName: string;
+  payload: string;
+}) => T;
 
-function toResponse<T extends FluxObject>(create: resourceCreator<T>, kubernetesObjects?: ObjectsByEntityResponse) {
+function toResponse<T extends FluxObject>(
+  create: resourceCreator<T>,
+  kubernetesObjects?: ObjectsByEntityResponse,
+) {
   if (!kubernetesObjects) {
     return {
       data: undefined,
@@ -51,23 +64,25 @@ function toResponse<T extends FluxObject>(create: resourceCreator<T>, kubernetes
     };
   }
 
-  const data = kubernetesObjects.items.flatMap(
-    ({ cluster, resources }) => {
-      return resources?.flatMap(resourceKind => {
-        return resourceKind.resources.map(resource => create({
-            clusterName: cluster.name,
-            payload: JSON.stringify(resource),
-          })
-        )
-      });
-    },
-  );
+  const data = kubernetesObjects.items.flatMap(({ cluster, resources }) => {
+    return resources?.flatMap(resourceKind => {
+      return resourceKind.resources.map(resource =>
+        create({
+          clusterName: cluster.name,
+          payload: JSON.stringify(resource),
+        }),
+      );
+    });
+  });
 
   const kubernetesErrors = kubernetesObjects.items.flatMap(item =>
     toErrors(item.cluster, item.errors),
   );
 
-  return { data, errors: kubernetesErrors.length > 0 ? kubernetesErrors : undefined };
+  return {
+    data,
+    errors: kubernetesErrors.length > 0 ? kubernetesErrors : undefined,
+  };
 }
 
 /**
@@ -77,7 +92,7 @@ export interface HelmReleasesResponse {
   data?: HelmRelease[];
   loading: boolean;
   errors?: Error[];
-};
+}
 
 /**
  * @public
@@ -86,7 +101,7 @@ export interface GitRepositoriesResponse {
   data?: GitRepository[];
   loading: boolean;
   errors?: Error[];
-};
+}
 
 /**
  * @public
@@ -95,19 +110,21 @@ export interface OciRepositoriesResponse {
   data?: OciRepository[];
   loading: boolean;
   errors?: Error[];
-};
+}
 
 /**
  * Query for the HelmReleases associated with this Entity.
- * @public 
+ * @public
  */
 export function useHelmReleases(entity: Entity): HelmReleasesResponse {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
     helmReleaseGVK,
   ]);
 
-  const { data, kubernetesErrors } = 
-    toResponse<HelmRelease>((item) => new HelmRelease(item), kubernetesObjects);
+  const { data, kubernetesErrors } = toResponse<HelmRelease>(
+    item => new HelmRelease(item),
+    kubernetesObjects,
+  );
 
   return {
     data,
@@ -116,19 +133,21 @@ export function useHelmReleases(entity: Entity): HelmReleasesResponse {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
-};
+}
 
 /**
  * Query for the GitRepositories associated with this Entity.
- * @public 
+ * @public
  */
 export function useGitRepositories(entity: Entity): GitRepositoriesResponse {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
     gitRepositoriesGVK,
   ]);
 
-  const { data, kubernetesErrors } = 
-    toResponse<GitRepository>((item) => new GitRepository(item), kubernetesObjects);
+  const { data, kubernetesErrors } = toResponse<GitRepository>(
+    item => new GitRepository(item),
+    kubernetesObjects,
+  );
 
   return {
     data,
@@ -137,19 +156,23 @@ export function useGitRepositories(entity: Entity): GitRepositoriesResponse {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
-};
+}
 
 /**
  * Query for the OciRepositories associated with this Entity.
- * @public 
+ * @public
  */
 export function useOciRepositories(entity: Entity): OciRepositoriesResponse {
-  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    ociRepositoriesGVK,
-  ]);
+  const { kubernetesObjects, loading, error } = useCustomResources(
+    entity,
+    [ociRepositoriesGVK],
+    6000000,
+  );
 
-  const { data, kubernetesErrors } = 
-    toResponse<OciRepository>((item) => new OciRepository(item), kubernetesObjects);
+  const { data, kubernetesErrors } = toResponse<OciRepository>(
+    item => new OciRepository(item),
+    kubernetesObjects,
+  );
 
   return {
     data,
@@ -158,4 +181,4 @@ export function useOciRepositories(entity: Entity): OciRepositoriesResponse {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
-};
+}

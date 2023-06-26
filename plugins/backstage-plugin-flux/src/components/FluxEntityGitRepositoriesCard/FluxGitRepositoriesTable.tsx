@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { GitRepository, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
@@ -9,8 +9,8 @@ import { NameLabel } from '../helpers';
 export const defaultColumns: TableColumn<GitRepository>[] = [
   {
     title: 'id',
-    field: 'id', 
-    hidden: true
+    field: 'id',
+    hidden: true,
   },
   {
     title: 'Name',
@@ -27,7 +27,7 @@ export const defaultColumns: TableColumn<GitRepository>[] = [
   {
     title: 'Revision',
     // TODO This should pull from the status.artifact.revision
-    field: 'reference.branch'
+    field: 'reference.branch',
   },
   {
     title: 'Status',
@@ -78,20 +78,22 @@ export const FluxGitRepositoriesTable = ({
     } as GitRepository & { id: string };
   });
 
-  return (
-    <Table
-      columns={columns}
-      options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
-      title="Git Repositories"
-      data={data}
-      isLoading={isLoading}
-      emptyContent={
-        <div className={classes.empty}>
-          <Typography variant="body1">
-            No Git Repositories found for this entity.
-          </Typography>
-        </div>
-      }
-    />
-  );
+  return useMemo(() => {
+    return (
+      <Table
+        columns={columns}
+        options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
+        title="Git Repositories"
+        data={data}
+        isLoading={isLoading}
+        emptyContent={
+          <div className={classes.empty}>
+            <Typography variant="body1">
+              No Git Repositories found for this entity.
+            </Typography>
+          </div>
+        }
+      />
+    );
+  }, [data, isLoading, columns, classes.empty]);
 };
