@@ -1,5 +1,6 @@
 import React from 'react';
 import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
+import { Condition } from '@weaveworks/weave-gitops/ui/lib/api/core/types.pb';
 import { Typography, makeStyles } from '@material-ui/core';
 import { Link, Table, TableColumn } from '@backstage/core-components';
 import { automationLastUpdated } from './utils';
@@ -25,26 +26,25 @@ const NameLabel = ({ helmRelease }: { helmRelease: HelmRelease }) => {
   return <Link to={deepLink}>{label}</Link>;
 };
 
-export const defaultColumns: TableColumn<HelmRelease>[] = [
+export const defaultColumns: TableColumn<HelmReleaseRowData>[] = [
   {
     title: 'Name',
-    render: (hr: HelmRelease) => <NameLabel helmRelease={hr} />,
+    field: 'name',
+    render: (hr: HelmReleaseRowData) => (
+      <NameLabel helmRelease={hr.helmRelease} />
+    ),
   },
   {
     title: 'Chart',
-    render: (hr: HelmRelease) => {
-      return `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
-    },
+    field: 'chart',
   },
   {
     title: 'Cluster',
-    render: (hr: HelmRelease) => {
-      return hr.clusterName;
-    },
+    field: 'cluster',
   },
   {
     title: 'Status',
-    render: (hr: HelmRelease) => {
+    render: (hr: HelmReleaseRowData) => {
       return (
         <KubeStatusIndicator
           short
@@ -56,18 +56,30 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
   },
   {
     title: 'Updated',
-    render: (hr: HelmRelease) => {
-      return DateTime.fromISO(automationLastUpdated(hr)).toRelative({
+    field: 'updated',
+    render: (hr: HelmReleaseRowData) => {
+      return DateTime.fromISO(hr.updated).toRelative({
         locale: 'en',
       });
     },
   },
 ];
 
+type HelmReleaseRowData = {
+  id: string;
+  name: string;
+  chart: string;
+  cluster: string;
+  conditions: Condition[];
+  suspended: boolean;
+  updated: string;
+  helmRelease: HelmRelease;
+};
+
 type Props = {
   helmReleases: HelmRelease[];
   isLoading: boolean;
-  columns: TableColumn<HelmRelease>[];
+  columns: TableColumn<HelmReleaseRowData>[];
 };
 
 export const FluxHelmReleasesTable = ({
@@ -82,18 +94,22 @@ export const FluxHelmReleasesTable = ({
       // make material-table happy and add an id to each row
       // FIXME: maybe we can tell material-table to use a custome key?
       id: `${hr.clusterName}/${hr.namespace}/${hr.name}`,
+      chart: `${hr.helmChart.chart}/${hr.lastAppliedRevision}`,
       conditions: hr.conditions,
       suspended: hr.suspended,
-      name: hr.name,
-      namespace: hr.namespace,
-      helmChart: hr.helmChart,
-      lastAppliedRevision: hr.lastAppliedRevision,
-      clusterName: hr.clusterName,
-    } as HelmRelease & { id: string };
+      name: `${hr.namespace}/${hr.name}`,
+      updated: automationLastUpdated(hr),
+      cluster: hr.clusterName,
+      helmRelease: {
+        name: hr.name,
+        namespace: hr.namespace,
+        clusterName: hr.clusterName,
+      },
+    } as HelmReleaseRowData;
   });
 
   return (
-    <Table
+    <Table<HelmReleaseRowData>
       columns={columns}
       options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
       title="Helm Releases"

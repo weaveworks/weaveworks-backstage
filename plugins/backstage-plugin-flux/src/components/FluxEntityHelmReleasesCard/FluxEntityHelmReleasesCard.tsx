@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
@@ -42,7 +42,9 @@ const HelmReleasePanel = () => {
 
   const { data, loading, errors } = useHelmReleases(entity);
 
-  if (loading) {
+  console.log({ loading, errors, data });
+
+  if (loading && !data) {
     return <Progress />;
   }
 
