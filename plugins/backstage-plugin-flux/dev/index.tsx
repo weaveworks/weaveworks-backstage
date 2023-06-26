@@ -22,9 +22,9 @@ import {
   weaveworksFluxPlugin,
   FluxEntityHelmReleasesCard,
   FluxEntityGitRepositoriesCard,
-  FluxEntityOciRepositoriesCard,
 } from '../src/plugin';
 import { newTestHelmRelease, newTestOciRepository } from './helpers';
+import { FluxEntityOCIRepositoriesCard } from '../src/components/FluxEntityOCIRepositoriesCard';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -48,52 +48,53 @@ const fakeGitRepository = {
   kind: 'GitRepository',
   metadata: {
     creationTimestamp: '2023-06-22T17:58:23Z',
-    finalizers: [
-      'finalizers.fluxcd.io'
-    ],
+    finalizers: ['finalizers.fluxcd.io'],
     generation: 1,
     name: 'podinfo',
     namespace: 'default',
     resourceVersion: '132764',
-    uid: '068ec137-b2a0-4b35-90ea-4e9a8a2fe5f6'
+    uid: '068ec137-b2a0-4b35-90ea-4e9a8a2fe5f6',
   },
   spec: {
     interval: '1m',
     ref: {
-      branch: 'master'
+      branch: 'master',
     },
     timeout: '60s',
-    url: 'https://github.com/stefanprodan/podinfo'
+    url: 'https://github.com/stefanprodan/podinfo',
   },
   status: {
     artifact: {
-      digest: 'sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51',
+      digest:
+        'sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51',
       lastUpdateTime: '2023-06-22T17:58:24Z',
       path: 'gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
       revision: 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a',
       size: 80053,
-      url: 'http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz'
+      url: 'http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
     },
     conditions: [
       {
         lastTransitionTime: '2023-06-22T17:58:24Z',
-        message: "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
+        message:
+          "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
         observedGeneration: 1,
         reason: 'Succeeded',
         status: 'True',
-        type: 'Ready'
+        type: 'Ready',
       },
       {
         lastTransitionTime: '2023-06-22T17:58:24Z',
-        message: "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
+        message:
+          "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
         observedGeneration: 1,
         reason: 'Succeeded',
         status: 'True',
-        type: 'ArtifactInStorage'
-      }
+        type: 'ArtifactInStorage',
+      },
     ],
-    observedGeneration: 1
-  }
+    observedGeneration: 1,
+  },
 };
 
 class StubKubernetesClient implements KubernetesApi {
@@ -169,19 +170,36 @@ createDevApp()
     element: (
       <TestApiProvider
         apis={[
-          [configApiRef,
+          [
+            configApiRef,
             new ConfigReader({
               gitops: { baseUrl: 'https://example.com/wego' },
             }),
           ],
-          [kubernetesApiRef, new StubKubernetesClient([
-            newTestHelmRelease('prometheus1', 'kube-prometheus-stack', '6.3.5'),
-            newTestHelmRelease('prometheus2', 'kube-prometheus-stack', '6.3.5'),
-            newTestHelmRelease('prometheus3', 'kube-prometheus-stack', '6.3.5'),
-            newTestHelmRelease('redis1', 'redis', '7.0.1', "False"),
-            newTestHelmRelease('redis2', 'redis', '7.0.1'),
-            newTestHelmRelease('http-api', 'redis', '1.2.5', "False"),
-            newTestHelmRelease('queue-runner', 'redis', '1.0.1')])],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestHelmRelease(
+                'prometheus1',
+                'kube-prometheus-stack',
+                '6.3.5',
+              ),
+              newTestHelmRelease(
+                'prometheus2',
+                'kube-prometheus-stack',
+                '6.3.5',
+              ),
+              newTestHelmRelease(
+                'prometheus3',
+                'kube-prometheus-stack',
+                '6.3.5',
+              ),
+              newTestHelmRelease('redis1', 'redis', '7.0.1', 'False'),
+              newTestHelmRelease('redis2', 'redis', '7.0.1'),
+              newTestHelmRelease('http-api', 'redis', '1.2.5', 'False'),
+              newTestHelmRelease('queue-runner', 'redis', '1.0.1'),
+            ]),
+          ],
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
@@ -197,13 +215,13 @@ createDevApp()
     element: (
       <TestApiProvider
         apis={[
-          [configApiRef,
+          [
+            configApiRef,
             new ConfigReader({
               gitops: { baseUrl: 'https://example.com/wego' },
             }),
           ],
-          [kubernetesApiRef, new StubKubernetesClient([
-            fakeGitRepository])],
+          [kubernetesApiRef, new StubKubernetesClient([fakeGitRepository])],
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
@@ -219,24 +237,53 @@ createDevApp()
     element: (
       <TestApiProvider
         apis={[
-          [configApiRef,
+          [
+            configApiRef,
             new ConfigReader({
               gitops: { baseUrl: 'https://example.com/wego' },
             }),
           ],
-          [kubernetesApiRef, new StubKubernetesClient([
-            newTestOciRepository('podinfo', 'oci://ghcr.io/stefanprodan/manifests/podinfo', true, true),
-            newTestOciRepository('redis', 'oci://registry-1.docker.io/bitnamicharts/redis'),
-            newTestOciRepository('postgresql', 'oci://registry-1.docker.io/bitnamicharts/postgresql', true, false),
-            newTestOciRepository('apache', 'oci://registry-1.docker.io/bitnamicharts/apache'),
-            newTestOciRepository('supabase', 'oci://registry-1.docker.io/bitnamicharts/supabase'),
-            newTestOciRepository('mariadb', 'oci://registry-1.docker.io/bitnamicharts/mariadb', true, false)])],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestOciRepository(
+                'podinfo',
+                'oci://ghcr.io/stefanprodan/manifests/podinfo',
+                true,
+                true,
+              ),
+              newTestOciRepository(
+                'redis',
+                'oci://registry-1.docker.io/bitnamicharts/redis',
+              ),
+              newTestOciRepository(
+                'postgresql',
+                'oci://registry-1.docker.io/bitnamicharts/postgresql',
+                true,
+                false,
+              ),
+              newTestOciRepository(
+                'apache',
+                'oci://registry-1.docker.io/bitnamicharts/apache',
+              ),
+              newTestOciRepository(
+                'supabase',
+                'oci://registry-1.docker.io/bitnamicharts/supabase',
+              ),
+              newTestOciRepository(
+                'mariadb',
+                'oci://registry-1.docker.io/bitnamicharts/mariadb',
+                true,
+                false,
+              ),
+            ]),
+          ],
 
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
         <EntityProvider entity={fakeEntity}>
-          <FluxEntityOciRepositoriesCard />
+          <FluxEntityOCIRepositoriesCard />
         </EntityProvider>
       </TestApiProvider>
     ),
