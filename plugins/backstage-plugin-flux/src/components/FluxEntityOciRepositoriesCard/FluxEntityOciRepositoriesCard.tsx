@@ -2,15 +2,15 @@ import React from 'react';
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import {
-  FluxOciRepositoriesTable,
+  FluxOCIRepositoriesTable,
   defaultColumns,
-} from './FluxOciRepositoriesTable';
+} from './FluxOCIRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
-import { useOciRepositories } from '../../hooks';
+import { useOCIRepositories } from '../../hooks';
 
-const OciRepositoryPanel = () => {
+const OCIRepositoryPanel = () => {
   const { entity } = useEntity();
-  const { data, loading, errors } = useOciRepositories(entity);
+  const { data, loading, errors } = useOCIRepositories(entity);
 
   if (loading && !data) {
     return <Progress />;
@@ -34,7 +34,7 @@ const OciRepositoryPanel = () => {
   }
 
   return (
-    <FluxOciRepositoriesTable
+    <FluxOCIRepositoriesTable
       ociRepositories={data}
       isLoading={false}
       columns={defaultColumns}
@@ -43,12 +43,12 @@ const OciRepositoryPanel = () => {
 };
 
 /**
- * Render the OciRepositories associated with the current Entity.
+ * Render the OCIRepositories associated with the current Entity.
  *
  * @public
  */
-export const FluxEntityOciRepositoriesCard = () => (
+export const FluxEntityOCIRepositoriesCard = () => (
   <WeaveGitOpsContext>
-    <OciRepositoryPanel />
+    <OCIRepositoryPanel />
   </WeaveGitOpsContext>
 );

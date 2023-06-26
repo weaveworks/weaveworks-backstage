@@ -6,12 +6,8 @@ import {
   KubernetesFetchError,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-import {
-  FluxObject,
-  GitRepository,
-  HelmRelease,
-} from '@weaveworks/weave-gitops';
-import { OciRepository } from './types';
+import { FluxObject, HelmRelease } from '@weaveworks/weave-gitops';
+import { OCIRepository, GitRepository } from './types';
 
 const helmReleaseGVK: CustomResourceMatcher = {
   apiVersion: 'v2beta1',
@@ -106,8 +102,8 @@ export interface GitRepositoriesResponse {
 /**
  * @public
  */
-export interface OciRepositoriesResponse {
-  data?: OciRepository[];
+export interface OCIRepositoriesResponse {
+  data?: OCIRepository[];
   loading: boolean;
   errors?: Error[];
 }
@@ -159,18 +155,16 @@ export function useGitRepositories(entity: Entity): GitRepositoriesResponse {
 }
 
 /**
- * Query for the OciRepositories associated with this Entity.
+ * Query for the OCIRepositories associated with this Entity.
  * @public
  */
-export function useOciRepositories(entity: Entity): OciRepositoriesResponse {
-  const { kubernetesObjects, loading, error } = useCustomResources(
-    entity,
-    [ociRepositoriesGVK],
-    6000000,
-  );
+export function useOCIRepositories(entity: Entity): OCIRepositoriesResponse {
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    ociRepositoriesGVK,
+  ]);
 
-  const { data, kubernetesErrors } = toResponse<OciRepository>(
-    item => new OciRepository(item),
+  const { data, kubernetesErrors } = toResponse<OCIRepository>(
+    item => new OCIRepository(item),
     kubernetesObjects,
   );
 

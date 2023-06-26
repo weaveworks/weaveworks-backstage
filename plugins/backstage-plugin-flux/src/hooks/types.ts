@@ -1,4 +1,8 @@
-import { FluxObject } from '@weaveworks/weave-gitops';
+import {
+  FluxObject,
+  OCIRepository as WeaveOCIRepository,
+  GitRepository as WeaveGitRepository,
+} from '@weaveworks/weave-gitops';
 
 /**
  * Represents a Flux artifact referenced by a Source object e.g. GitRepository or OCIRepository.
@@ -18,13 +22,23 @@ type Artifact = {
  * Represents a Flux OCIRepository;
  * @public
  */
-export class OciRepository extends FluxObject {
-  get url(): string {
-    return this.obj.spec?.url || "";
-  }
-
+export class OCIRepository extends WeaveOCIRepository {
   get verification(): string | undefined {
     return this.obj.spec.verify.provider;
+  }
+
+  get artifact(): Artifact | undefined {
+    return this.obj.status.artifact;
+  }
+};
+
+/**
+ * Represents a Flux GitRepository;
+ * @public
+ */
+export class GitRepository extends WeaveGitRepository {
+  get verification(): string | undefined {
+    return this.obj.spec.verify?.secretRef.name ?? "";
   }
 
   get artifact(): Artifact | undefined {
