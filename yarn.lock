@@ -7875,6 +7875,27 @@
     styled-components "^5.3.0"
     yaml "^2.2.2"
 
+"@weaveworksoss/backstage-plugin-flux@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@weaveworksoss/backstage-plugin-flux/-/backstage-plugin-flux-0.1.0.tgz#639631cd26ed77923f536e4974a3df1f61f35deb"
+  integrity sha512-nsk15gGXaa09d5gOOCWxyWOtAbsoTI0J8z2tLuoAgcOvmuyBZc6F5dyTxD4+Q3Fgoea/hdsB7t81xcxlbKWSvw==
+  dependencies:
+    "@backstage/catalog-model" "^1.3.0"
+    "@backstage/core-components" "^0.13.1"
+    "@backstage/core-plugin-api" "^1.5.1"
+    "@backstage/plugin-catalog-react" "^1.6.0"
+    "@backstage/plugin-kubernetes" "^0.9.1"
+    "@backstage/plugin-kubernetes-common" "^0.6.3"
+    "@backstage/theme" "^0.3.0"
+    "@material-ui/core" "^4.12.2"
+    "@material-ui/icons" "^4.9.1"
+    "@material-ui/lab" "4.0.0-alpha.61"
+    "@weaveworks/weave-gitops" "^0.23.0"
+    luxon "^3.3.0"
+    react-query "^3.39.3"
+    react-use "^17.2.4"
+    styled-components "^5.3.0"
+
 "@webassemblyjs/ast@1.11.6", "@webassemblyjs/ast@^1.11.5":
   version "1.11.6"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.11.6.tgz#db046555d3c413f8966ca50a95176a0e2c642e24"
