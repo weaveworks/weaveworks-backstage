@@ -12,7 +12,7 @@ export function automationLastUpdated(a: FluxObject): string {
     (a.conditions.find(condition => condition.type === 'Ready') || {})
       .timestamp || ''
   );
-};
+}
 
 export const useStyles = makeStyles(theme => ({
   empty: {
@@ -20,16 +20,22 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  syncButton: {
+    padding: 0,
+    margin: '-4px 0',
+  },
 }));
-
 
 export interface VerifiableSource {
   isVerifiable(): boolean;
   conditions: Condition[];
-};
+}
 
 /**
  * Returns the SourceVerified condition if any.
  * @public
  */
-export const findVerificationCondition = (a: VerifiableSource): Condition | undefined => a.conditions.find(condition => condition.type === 'SourceVerified');
+export const findVerificationCondition = (
+  a: VerifiableSource,
+): Condition | undefined =>
+  a.conditions.find(condition => condition.type === 'SourceVerified');

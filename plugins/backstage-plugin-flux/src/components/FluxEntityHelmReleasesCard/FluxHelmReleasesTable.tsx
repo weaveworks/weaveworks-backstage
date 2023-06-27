@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
 import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
-import { Typography } from '@material-ui/core';
-import { Table, TableColumn } from '@backstage/core-components';
+import { IconButton, Typography } from '@material-ui/core';
+import { Progress, Table, TableColumn } from '@backstage/core-components';
 import { DateTime } from 'luxon';
 import { NameLabel } from '../helpers';
+import RetryIcon from '@material-ui/icons/Replay';
 import { automationLastUpdated, useStyles } from '../utils';
+import { useSyncResource } from '../../hooks';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   {
@@ -48,22 +50,28 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
     },
   },
   {
-    title: 'Actions',
     render: (row: HelmRelease) => {
       return <SyncButton helmRelease={row} />;
     },
-    width: '10%',
+    width: '24px',
   },
 ];
 
 export function SyncButton({ helmRelease }: { helmRelease: HelmRelease }) {
-  const sync = useSyncResource(helmRelease);
-  return (
-    <Tooltip title="Sync helm release">
-      <IconButton onClick={sync}>
-        <RetryIcon />
-      </IconButton>
-    </Tooltip>
+  const { sync, isSyncing, error } = useSyncResource(helmRelease);
+  const classes = useStyles();
+  if (error) {
+    console.error(error);
+  }
+
+  console.log({ isSyncing });
+
+  return isSyncing ? (
+    <Progress />
+  ) : (
+    <IconButton className={classes.syncButton} size="small" onClick={sync}>
+      <RetryIcon />
+    </IconButton>
   );
 }
 
@@ -89,6 +97,7 @@ export const FluxHelmReleasesTable = ({
       id: `${hr.clusterName}/${hr.namespace}/${hr.name}`,
       conditions: hr.conditions,
       suspended: hr.suspended,
+      sourceRef: hr.sourceRef,
       name: hr.name,
       namespace: hr.namespace,
       helmChart: hr.helmChart,

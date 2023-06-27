@@ -3,7 +3,10 @@ import React from 'react';
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { HelmRelease } from '@weaveworks/weave-gitops';
-import { useHelmReleases } from '../../hooks/query';
+import {
+  FluxHelmReleasesTableContext,
+  useHelmReleases,
+} from '../../hooks/query';
 import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 
@@ -20,9 +23,11 @@ const HelmReleasesSummary = ({ data }: { data: HelmRelease[] }) => {
 const HelmReleasePanel = () => {
   const { entity } = useEntity();
 
-  const { data, loading, errors } = useHelmReleases(entity);
+  const [refreshInterval, setRefreshInterval] = React.useState(10000);
 
-  if (loading) {
+  const { data, loading, errors } = useHelmReleases(entity, refreshInterval);
+
+  if (loading && !data) {
     return <Progress />;
   }
 
@@ -43,7 +48,13 @@ const HelmReleasePanel = () => {
     return <div>No HelmRelease found</div>;
   }
 
-  return <HelmReleasesSummary data={data} />;
+  return (
+    <FluxHelmReleasesTableContext.Provider
+      value={{ refreshInterval, setRefreshInterval }}
+    >
+      <HelmReleasesSummary data={data} />;
+    </FluxHelmReleasesTableContext.Provider>
+  );
 };
 
 /**
