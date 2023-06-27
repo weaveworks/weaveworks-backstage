@@ -1,7 +1,13 @@
-name: Publish Package to npmjs
+name: CI
+
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,11 +16,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@weaveworksoss'
-      - run: |
-          cd plugins/backstage-plugin-flux
-          yarn install --frozen-lockfile
-          ./publish
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: yarn install
+      - run: yarn lint
+      - run: yarn tsc
+      - run: yarn test
+      - run: yarn build
