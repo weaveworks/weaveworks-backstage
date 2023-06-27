@@ -1,5 +1,9 @@
 import { Entity } from '@backstage/catalog-model';
-import { useCustomResources } from '@backstage/plugin-kubernetes';
+import { useApi } from '@backstage/core-plugin-api';
+import {
+  kubernetesApiRef,
+  useCustomResources,
+} from '@backstage/plugin-kubernetes';
 import {
   ClusterAttributes,
   CustomResourceMatcher,
@@ -177,4 +181,49 @@ export function useOCIRepositories(entity: Entity): OCIRepositoriesResponse {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
+}
+
+const pathForResource = (
+  name: string,
+  namespace: string,
+  gvk: CustomResourceMatcher,
+): string => {
+  const basePath = [
+    '/apis',
+    gvk.group,
+    gvk.apiVersion,
+    ...(namespace ? [`namespaces/${namespace}`] : []),
+    gvk.plural,
+    name,
+  ].join('/');
+
+  return basePath;
+};
+
+const ReconcileRequestAnnotation = 'reconcile.fluxcd.io/requestedAt';
+
+export function useSyncResource(helmRelease: HelmRelease) {
+  const kubernetesApi = useApi(kubernetesApiRef);
+  return () =>
+    kubernetesApi.proxy({
+      clusterName: helmRelease.clusterName,
+      path: pathForResource(
+        helmRelease.name,
+        helmRelease.namespace,
+        helmReleaseGVK,
+      ),
+      init: {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/merge-patch+json',
+        },
+        body: JSON.stringify({
+          metadata: {
+            annotations: {
+              [ReconcileRequestAnnotation]: new Date().toISOString(),
+            },
+          },
+        }),
+      },
+    });
 }

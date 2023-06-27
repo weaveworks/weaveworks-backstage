@@ -47,7 +47,25 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
       });
     },
   },
+  {
+    title: 'Actions',
+    render: (row: HelmRelease) => {
+      return <SyncButton helmRelease={row} />;
+    },
+    width: '10%',
+  },
 ];
+
+export function SyncButton({ helmRelease }: { helmRelease: HelmRelease }) {
+  const sync = useSyncResource(helmRelease);
+  return (
+    <Tooltip title="Sync helm release">
+      <IconButton onClick={sync}>
+        <RetryIcon />
+      </IconButton>
+    </Tooltip>
+  );
+}
 
 type Props = {
   helmReleases: HelmRelease[];
