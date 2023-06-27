@@ -11,14 +11,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # for @weaveworks/weave-gitops which is on github npm packages
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-      - env:
-          # for @weaveworks/weave-gitops which is on github npm packages
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: yarn install
       - run: yarn lint
       - run: yarn tsc
