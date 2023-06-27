@@ -1,5 +1,5 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { HelmRelease } from '@weaveworks/weave-gitops';
+import { HelmRelease } from '../objects';
 
 function weaveGitopsHelmReleaseLink(baseUrl: string, a: HelmRelease): string {
   const queryStringData = {

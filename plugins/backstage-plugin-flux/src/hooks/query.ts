@@ -6,7 +6,7 @@ import {
   KubernetesFetchError,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-import { HelmRelease } from '@weaveworks/weave-gitops';
+import { HelmRelease } from '../objects';
 
 const helmReleaseGVK: CustomResourceMatcher = {
   apiVersion: 'v2beta1',
@@ -40,6 +40,7 @@ function toHelmReleases(kubernetesObjects?: ObjectsByEntityResponse) {
     ({ cluster, resources }) => {
       return resources?.flatMap(resourceKind => {
         return resourceKind.resources.map(resource => {
+          //@ts-ignore
           const helmRelease = new HelmRelease({
             clusterName: cluster.name,
             payload: JSON.stringify(resource),

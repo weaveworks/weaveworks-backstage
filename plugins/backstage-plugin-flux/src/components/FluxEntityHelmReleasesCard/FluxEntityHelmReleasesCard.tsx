@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { HelmRelease, theme } from '@weaveworks/weave-gitops';
 import { ReactNode } from 'react';
 import {
   QueryCache,
@@ -13,6 +12,7 @@ import {
 import { ThemeProvider } from 'styled-components';
 import { useHelmReleases } from '../../hooks/query';
 import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
+import { HelmRelease } from '../../objects';
 
 export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
   const queryOptions: QueryClientConfig = {
