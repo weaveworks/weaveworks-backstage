@@ -1,5 +1,4 @@
 import {
-  FluxObject,
   OCIRepository as WeaveOCIRepository,
   GitRepository as WeaveGitRepository,
 } from '@weaveworks/weave-gitops';
@@ -23,8 +22,12 @@ type Artifact = {
  * @public
  */
 export class OCIRepository extends WeaveOCIRepository {
+  isVerifiable(): boolean {
+    return Boolean(this.obj.spec.verify?.provider !== undefined);
+  }
+
   get verification(): string | undefined {
-    return this.obj.spec.verify.provider;
+    return this.obj.spec.verify?.provider;
   }
 
   get artifact(): Artifact | undefined {

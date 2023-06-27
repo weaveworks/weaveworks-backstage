@@ -1,7 +1,10 @@
 import React from 'react';
-import { GitRepository, HelmRelease } from '@weaveworks/weave-gitops';
+import { HelmRelease } from '@weaveworks/weave-gitops';
 import { Link } from '@backstage/core-components';
-import { OCIRepository, useWeaveFluxDeepLink } from '../hooks';
+import { Tooltip } from '@material-ui/core';
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+import { GitRepository, OCIRepository, useWeaveFluxDeepLink } from '../hooks';
+import { VerifiableSource, findVerificationCondition } from './utils';
 
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
@@ -24,5 +27,28 @@ export const NameLabel = ({
     <Link style={{ fontWeight: 600 }} to={deepLink}>
       {label}
     </Link>
+  );
+};
+
+export const verifiedStatus = ({
+  resource,
+}: {
+  resource: VerifiableSource;
+}): JSX.Element => {
+  const condition = findVerificationCondition(resource);
+
+  let color = '#d8d8d8';
+  if (condition?.status === 'True') {
+    color = '#27AE60';
+  } else if (condition?.status === 'False') {
+    color = '#BC3B1D';
+  }
+
+  // TODO: Alternative icon?
+
+  return (
+    <Tooltip title={condition?.message || ''}>
+      <VerifiedUserIcon style={{ color, height: '16px' }} />
+    </Tooltip>
   );
 };

@@ -1,17 +1,12 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { Flex, KubeStatusIndicator } from '@weaveworks/weave-gitops';
-import { Tooltip, Typography } from '@material-ui/core';
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
+import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { DateTime } from 'luxon';
-import { NameLabel } from '../helpers';
+import { NameLabel, verifiedStatus } from '../helpers';
 import { OCIRepository } from '../../hooks';
-import {
-  automationLastUpdated,
-  findVerificationCondition,
-  useStyles,
-} from '../utils';
+import { automationLastUpdated, useStyles } from '../utils';
 
 const UrlWrapper = styled.div`
   overflow: hidden;
@@ -20,30 +15,6 @@ const UrlWrapper = styled.div`
   direction: rtl;
   max-width: 350px;
 `;
-
-export const verifiedStatus = ({
-  repo,
-}: {
-  repo: OCIRepository;
-}): JSX.Element => {
-  const condition = findVerificationCondition(repo);
-
-  let color = '#d8d8d8';
-  if (condition?.status === 'True') {
-    color = '#27AE60';
-  } else if (condition?.status === 'False') {
-    color = '#BC3B1D';
-  }
-
-  // TODO: shift the style to a "good" or "bad" case?
-  // TODO: Alternative icon?
-
-  return (
-    <Tooltip title={condition?.message || ''}>
-      <VerifiedUserIcon style={{ color, height: '16px' }} />
-    </Tooltip>
-  );
-};
 
 export const defaultColumns: TableColumn<OCIRepository>[] = [
   {
@@ -65,10 +36,8 @@ export const defaultColumns: TableColumn<OCIRepository>[] = [
   {
     title: 'Verified',
     render: (repo: OCIRepository) => {
-      return verifiedStatus({ repo });
+      return verifiedStatus({ resource: repo });
     },
-    field: 'verified',
-    searchable: true,
   },
   {
     title: 'URL',
@@ -121,7 +90,6 @@ export const FluxOCIRepositoriesTable = ({
   columns,
 }: Props) => {
   const classes = useStyles();
-
   // TODO: Simplify this to store the ID and OCIRepository
   const data = ociRepositories.map(or => {
     return {
@@ -132,7 +100,6 @@ export const FluxOCIRepositoriesTable = ({
       suspended: or.suspended,
       name: or.name,
       namespace: or.namespace,
-      verification: or.verification,
       url: or.url,
       clusterName: or.clusterName,
       type: or.type,

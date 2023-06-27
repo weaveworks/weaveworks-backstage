@@ -23,7 +23,7 @@ import {
   FluxEntityHelmReleasesCard,
   FluxEntityGitRepositoriesCard,
 } from '../src/plugin';
-import { newTestHelmRelease, newTestOciRepository } from './helpers';
+import { newTestHelmRelease, newTestOCIRepository } from './helpers';
 import { FluxEntityOCIRepositoriesCard } from '../src/components/FluxEntityOCIRepositoriesCard';
 
 const fakeEntity: Entity = {
@@ -246,31 +246,31 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestOciRepository(
+              newTestOCIRepository(
                 'podinfo',
                 'oci://ghcr.io/stefanprodan/manifests/podinfo',
                 true,
                 true,
               ),
-              newTestOciRepository(
+              newTestOCIRepository(
                 'redis',
                 'oci://registry-1.docker.io/bitnamicharts/redis',
               ),
-              newTestOciRepository(
+              newTestOCIRepository(
                 'postgresql',
                 'oci://registry-1.docker.io/bitnamicharts/postgresql',
                 true,
                 false,
               ),
-              newTestOciRepository(
+              newTestOCIRepository(
                 'apache',
                 'oci://registry-1.docker.io/bitnamicharts/apache',
               ),
-              newTestOciRepository(
+              newTestOCIRepository(
                 'supabase',
                 'oci://registry-1.docker.io/bitnamicharts/supabase',
               ),
-              newTestOciRepository(
+              newTestOCIRepository(
                 'mariadb',
                 'oci://registry-1.docker.io/bitnamicharts/mariadb',
                 true,
