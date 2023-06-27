@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { KubeStatusIndicator } from '@weaveworks/weave-gitops';
+import { Flex, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Tooltip, Typography } from '@material-ui/core';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { Table, TableColumn } from '@backstage/core-components';
@@ -53,14 +53,14 @@ export const defaultColumns: TableColumn<OCIRepository>[] = [
   },
   {
     title: 'Name',
-    render: (repo: OCIRepository) => <NameLabel resource={repo} />,
     field: 'name',
     searchable: true,
-  },
-  {
-    title: 'Cluster',
-    field: 'clusterName',
-    searchable: true,
+    render: (repo: OCIRepository): React.ReactNode => (
+      <Flex column>
+        <NameLabel resource={repo} />
+        <span>{repo.clusterName}</span>
+      </Flex>
+    ),
   },
   {
     title: 'Verified',
@@ -79,7 +79,7 @@ export const defaultColumns: TableColumn<OCIRepository>[] = [
     searchable: true,
   },
   {
-    title: 'Revision',
+    title: 'Tag',
     render: (repo: OCIRepository) => {
       return <span>{repo.artifact?.revision.split('@')[0]}</span>;
     },
