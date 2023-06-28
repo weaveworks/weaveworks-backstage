@@ -1,34 +1,12 @@
 import React from 'react';
-
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { ReactNode } from 'react';
-import {
-  QueryCache,
-  QueryClient,
-  QueryClientConfig,
-  QueryClientProvider,
-} from 'react-query';
-import { ThemeProvider } from 'styled-components';
 import { useHelmReleases } from '../../hooks/query';
 import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
+import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { HelmRelease } from '../../objects';
-import theme from '../../theme';
 
-export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
-  const queryOptions: QueryClientConfig = {
-    queryCache: new QueryCache(),
-  };
-  const queryClient = new QueryClient(queryOptions);
-
-  return (
-    <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </ThemeProvider>
-  );
-};
-
-const HelmReleaseSummary = ({ data }: { data: HelmRelease[] }) => {
+const HelmReleasesSummary = ({ data }: { data: HelmRelease[] }) => {
   return (
     <FluxHelmReleasesTable
       helmReleases={data}
@@ -64,7 +42,7 @@ const HelmReleasePanel = () => {
     return <div>No HelmRelease found</div>;
   }
 
-  return <HelmReleaseSummary data={data} />;
+  return <HelmReleasesSummary data={data} />;
 };
 
 /**

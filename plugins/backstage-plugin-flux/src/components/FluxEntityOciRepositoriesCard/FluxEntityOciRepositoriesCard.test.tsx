@@ -2,7 +2,6 @@ import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { FluxEntityHelmReleasesCard } from './FluxEntityHelmReleasesCard';
 import { configApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
@@ -16,46 +15,79 @@ import {
   KubernetesRequestBody,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
+import { FluxEntityOCIRepositoriesCard } from './FluxEntityOCIRepositoriesCard';
 
-const makeTestHelmRelease = (name: string, chart: string, version: string) => {
+const makeTestOCIRepository = (name: string, url: string) => {
   return {
-    apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
-    kind: 'HelmRelease',
+    apiVersion: 'source.toolkit.fluxcd.io/v1beta2',
+    kind: 'OCIRepository',
     metadata: {
-      annotations: {
-        'metadata.weave.works/test': 'value',
-      },
-      creationTimestamp: '2023-05-25T14:14:46Z',
+      creationTimestamp: '2023-06-23T07:50:47Z',
       finalizers: ['finalizers.fluxcd.io'],
+      generation: 1,
       name: name,
       namespace: 'default',
+      resourceVersion: '143955',
+      uid: '1ec54278-ed2d-4f31-9bb0-39dc7163730e',
     },
     spec: {
       interval: '5m',
-      chart: {
-        spec: {
-          chart,
-          version: '45.x',
-          sourceRef: {
-            kind: 'HelmRepository',
-            name: 'prometheus-community',
-            namespace: 'default',
-          },
-          interval: '60m',
-        },
+      provider: 'generic',
+      timeout: '60s',
+      url: url,
+      verify: {
+        provider: 'cosign',
       },
     },
     status: {
-      lastAppliedRevision: version,
+      artifact: {
+        digest:
+          'sha256:62df151eb3714d9dfa943c7d88192d72466bffa268b25595f85530b793f77524',
+        lastUpdateTime: '2023-06-23T07:50:53Z',
+        metadata: {
+          'org.opencontainers.image.created': '2023-05-03T14:30:58Z',
+          'org.opencontainers.image.revision':
+            '6.3.6/073f1ec5aff930bd3411d33534e91cbe23302324',
+          'org.opencontainers.image.source':
+            'https://github.com/stefanprodan/podinfo',
+        },
+        path: 'ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz',
+        revision:
+          'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4',
+        size: 1071,
+        url: 'http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz',
+      },
       conditions: [
         {
-          lastTransitionTime: '2023-05-25T15:03:33Z',
-          message: 'pulled "test" chart with version "1.0.0"',
-          reason: 'ChartPullSucceeded',
+          lastTransitionTime: '2023-06-23T07:50:53Z',
+          message:
+            "stored artifact for digest 'latest@sha256: 2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'",
+          observedGeneration: 1,
+          reason: 'Succeeded',
           status: 'True',
           type: 'Ready',
         },
+        {
+          lastTransitionTime: '2023-06 - 23T07: 50: 53Z',
+          message:
+            "stored artifact for digest 'latest @sha256: 2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'",
+          observedGeneration: 1,
+          reason: 'Succeeded',
+          status: 'True',
+          type: 'ArtifactInStorage',
+        },
+        {
+          lastTransitionTime: '2023-06-23T07:50:52Z',
+          message:
+            "verified signature of revision latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'",
+          observedGeneration: 1,
+          reason: 'Succeeded',
+          status: 'True',
+          type: 'SourceVerified',
+        },
       ],
+      observedGeneration: 1,
+      url: 'http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/latest.tar.gz',
     },
   };
 };
@@ -84,8 +116,10 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestHelmRelease('redis', 'redis', '1.2.3'),
-                makeTestHelmRelease('normal', 'kube-prometheus-stack', '6.3.5'),
+                makeTestOCIRepository(
+                  'podinfo',
+                  'oci://ghcr.io/stefanprodan/manifests/podinfo',
+                ),
               ],
             },
           ],
@@ -122,7 +156,7 @@ const entity: Entity = {
   },
 };
 
-describe('<FluxEntityHelmReleasesCard />', () => {
+describe('<FluxOCIRepositoriesCard />', () => {
   let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
   beforeEach(() => {
@@ -135,8 +169,8 @@ describe('<FluxEntityHelmReleasesCard />', () => {
     jest.resetAllMocks();
   });
 
-  describe('when the config contains a link to Weave GitOps', () => {
-    it('shows the state of a HelmRelease', async () => {
+  describe('listing OCI Repositories', () => {
+    it('shows the details of an OCI Repository', async () => {
       const result = await renderInTestApp(
         <Wrapper>
           <TestApiProvider
@@ -155,7 +189,7 @@ describe('<FluxEntityHelmReleasesCard />', () => {
             ]}
           >
             <EntityProvider entity={entity}>
-              <FluxEntityHelmReleasesCard />
+              <FluxEntityOCIRepositoriesCard />
             </EntityProvider>
           </TestApiProvider>
         </Wrapper>,
@@ -165,61 +199,25 @@ describe('<FluxEntityHelmReleasesCard />', () => {
 
       const testCases = [
         {
-          name: 'default/normal',
-          version: 'kube-prometheus-stack/6.3.5',
+          name: 'default/podinfo',
+          url: 'oci://ghcr.io/stefanprodan/manifests/podinfo',
           cluster: 'demo-cluster',
-        },
-        {
-          name: 'default/redis',
-          version: 'redis/1.2.3',
-          cluster: 'demo-cluster',
+          revision:
+            'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4',
         },
       ];
+
+      // TODO: test for presence of the Icon?
 
       for (const testCase of testCases) {
         const cell = getByText(testCase.name);
         expect(cell).toBeInTheDocument();
 
-        const td = cell.closest('td');
-        expect(td).toBeInTheDocument();
-        expect(td!.querySelector('a')).toBeInTheDocument();
-
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
-        expect(tr).toHaveTextContent(testCase.version);
+        expect(tr).toHaveTextContent(testCase.url);
         expect(tr).toHaveTextContent(testCase.cluster);
       }
-    });
-  });
-
-  describe('when the config is not configured with a link to Weave GitOps', () => {
-    it('does not include a link to Weave GitOps', async () => {
-      const rendered = await renderInTestApp(
-        <Wrapper>
-          <TestApiProvider
-            apis={[
-              [configApiRef, new ConfigReader({})],
-              [kubernetesApiRef, new StubKubernetesClient()],
-              [
-                kubernetesAuthProvidersApiRef,
-                new StubKubernetesAuthProvidersApi(),
-              ],
-            ]}
-          >
-            <EntityProvider entity={entity}>
-              <FluxEntityHelmReleasesCard />
-            </EntityProvider>
-          </TestApiProvider>
-        </Wrapper>,
-      );
-
-      const { getByText } = rendered;
-
-      const cell = getByText('default/normal');
-      expect(cell).toBeInTheDocument();
-      const td = cell.closest('td');
-      expect(td).toBeInTheDocument();
-      expect(td!.querySelector('a')).toBeNull();
     });
   });
 });

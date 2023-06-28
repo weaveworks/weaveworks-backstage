@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 // eslint-disable-next-line
-import { colors, fontSizes } from '../../typedefs/styled';
+import { colors, fontSizes } from '../typedefs/styled';
 
 export interface TextProps {
   className?: string;

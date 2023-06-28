@@ -1,0 +1,1 @@
+export { FluxEntityOCIRepositoriesCard } from './FluxEntityOCIRepositoriesCard';

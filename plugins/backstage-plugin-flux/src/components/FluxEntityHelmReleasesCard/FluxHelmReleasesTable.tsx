@@ -1,46 +1,31 @@
-import React from 'react';
-import { Typography, makeStyles } from '@material-ui/core';
-import { Link, Table, TableColumn } from '@backstage/core-components';
-import { automationLastUpdated } from './utils';
+import React, { useMemo } from 'react';
+import { Typography } from '@material-ui/core';
+import { Table, TableColumn } from '@backstage/core-components';
 import { DateTime } from 'luxon';
-import { useWeaveFluxDeepLink } from '../../hooks';
+import { NameLabel } from '../helpers';
+import { automationLastUpdated, useStyles } from '../utils';
 import { HelmRelease } from '../../objects';
-import KubeStatusIndicator from './KubeStatusIndicator';
-
-const useStyles = makeStyles(theme => ({
-  empty: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
-
-const NameLabel = ({ helmRelease }: { helmRelease: HelmRelease }) => {
-  const { name, namespace } = helmRelease;
-  const deepLink = useWeaveFluxDeepLink(helmRelease);
-  const label = `${namespace}/${name}`;
-  if (!deepLink) {
-    return <span>{label}</span>;
-  }
-
-  return <Link to={deepLink}>{label}</Link>;
-};
+import KubeStatusIndicator from '../KubeStatusIndicator';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   {
-    title: 'Name',
-    render: (hr: HelmRelease) => <NameLabel helmRelease={hr} />,
+    title: 'id',
+    field: 'id',
+    hidden: true,
   },
   {
-    title: 'Chart',
-    render: (hr: HelmRelease) => {
-      return `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
-    },
+    title: 'Name',
+    render: (hr: HelmRelease) => <NameLabel resource={hr} />,
   },
   {
     title: 'Cluster',
+    field: 'clusterName',
+  },
+  {
+    title: 'Chart',
+    field: 'helmChart.chart',
     render: (hr: HelmRelease) => {
-      return hr.clusterName;
+      return `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
     },
   },
   {
@@ -71,6 +56,9 @@ type Props = {
   columns: TableColumn<HelmRelease>[];
 };
 
+/**
+ * @public
+ */
 export const FluxHelmReleasesTable = ({
   helmReleases,
   isLoading,
@@ -78,10 +66,9 @@ export const FluxHelmReleasesTable = ({
 }: Props) => {
   const classes = useStyles();
 
+  // TODO: Simplify this to store the ID and HelmRelease
   const data = helmReleases.map(hr => {
     return {
-      // make material-table happy and add an id to each row
-      // FIXME: maybe we can tell material-table to use a custome key?
       id: `${hr.clusterName}/${hr.namespace}/${hr.name}`,
       conditions: hr.conditions,
       suspended: hr.suspended,
@@ -90,23 +77,26 @@ export const FluxHelmReleasesTable = ({
       helmChart: hr.helmChart,
       lastAppliedRevision: hr.lastAppliedRevision,
       clusterName: hr.clusterName,
+      type: hr.type,
     } as HelmRelease & { id: string };
   });
 
-  return (
-    <Table
-      columns={columns}
-      options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
-      title="Helm Releases"
-      data={data}
-      isLoading={isLoading}
-      emptyContent={
-        <div className={classes.empty}>
-          <Typography variant="body1">
-            No Helm Releases found for this entity.
-          </Typography>
-        </div>
-      }
-    />
-  );
+  return useMemo(() => {
+    return (
+      <Table
+        columns={columns}
+        options={{ paging: true, search: true, pageSize: 5 }}
+        title="Helm Releases"
+        data={data}
+        isLoading={isLoading}
+        emptyContent={
+          <div className={classes.empty}>
+            <Typography variant="body1">
+              No Helm Releases found for this entity.
+            </Typography>
+          </div>
+        }
+      />
+    );
+  }, [data, isLoading, columns, classes.empty]);
 };
