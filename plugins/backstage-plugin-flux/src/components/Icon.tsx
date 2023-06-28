@@ -3,7 +3,9 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import * as React from 'react';
 import styled from 'styled-components';
-import images from '../images';
+import suspended from '../images/suspended.svg';
+import reconcile from '../images/reconcile.svg';
+import pendingAction from '../images/pending-action.svg';
 // eslint-disable-next-line
 import { colors, fontSizes, spacing } from '../typedefs/styled';
 import Flex from './Flex';
@@ -40,13 +42,13 @@ function getIcon(i: IconType) {
       return ErrorIcon;
 
     case IconType.SuspendedIcon:
-      return () => <img src={images.suspendedSrc} />;
+      return () => <img src={suspended} />;
 
     case IconType.ReconcileIcon:
-      return () => <img src={images.reconcileSrc} />;
+      return () => <img src={reconcile} />;
 
     case IconType.PendingActionIcon:
-      return () => <img src={images.pendingAction} />;
+      return () => <img src={pendingAction} />;
 
     default:
       break;
