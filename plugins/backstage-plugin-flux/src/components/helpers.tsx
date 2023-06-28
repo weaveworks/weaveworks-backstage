@@ -1,5 +1,5 @@
 import React from 'react';
-import { HelmRelease } from '@weaveworks/weave-gitops';
+import { Flex, HelmRelease } from '@weaveworks/weave-gitops';
 import { Link } from '@backstage/core-components';
 import { Tooltip } from '@material-ui/core';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
@@ -30,7 +30,7 @@ export const NameLabel = ({
   );
 };
 
-export const verifiedStatus = ({
+export const VerifiedStatus = ({
   resource,
 }: {
   resource: VerifiableSource;
@@ -52,3 +52,14 @@ export const verifiedStatus = ({
     </Tooltip>
   );
 };
+
+export const NameAndClusterName = ({
+  resource,
+}: {
+  resource: HelmRelease | GitRepository | OCIRepository;
+}): JSX.Element => (
+  <Flex column>
+    <NameLabel resource={resource} />
+    <span>{resource.clusterName}</span>
+  </Flex>
+);

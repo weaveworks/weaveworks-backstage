@@ -1,14 +1,10 @@
 import React, { useMemo } from 'react';
-import {
-  Flex,
-  HelmRelease,
-  KubeStatusIndicator,
-} from '@weaveworks/weave-gitops';
+import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { DateTime } from 'luxon';
 import { automationLastUpdated, useStyles } from '../utils';
-import { NameLabel } from '../helpers';
+import { NameAndClusterName } from '../helpers';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   {
@@ -20,12 +16,8 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
     title: 'Name',
     field: 'name',
     searchable: true,
-    render: (hr: HelmRelease): React.ReactNode => (
-      <Flex column>
-        <NameLabel resource={hr} />
-        <span>{hr.clusterName}</span>
-      </Flex>
-    ),
+    render: (hr: HelmRelease): React.ReactNode =>
+      NameAndClusterName({ resource: hr }),
   },
   {
     title: 'Chart',

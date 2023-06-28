@@ -4,8 +4,8 @@ import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { automationLastUpdated, useStyles } from '../utils';
 import { DateTime } from 'luxon';
-import { NameLabel } from '../helpers';
 import { GitRepository } from '../../hooks';
+import { NameAndClusterName, VerifiedStatus } from '../helpers';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
   {
@@ -15,20 +15,27 @@ export const defaultColumns: TableColumn<GitRepository>[] = [
   },
   {
     title: 'Name',
-    render: (repo: GitRepository) => <NameLabel resource={repo} />,
+    render: (repo: GitRepository): React.ReactNode =>
+      NameAndClusterName({ resource: repo }),
   },
   {
-    title: 'Cluster',
-    field: 'clusterName',
+    title: 'Verified',
+    render: (repo: GitRepository) => {
+      return VerifiedStatus({ resource: repo });
+    },
   },
   {
     title: 'URL',
     field: 'url',
   },
+
   {
-    title: 'Revision',
-    // TODO This should pull from the status.artifact.revision
-    field: 'artifact.revision',
+    title: 'Tag',
+    render: (repo: GitRepository) => {
+      return <span>{repo.artifact?.revision.split('@')[0]}</span>;
+    },
+    field: 'revision',
+    searchable: true,
   },
   {
     title: 'Status',

@@ -4,7 +4,7 @@ import { Flex, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { DateTime } from 'luxon';
-import { NameLabel, verifiedStatus } from '../helpers';
+import { NameAndClusterName, NameLabel, VerifiedStatus } from '../helpers';
 import { OCIRepository } from '../../hooks';
 import { automationLastUpdated, useStyles } from '../utils';
 
@@ -26,17 +26,13 @@ export const defaultColumns: TableColumn<OCIRepository>[] = [
     title: 'Name',
     field: 'name',
     searchable: true,
-    render: (repo: OCIRepository): React.ReactNode => (
-      <Flex column>
-        <NameLabel resource={repo} />
-        <span>{repo.clusterName}</span>
-      </Flex>
-    ),
+    render: (repo: OCIRepository): React.ReactNode =>
+      NameAndClusterName({ resource: repo }),
   },
   {
     title: 'Verified',
     render: (repo: OCIRepository) => {
-      return verifiedStatus({ resource: repo });
+      return VerifiedStatus({ resource: repo });
     },
   },
   {
@@ -104,7 +100,6 @@ export const FluxOCIRepositoriesTable = ({
       clusterName: or.clusterName,
       type: or.type,
       artifact: or.artifact,
-      revision: or.artifact?.revision,
       // can this use lastUpdate: or.lastUpdatedAt ?
       lastUpdatedAt: automationLastUpdated(or),
     } as OCIRepository & { id: string; lastUpdatedAt: string };

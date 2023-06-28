@@ -8,13 +8,13 @@ import {
  * @public
  */
 type Artifact = {
-    digest: string;
-    lastUpdateTime:string;
-    metadata: Map<string,string>;
-    path: string;
-    revision: string;
-    size: number;
-    url: string;
+  digest: string;
+  lastUpdateTime: string;
+  metadata: Map<string, string>;
+  path: string;
+  revision: string;
+  size: number;
+  url: string;
 };
 
 /**
@@ -33,18 +33,22 @@ export class OCIRepository extends WeaveOCIRepository {
   get artifact(): Artifact | undefined {
     return this.obj.status.artifact;
   }
-};
+}
 
 /**
  * Represents a Flux GitRepository;
  * @public
  */
 export class GitRepository extends WeaveGitRepository {
+  isVerifiable(): boolean {
+    return Boolean(this.obj.spec.verify?.provider !== undefined);
+  }
+
   get verification(): string | undefined {
-    return this.obj.spec.verify?.secretRef.name ?? "";
+    return this.obj.spec.verify?.secretRef.name ?? '';
   }
 
   get artifact(): Artifact | undefined {
     return this.obj.status.artifact;
   }
-};
+}
