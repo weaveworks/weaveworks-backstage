@@ -13,6 +13,7 @@ import { ThemeProvider } from 'styled-components';
 import { useHelmReleases } from '../../hooks/query';
 import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
 import { HelmRelease } from '../../objects';
+import theme from '../../theme';
 
 export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
   const queryOptions: QueryClientConfig = {

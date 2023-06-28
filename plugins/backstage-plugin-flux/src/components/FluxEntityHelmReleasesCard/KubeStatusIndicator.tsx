@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
-import { colors } from '../typedefs/styled.d';
+import { colors } from '../../typedefs/styled.d';
 import Flex from './Flex';
 import Icon, { IconType } from './Icon';
 import Text from './Text';
