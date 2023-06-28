@@ -61,11 +61,11 @@ export interface GitRepositoryRef {
 export interface ResponseObject {
   payload: string;
   clusterName: string;
-  tenant: string;
-  uid: string;
-  inventory: GroupVersionKind[];
-  info: string;
-  health: HealthStatus;
+  tenant?: string;
+  uid?: string;
+  inventory?: GroupVersionKind[];
+  info?: string;
+  health?: HealthStatus;
 }
 
 export interface NamespacedObjectReference {
@@ -84,7 +84,7 @@ export class FluxObject {
   uid: string;
   info: string;
   children: FluxObject[];
-  health: HealthStatus;
+  health?: HealthStatus;
   constructor(response: ResponseObject) {
     try {
       this.obj = JSON.parse(response.payload);
@@ -96,7 +96,7 @@ export class FluxObject {
     this.uid = response?.uid || '';
     this.info = response?.info || '';
     this.children = [];
-    this.health = response?.health || {};
+    this.health = response?.health || ({} as ResponseObject['health']);
   }
 
   get yaml(): string {
@@ -332,7 +332,6 @@ export class HelmRelease extends FluxObject {
       name: this.namespace + '-' + this.name,
       namespace: chart.spec?.sourceRef?.namespace || this.namespace,
     };
-    //@ts-ignore
     return new HelmChart({
       payload: JSON.stringify(chart),
       clusterName: this.clusterName,
