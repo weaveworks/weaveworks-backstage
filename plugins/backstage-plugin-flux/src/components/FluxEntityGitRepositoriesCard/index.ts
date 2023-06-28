@@ -1,0 +1,1 @@
+export { FluxEntityGitRepositoriesCard } from './FluxEntityGitRepositoriesCard';

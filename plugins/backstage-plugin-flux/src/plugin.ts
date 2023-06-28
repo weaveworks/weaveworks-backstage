@@ -30,3 +30,33 @@ export const FluxEntityHelmReleasesCard = weaveworksFluxPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+/**
+ * Card used to show the state of Flux GitRepositories for an Entity.
+ * @public
+ */
+export const FluxEntityGitRepositoriesCard = weaveworksFluxPlugin.provide(
+  createRoutableExtension({
+    name: 'FluxEntityGitRepositoriesCard',
+    component: () =>
+      import('./components/FluxEntityGitRepositoriesCard').then(
+        m => m.FluxEntityGitRepositoriesCard,
+      ),
+    mountPoint: rootRouteRef,
+  }),
+);
+
+/**
+ * Card used to show the state of Flux OCIRepositories for an Entity.
+ * @public
+ */
+export const FluxEntityOCIRepositoriesCard = weaveworksFluxPlugin.provide(
+  createRoutableExtension({
+    name: 'FluxEntityOCIRepositoriesCard',
+    component: () =>
+      import('./components/FluxEntityOCIRepositoriesCard').then(
+        m => m.FluxEntityOCIRepositoriesCard,
+      ),
+    mountPoint: rootRouteRef,
+  }),
+);
