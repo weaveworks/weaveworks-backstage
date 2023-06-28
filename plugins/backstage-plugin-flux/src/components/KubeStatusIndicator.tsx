@@ -191,7 +191,10 @@ function KubeStatusIndicator({
   short,
   suspended,
 }: Props) {
-  const { type, color, icon } = getIndicatorInfo(suspended, conditions);
+  const { type, color, icon } = getIndicatorInfo(
+    suspended as boolean,
+    conditions,
+  );
 
   let text = computeMessage(conditions);
   if (short || suspended) text = type;

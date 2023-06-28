@@ -6,8 +6,12 @@ import {
   KubernetesFetchError,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-import { FluxObject, HelmRelease } from '../objects';
-import { OCIRepository, GitRepository } from './types';
+import {
+  FluxObject,
+  GitRepository,
+  HelmRelease,
+  OCIRepository,
+} from '../objects';
 
 const helmReleaseGVK: CustomResourceMatcher = {
   apiVersion: 'v2beta1',

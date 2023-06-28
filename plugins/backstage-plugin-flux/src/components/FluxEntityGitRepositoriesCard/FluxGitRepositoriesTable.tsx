@@ -4,8 +4,8 @@ import { Table, TableColumn } from '@backstage/core-components';
 import { automationLastUpdated, useStyles } from '../utils';
 import { DateTime } from 'luxon';
 import { NameLabel } from '../helpers';
-import { GitRepository } from '../../hooks';
 import KubeStatusIndicator from '../KubeStatusIndicator';
+import { GitRepository } from '../../objects';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
   {

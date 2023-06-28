@@ -1,13 +1,13 @@
 import React from 'react';
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { GitRepository } from '../../hooks';
 import { useGitRepositories } from '../../hooks/query';
 import {
   FluxGitRepositoriesTable,
   defaultColumns,
 } from './FluxGitRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import { GitRepository } from '../../objects';
 
 const GitRepositoriesSummary = ({ data }: { data: GitRepository[] }) => {
   return (

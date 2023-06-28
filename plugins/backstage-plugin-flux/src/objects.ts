@@ -1,6 +1,16 @@
 import _ from 'lodash';
 import { stringify } from 'yaml';
 
+type Artifact = {
+  digest: string;
+  lastUpdateTime: string;
+  metadata: Map<string, string>;
+  path: string;
+  revision: string;
+  size: number;
+  url: string;
+};
+
 export enum Kind {
   GitRepository = 0,
   Bucket = 1,
@@ -33,9 +43,9 @@ export interface HealthStatus {
 export interface Condition {
   type: string;
   status: string;
-  reason: string;
+  reason?: string;
   message: string;
-  timestamp: string;
+  timestamp?: string;
 }
 
 export interface Interval {
@@ -73,10 +83,6 @@ export interface NamespacedObjectReference {
   namespace: string;
 }
 
-export interface ImgPolicy {
-  type?: string;
-  value?: string;
-}
 export class FluxObject {
   obj: any;
   clusterName: string;
@@ -237,6 +243,14 @@ export class GitRepository extends FluxObject {
   get reference(): GitRepositoryRef {
     return this.obj.spec?.ref || {};
   }
+
+  get verification(): string | undefined {
+    return this.obj.spec.verify?.secretRef.name ?? '';
+  }
+
+  get artifact(): Artifact | undefined {
+    return this.obj.status.artifact;
+  }
 }
 
 export class OCIRepository extends FluxObject {
@@ -258,6 +272,18 @@ export class OCIRepository extends FluxObject {
       return '';
     }
     return metadata['org.opencontainers.image.revision'] || '';
+  }
+
+  isVerifiable(): boolean {
+    return Boolean(this.obj.spec.verify?.provider !== undefined);
+  }
+
+  get verification(): string | undefined {
+    return this.obj.spec.verify?.provider;
+  }
+
+  get artifact(): Artifact | undefined {
+    return this.obj.status.artifact;
   }
 }
 
