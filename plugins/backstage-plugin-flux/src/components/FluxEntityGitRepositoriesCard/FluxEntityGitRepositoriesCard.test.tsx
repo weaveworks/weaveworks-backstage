@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
@@ -24,14 +23,12 @@ const makeTestGitRepository = (name: string, url: string, branch: string) => {
     kind: 'GitRepository',
     metadata: {
       creationTimestamp: '2023-06-22T17:58:23Z',
-      finalizers: [
-        'finalizers.fluxcd.io'
-      ],
+      finalizers: ['finalizers.fluxcd.io'],
       generation: 1,
       name: name,
       namespace: 'default',
       resourceVersion: '132764',
-      uid: '068ec137-b2a0-4b35-90ea-4e9a8a2fe5f6'
+      uid: '068ec137-b2a0-4b35-90ea-4e9a8a2fe5f6',
     },
     spec: {
       interval: '1m',
@@ -43,34 +40,37 @@ const makeTestGitRepository = (name: string, url: string, branch: string) => {
     },
     status: {
       artifact: {
-        digest: 'sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51',
+        digest:
+          'sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51',
         lastUpdateTime: '2023-06-22T17:58:24Z',
         path: 'gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
         revision: `${branch}@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a`,
         size: 80053,
-        url: 'http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz'
+        url: 'http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
       },
       conditions: [
         {
           lastTransitionTime: '2023-06-22T17:58:24Z',
-          message: "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
+          message:
+            "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
           observedGeneration: 1,
           reason: 'Succeeded',
           status: 'True',
-          type: 'Ready'
+          type: 'Ready',
         },
         {
           lastTransitionTime: '2023-06-22T17:58:24Z',
-          message: "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
+          message:
+            "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
           observedGeneration: 1,
           reason: 'Succeeded',
           status: 'True',
-          type: 'ArtifactInStorage'
-        }
+          type: 'ArtifactInStorage',
+        },
       ],
-      observedGeneration: 1
+      observedGeneration: 1,
     },
-  }
+  };
 };
 
 class StubKubernetesClient implements KubernetesApi {
@@ -97,8 +97,16 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestGitRepository('backstage', 'https://github.com/weaveworks/weaveworks-backstage', 'main'),
-                makeTestGitRepository('sockshop', 'https://github.com/weaveworks/backstage-sockshop', 'main'),
+                makeTestGitRepository(
+                  'backstage',
+                  'https://github.com/weaveworks/weaveworks-backstage',
+                  'main',
+                ),
+                makeTestGitRepository(
+                  'sockshop',
+                  'https://github.com/weaveworks/backstage-sockshop',
+                  'main',
+                ),
               ],
             },
           ],
