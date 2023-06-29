@@ -7,7 +7,7 @@ import { useHelmReleases } from '../../hooks/query';
 import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 
-const HelmReleaseSummary = ({ data }: { data: HelmRelease[] }) => {
+const HelmReleasesSummary = ({ data }: { data: HelmRelease[] }) => {
   return (
     <FluxHelmReleasesTable
       helmReleases={data}
@@ -43,7 +43,7 @@ const HelmReleasePanel = () => {
     return <div>No HelmRelease found</div>;
   }
 
-  return <HelmReleaseSummary data={data} />;
+  return <HelmReleasesSummary data={data} />;
 };
 
 /**
