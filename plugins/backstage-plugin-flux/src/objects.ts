@@ -70,7 +70,7 @@ export interface GitRepositoryRef {
 
 export interface ResponseObject {
   payload: string;
-  clusterName: string;
+  clusterName?: string;
   tenant?: string;
   uid?: string;
   inventory?: GroupVersionKind[];

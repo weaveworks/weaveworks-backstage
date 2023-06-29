@@ -1,6 +1,10 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { OCIRepository, GitRepository } from './types';
-import { FluxObject, HelmRelease } from '../objects';
+import {
+  FluxObject,
+  GitRepository,
+  HelmRelease,
+  OCIRepository,
+} from '../objects';
 
 const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
   const queryStringData = {

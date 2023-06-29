@@ -3,8 +3,7 @@ import { TestApiProvider } from '@backstage/test-utils';
 import { renderHook } from '@testing-library/react-hooks';
 import React, { PropsWithChildren } from 'react';
 import { useWeaveFluxDeepLink } from './useWeaveFluxDeepLink';
-import { OCIRepository, GitRepository } from './types';
-import { HelmRelease } from '../objects';
+import { GitRepository, HelmRelease, OCIRepository } from '../objects';
 
 const testHelmRelease = new HelmRelease({
   payload:
