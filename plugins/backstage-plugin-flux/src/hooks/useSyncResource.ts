@@ -1,4 +1,4 @@
-import { alertApiRef, useApi } from '@backstage/core-plugin-api';
+import { AlertApi, alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
 import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 import {
@@ -104,59 +104,62 @@ export async function requestSyncResource(
   throw new Error('Timed out waiting for status to update');
 }
 
-async function syncResource(
+export async function syncResource(
   resource: SyncResource,
   kubernetesApi: KubernetesApi,
+  alertApi: AlertApi,
 ) {
-  const gvk = gvkFromResource(resource);
-  if (!gvk) {
-    throw new Error(`Unknown resource type: ${resource.type}`);
-  }
+  try {
+    const gvk = gvkFromResource(resource);
+    if (!gvk) {
+      throw new Error(`Unknown resource type: ${resource.type}`);
+    }
 
-  if ('sourceRef' in resource && resource.sourceRef) {
-    // sync the source
+    if ('sourceRef' in resource && resource.sourceRef) {
+      // sync the source
+      await requestSyncResource(
+        kubernetesApi,
+        resource.sourceRef.name!,
+        resource.sourceRef.namespace || resource.namespace,
+        resource.clusterName,
+        // TODO: derive from resource.sourceRef.kind
+        helmRepositoryGVK,
+        new Date().toISOString(),
+      );
+    }
+
+    // sync the helm release
     await requestSyncResource(
       kubernetesApi,
-      resource.sourceRef.name!,
-      resource.sourceRef.namespace!,
+      resource.name,
+      resource.namespace,
       resource.clusterName,
-      helmRepositoryGVK,
+      helmReleaseGVK,
       new Date().toISOString(),
     );
-  }
 
-  // sync the helm release
-  await requestSyncResource(
-    kubernetesApi,
-    resource.name,
-    resource.namespace,
-    resource.clusterName,
-    helmReleaseGVK,
-    new Date().toISOString(),
-  );
+    alertApi.post({
+      message: 'Sync request successful',
+      severity: 'success',
+      display: 'transient',
+    });
+  } catch (e: any) {
+    alertApi.post({
+      message: `Sync error: ${(e && e.message) || e}`,
+      severity: 'error',
+      display: 'transient',
+    });
+  }
 }
 
 export function useSyncResource(resource: SyncResource) {
   const kubernetesApi = useApi(kubernetesApiRef);
   const alertApi = useApi(alertApiRef);
 
-  const [{ loading }, sync] = useAsyncFn(async () => {
-    try {
-      await syncResource(resource, kubernetesApi);
-
-      alertApi.post({
-        message: 'Sync request successful',
-        severity: 'success',
-        display: 'transient',
-      });
-    } catch (e: any) {
-      alertApi.post({
-        message: `Sync error: ${(e && e.message) || e}`,
-        severity: 'error',
-        display: 'transient',
-      });
-    }
-  }, [resource, kubernetesApi]);
+  const [{ loading }, sync] = useAsyncFn(
+    () => syncResource(resource, kubernetesApi, alertApi),
+    [resource, kubernetesApi, alert],
+  );
 
   return { sync, isSyncing: loading };
 }

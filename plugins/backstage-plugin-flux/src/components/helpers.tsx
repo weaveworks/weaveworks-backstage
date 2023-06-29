@@ -7,10 +7,10 @@ import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import {
   GitRepository,
   OCIRepository,
-  useSyncResource,
   SyncResource,
   useWeaveFluxDeepLink,
 } from '../hooks';
+import { useSyncResource } from '../hooks/useSyncResource';
 import {
   VerifiableSource,
   findVerificationCondition,

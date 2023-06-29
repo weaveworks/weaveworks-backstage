@@ -1,10 +1,14 @@
-import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
+import { kubernetesApiRef } from '@backstage/plugin-kubernetes';
 import {
+  ReconcileRequestAnnotation,
   getRequest,
   pathForResource,
   requestSyncResource,
   syncRequest,
+  syncResource,
 } from './useSyncResource';
+import { HelmRelease } from '@weaveworks/weave-gitops';
+import { alertApiRef } from '@backstage/core-plugin-api';
 
 describe('pathForResource', () => {
   it('returns the correct path', () => {
@@ -73,14 +77,20 @@ describe('getRequest', () => {
 });
 
 function makeMockKubernetesApi() {
-  const mockKubernetsApi: jest.Mocked<typeof kubernetesApiRef.T> = {
+  return {
     getObjectsByEntity: jest.fn(),
     getClusters: jest.fn(),
     getWorkloadsByEntity: jest.fn(),
     getCustomObjectsByEntity: jest.fn(),
     proxy: jest.fn(),
-  };
-  return mockKubernetsApi;
+  } as jest.Mocked<typeof kubernetesApiRef.T>;
+}
+
+function makeMockAlertApi() {
+  return {
+    post: jest.fn(),
+    alert$: jest.fn(),
+  } as jest.Mocked<typeof alertApiRef.T>;
 }
 
 describe('requestSyncResource', () => {
@@ -158,5 +168,116 @@ describe('requestSyncResource', () => {
         'test-now',
       ),
     ).rejects.toThrow('Failed to sync resource: 500 Internal Server Error');
+  });
+});
+
+describe('syncResource', () => {
+  const helmRelease = {
+    type: 'HelmRelease',
+    name: 'test-name',
+    namespace: 'test-namespace',
+    sourceRef: {
+      name: 'test-source-name',
+    },
+    clusterName: 'test-clusterName',
+  } as HelmRelease;
+
+  it('should sync the source and resource', async () => {
+    const kubernetesApi = makeMockKubernetesApi();
+    const alertApi = makeMockAlertApi();
+
+    const nows: string[] = [];
+    kubernetesApi.proxy.mockImplementation(async ({ init }) => {
+      // PATCH
+      if (init?.method === 'PATCH') {
+        const data = JSON.parse(init.body as string);
+        nows.push(data.metadata.annotations[ReconcileRequestAnnotation]);
+        return {
+          ok: true,
+        } as Response;
+      }
+
+      // otherwise return the poll response
+      return {
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            status: {
+              lastHandledReconcileAt: nows[nows.length - 1],
+            },
+          }),
+      } as Response;
+    });
+
+    await syncResource(helmRelease, kubernetesApi, alertApi);
+
+    // Assert we tried to PATCH the source
+    expect(kubernetesApi.proxy).toHaveBeenCalledWith({
+      clusterName: 'test-clusterName',
+      init: {
+        body: `{"metadata":{"annotations":{"reconcile.fluxcd.io/requestedAt":"${nows[0]}"}}}`,
+        headers: {
+          'Content-Type': 'application/merge-patch+json',
+        },
+        method: 'PATCH',
+      },
+      path: '/apis/source.toolkit.fluxcd.io/v1beta2/namespaces/test-namespace/helmrepositories/test-source-name',
+    });
+
+    // ASSERT we tried to PATCH the resource
+    expect(kubernetesApi.proxy).toHaveBeenCalledWith({
+      clusterName: 'test-clusterName',
+      init: {
+        body: `{"metadata":{"annotations":{"reconcile.fluxcd.io/requestedAt":"${nows[1]}"}}}`,
+        headers: {
+          'Content-Type': 'application/merge-patch+json',
+        },
+        method: 'PATCH',
+      },
+      path: '/apis/helm.toolkit.fluxcd.io/v2beta1/namespaces/test-namespace/helmreleases/test-name',
+    });
+
+    expect(alertApi.post).toHaveBeenCalledWith({
+      display: 'transient',
+      message: 'Sync request successful',
+      severity: 'success',
+    });
+  });
+
+  it('should post an error if something goes wrong', async () => {
+    const kubernetesApi = makeMockKubernetesApi();
+    const alertApi = makeMockAlertApi();
+
+    kubernetesApi.proxy.mockResolvedValue({
+      ok: false,
+      status: 403,
+      statusText: 'Forbidden',
+    } as Response);
+
+    await syncResource(helmRelease, kubernetesApi, alertApi);
+
+    expect(alertApi.post).toHaveBeenCalledWith({
+      display: 'transient',
+      message: 'Sync error: Failed to sync resource: 403 Forbidden',
+      severity: 'error',
+    });
+  });
+
+  it('should post an error if something goes wrong locally', async () => {
+    const kubernetesApi = makeMockKubernetesApi();
+    const alertApi = makeMockAlertApi();
+
+    kubernetesApi.proxy.mockResolvedValue({
+      ok: true,
+      json: () => Promise.reject(new Error('bad json')),
+    } as Response);
+
+    await syncResource(helmRelease, kubernetesApi, alertApi);
+
+    expect(alertApi.post).toHaveBeenCalledWith({
+      display: 'transient',
+      message: 'Sync error: bad json',
+      severity: 'error',
+    });
   });
 });

@@ -18,7 +18,7 @@ import {
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
 import { act, fireEvent, waitFor } from '@testing-library/react';
-import { ReconcileRequestAnnotation } from '../../hooks';
+import { ReconcileRequestAnnotation, useSyncResource } from '../../hooks';
 
 const makeTestHelmRelease = (name: string, chart: string, version: string) => {
   return {
@@ -223,34 +223,18 @@ describe('<FluxEntityHelmReleasesCard />', () => {
       expect(button).toBeInTheDocument();
     });
 
-    it('clicking the button should trigger a sync', async () => {
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('clicking the button should trigger a sync (error in this case)', async () => {
       const kubernetesApi = new StubKubernetesClient();
 
-      let now: string = '';
-
-      (kubernetesApi.proxy as any).mockImplementation(
-        ({ init }: { init: RequestInit }) => {
-          // PATCH
-          if (init?.method === 'PATCH') {
-            const data = JSON.parse(init.body as string);
-            now = data.metadata.annotations[ReconcileRequestAnnotation];
-            return {
-              ok: true,
-            };
-          }
-
-          // otherwise return the poll response
-          return {
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                status: {
-                  lastHandledReconcileAt: now,
-                },
-              }),
-          } as Response;
-        },
-      );
+      (kubernetesApi.proxy as any).mockResolvedValue({
+        ok: false,
+        status: 403,
+        statusText: 'forbidden',
+      } as Response);
 
       const mockAlertApi = {
         post: jest.fn(),
@@ -293,8 +277,8 @@ describe('<FluxEntityHelmReleasesCard />', () => {
       await waitFor(() => {
         expect(mockAlertApi.post).toHaveBeenCalledWith({
           display: 'transient',
-          message: 'Sync request successful',
-          severity: 'success',
+          message: 'Sync error: Failed to sync resource: 403 forbidden',
+          severity: 'error',
         });
       });
     });
