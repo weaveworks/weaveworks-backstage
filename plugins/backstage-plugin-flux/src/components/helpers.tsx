@@ -36,13 +36,14 @@ export const NameLabel = ({
   const { name, namespace } = resource;
   const deepLink = useWeaveFluxDeepLink(resource);
   const label = `${namespace}/${name}`;
+  const style = { fontWeight: 600, marginBottom: '6px' };
 
   if (!deepLink) {
-    return <span style={{ fontWeight: 600 }}>{label}</span>;
+    return <span style={style}>{label}</span>;
   }
 
   return (
-    <Link style={{ fontWeight: 600 }} to={deepLink}>
+    <Link style={style} to={deepLink}>
       {label}
     </Link>
   );
@@ -68,6 +69,8 @@ export const VerifiedStatus = ({
     color = '#27AE60';
   } else if (condition?.status === 'False') {
     color = '#BC3B1D';
+  } else if (condition?.status !== undefined) {
+    color = '#FEF071';
   }
 
   return (
