@@ -90,6 +90,7 @@ export const FluxOCIRepositoriesTable = ({
   columns,
 }: Props) => {
   const classes = useStyles();
+
   // TODO: Simplify this to store the ID and OCIRepository
   const data = ociRepositories.map(or => {
     return {

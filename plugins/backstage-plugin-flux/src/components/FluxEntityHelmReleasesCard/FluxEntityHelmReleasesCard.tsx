@@ -2,15 +2,32 @@ import React from 'react';
 
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { HelmRelease } from '@weaveworks/weave-gitops';
+import { HelmRelease, theme } from '@weaveworks/weave-gitops';
+import { ReactNode } from 'react';
 import {
-  FluxHelmReleasesTableContext,
-  useHelmReleases,
-} from '../../hooks/query';
+  QueryCache,
+  QueryClient,
+  QueryClientConfig,
+  QueryClientProvider,
+} from 'react-query';
+import { ThemeProvider } from 'styled-components';
+import { useHelmReleases } from '../../hooks/query';
 import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
-import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 
-const HelmReleasesSummary = ({ data }: { data: HelmRelease[] }) => {
+export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
+  const queryOptions: QueryClientConfig = {
+    queryCache: new QueryCache(),
+  };
+  const queryClient = new QueryClient(queryOptions);
+
+  return (
+    <ThemeProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </ThemeProvider>
+  );
+};
+
+const HelmReleaseSummary = ({ data }: { data: HelmRelease[] }) => {
   return (
     <FluxHelmReleasesTable
       helmReleases={data}
@@ -23,11 +40,9 @@ const HelmReleasesSummary = ({ data }: { data: HelmRelease[] }) => {
 const HelmReleasePanel = () => {
   const { entity } = useEntity();
 
-  const [refreshInterval, setRefreshInterval] = React.useState(10000);
+  const { data, loading, errors } = useHelmReleases(entity);
 
-  const { data, loading, errors } = useHelmReleases(entity, refreshInterval);
-
-  if (loading && !data) {
+  if (loading) {
     return <Progress />;
   }
 
@@ -48,13 +63,7 @@ const HelmReleasePanel = () => {
     return <div>No HelmRelease found</div>;
   }
 
-  return (
-    <FluxHelmReleasesTableContext.Provider
-      value={{ refreshInterval, setRefreshInterval }}
-    >
-      <HelmReleasesSummary data={data} />;
-    </FluxHelmReleasesTableContext.Provider>
-  );
+  return <HelmReleaseSummary data={data} />;
 };
 
 /**

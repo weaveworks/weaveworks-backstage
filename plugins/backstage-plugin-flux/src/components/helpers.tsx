@@ -1,10 +1,21 @@
 import React from 'react';
 import { HelmRelease } from '@weaveworks/weave-gitops';
-import { Link } from '@backstage/core-components';
-import { Tooltip } from '@material-ui/core';
+import { Link, Progress } from '@backstage/core-components';
+import { IconButton, Tooltip } from '@material-ui/core';
+import RetryIcon from '@material-ui/icons/Replay';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import { GitRepository, OCIRepository, useWeaveFluxDeepLink } from '../hooks';
-import { VerifiableSource, findVerificationCondition } from './utils';
+import {
+  GitRepository,
+  OCIRepository,
+  useSyncResource,
+  SyncResource,
+  useWeaveFluxDeepLink,
+} from '../hooks';
+import {
+  VerifiableSource,
+  findVerificationCondition,
+  useStyles,
+} from './utils';
 
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
@@ -29,6 +40,30 @@ export const NameLabel = ({
     </Link>
   );
 };
+
+export function SyncButton({ resource }: { resource: SyncResource }) {
+  const { sync, isSyncing } = useSyncResource(resource);
+
+  const classes = useStyles();
+
+  return isSyncing ? (
+    <Progress />
+  ) : (
+    <IconButton className={classes.syncButton} size="small" onClick={sync}>
+      <RetryIcon />
+    </IconButton>
+  );
+}
+
+export function syncColumn() {
+  return {
+    title: '',
+    render: (row: SyncResource) => {
+      return <SyncButton resource={row} />;
+    },
+    width: '24px',
+  };
+}
 
 export const verifiedStatus = ({
   resource,

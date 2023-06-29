@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
 import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
-import { IconButton, Typography } from '@material-ui/core';
-import { Progress, Table, TableColumn } from '@backstage/core-components';
+import { Typography } from '@material-ui/core';
+import { Table, TableColumn } from '@backstage/core-components';
 import { DateTime } from 'luxon';
-import { NameLabel } from '../helpers';
-import RetryIcon from '@material-ui/icons/Replay';
+import { NameLabel, syncColumn } from '../helpers';
 import { automationLastUpdated, useStyles } from '../utils';
-import { useSyncResource } from '../../hooks';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   {
@@ -16,6 +14,7 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
   },
   {
     title: 'Name',
+    width: '30%',
     render: (hr: HelmRelease) => <NameLabel resource={hr} />,
   },
   {
@@ -49,31 +48,8 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
       });
     },
   },
-  {
-    render: (row: HelmRelease) => {
-      return <SyncButton helmRelease={row} />;
-    },
-    width: '24px',
-  },
+  syncColumn(),
 ];
-
-export function SyncButton({ helmRelease }: { helmRelease: HelmRelease }) {
-  const { sync, isSyncing, error } = useSyncResource(helmRelease);
-  const classes = useStyles();
-  if (error) {
-    console.error(error);
-  }
-
-  console.log({ isSyncing });
-
-  return isSyncing ? (
-    <Progress />
-  ) : (
-    <IconButton className={classes.syncButton} size="small" onClick={sync}>
-      <RetryIcon />
-    </IconButton>
-  );
-}
 
 type Props = {
   helmReleases: HelmRelease[];

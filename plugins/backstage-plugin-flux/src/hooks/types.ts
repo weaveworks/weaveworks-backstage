@@ -1,6 +1,8 @@
+import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 import {
   OCIRepository as WeaveOCIRepository,
   GitRepository as WeaveGitRepository,
+  FluxObject,
 } from '@weaveworks/weave-gitops';
 
 /**
@@ -8,13 +10,13 @@ import {
  * @public
  */
 type Artifact = {
-    digest: string;
-    lastUpdateTime:string;
-    metadata: Map<string,string>;
-    path: string;
-    revision: string;
-    size: number;
-    url: string;
+  digest: string;
+  lastUpdateTime: string;
+  metadata: Map<string, string>;
+  path: string;
+  revision: string;
+  size: number;
+  url: string;
 };
 
 /**
@@ -33,7 +35,7 @@ export class OCIRepository extends WeaveOCIRepository {
   get artifact(): Artifact | undefined {
     return this.obj.status.artifact;
   }
-};
+}
 
 /**
  * Represents a Flux GitRepository;
@@ -41,10 +43,47 @@ export class OCIRepository extends WeaveOCIRepository {
  */
 export class GitRepository extends WeaveGitRepository {
   get verification(): string | undefined {
-    return this.obj.spec.verify?.secretRef.name ?? "";
+    return this.obj.spec.verify?.secretRef.name ?? '';
   }
 
   get artifact(): Artifact | undefined {
     return this.obj.status.artifact;
   }
+}
+
+export const helmReleaseGVK: CustomResourceMatcher = {
+  apiVersion: 'v2beta1',
+  group: 'helm.toolkit.fluxcd.io',
+  plural: 'helmreleases',
 };
+
+export const gitRepositoriesGVK: CustomResourceMatcher = {
+  apiVersion: 'v1beta2',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'gitrepositories',
+};
+
+export const ociRepositoriesGVK: CustomResourceMatcher = {
+  apiVersion: 'v1beta2',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'ocirepositories',
+};
+
+export const helmRepositoryGVK: CustomResourceMatcher = {
+  apiVersion: 'v1beta2',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'helmrepositories',
+};
+
+export function gvkFromResource(
+  resource: FluxObject,
+): CustomResourceMatcher | undefined {
+  if (resource.type === 'HelmRelease') {
+    return helmReleaseGVK;
+  } else if (resource.type === 'GitRepository') {
+    return gitRepositoriesGVK;
+  } else if (resource.type === 'OCIRepository') {
+    return ociRepositoriesGVK;
+  }
+  return undefined;
+}
