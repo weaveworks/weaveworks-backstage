@@ -9,7 +9,7 @@ import {
 import { useAsyncFn } from 'react-use';
 import { gvkFromResource, helmReleaseGVK, helmRepositoryGVK } from './types';
 
-const ReconcileRequestAnnotation = 'reconcile.fluxcd.io/requestedAt';
+export const ReconcileRequestAnnotation = 'reconcile.fluxcd.io/requestedAt';
 
 export type SyncResource = HelmRelease | OCIRepository | GitRepository;
 

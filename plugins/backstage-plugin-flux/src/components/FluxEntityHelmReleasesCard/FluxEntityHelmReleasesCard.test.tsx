@@ -4,7 +4,7 @@ import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { FluxEntityHelmReleasesCard } from './FluxEntityHelmReleasesCard';
-import { configApiRef } from '@backstage/core-plugin-api';
+import { alertApiRef, configApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
   KubernetesApi,
@@ -17,6 +17,8 @@ import {
   KubernetesRequestBody,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
+import { act, fireEvent, waitFor } from '@testing-library/react';
+import { ReconcileRequestAnnotation } from '../../hooks';
 
 const makeTestHelmRelease = (name: string, chart: string, version: string) => {
   return {
@@ -123,45 +125,35 @@ const entity: Entity = {
   },
 };
 
+function renderHelmReleasesCard() {
+  return renderInTestApp(
+    <TestApiProvider
+      apis={[
+        [
+          configApiRef,
+          new ConfigReader({
+            gitops: { baseUrl: 'https://example.com/wego' },
+          }),
+        ],
+        [kubernetesApiRef, new StubKubernetesClient()],
+        [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+      ]}
+    >
+      <EntityProvider entity={entity}>
+        <FluxEntityHelmReleasesCard />
+      </EntityProvider>
+    </TestApiProvider>,
+  );
+}
+
 describe('<FluxEntityHelmReleasesCard />', () => {
-  let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
-
-  beforeEach(() => {
-    Wrapper = ({ children }: { children?: React.ReactNode }) => (
-      <div>{children}</div>
-    );
-  });
-
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
   describe('when the config contains a link to Weave GitOps', () => {
     it('shows the state of a HelmRelease', async () => {
-      const result = await renderInTestApp(
-        <Wrapper>
-          <TestApiProvider
-            apis={[
-              [
-                configApiRef,
-                new ConfigReader({
-                  gitops: { baseUrl: 'https://example.com/wego' },
-                }),
-              ],
-              [kubernetesApiRef, new StubKubernetesClient()],
-              [
-                kubernetesAuthProvidersApiRef,
-                new StubKubernetesAuthProvidersApi(),
-              ],
-            ]}
-          >
-            <EntityProvider entity={entity}>
-              <FluxEntityHelmReleasesCard />
-            </EntityProvider>
-          </TestApiProvider>
-        </Wrapper>,
-      );
-
+      const result = await renderHelmReleasesCard();
       const { getByText } = result;
 
       const testCases = [
@@ -196,22 +188,20 @@ describe('<FluxEntityHelmReleasesCard />', () => {
   describe('when the config is not configured with a link to Weave GitOps', () => {
     it('does not include a link to Weave GitOps', async () => {
       const rendered = await renderInTestApp(
-        <Wrapper>
-          <TestApiProvider
-            apis={[
-              [configApiRef, new ConfigReader({})],
-              [kubernetesApiRef, new StubKubernetesClient()],
-              [
-                kubernetesAuthProvidersApiRef,
-                new StubKubernetesAuthProvidersApi(),
-              ],
-            ]}
-          >
-            <EntityProvider entity={entity}>
-              <FluxEntityHelmReleasesCard />
-            </EntityProvider>
-          </TestApiProvider>
-        </Wrapper>,
+        <TestApiProvider
+          apis={[
+            [configApiRef, new ConfigReader({})],
+            [kubernetesApiRef, new StubKubernetesClient()],
+            [
+              kubernetesAuthProvidersApiRef,
+              new StubKubernetesAuthProvidersApi(),
+            ],
+          ]}
+        >
+          <EntityProvider entity={entity}>
+            <FluxEntityHelmReleasesCard />
+          </EntityProvider>
+        </TestApiProvider>,
       );
 
       const { getByText } = rendered;
@@ -221,6 +211,92 @@ describe('<FluxEntityHelmReleasesCard />', () => {
       const td = cell.closest('td');
       expect(td).toBeInTheDocument();
       expect(td!.querySelector('a')).toBeNull();
+    });
+  });
+
+  describe('syncing', () => {
+    it('should show a sync button', async () => {
+      const rendered = await renderHelmReleasesCard();
+
+      const { findByTitle } = rendered;
+      const button = await findByTitle('sync default/normal');
+      expect(button).toBeInTheDocument();
+    });
+
+    it('clicking the button should trigger a sync', async () => {
+      const kubernetesApi = new StubKubernetesClient();
+
+      let now: string = '';
+
+      (kubernetesApi.proxy as any).mockImplementation(
+        ({ init }: { init: RequestInit }) => {
+          // PATCH
+          if (init?.method === 'PATCH') {
+            const data = JSON.parse(init.body as string);
+            now = data.metadata.annotations[ReconcileRequestAnnotation];
+            return {
+              ok: true,
+            };
+          }
+
+          // otherwise return the poll response
+          return {
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                status: {
+                  lastHandledReconcileAt: now,
+                },
+              }),
+          } as Response;
+        },
+      );
+
+      const mockAlertApi = {
+        post: jest.fn(),
+        alert$: jest.fn(),
+      };
+
+      const rendered = await renderInTestApp(
+        <TestApiProvider
+          apis={[
+            [
+              configApiRef,
+              new ConfigReader({
+                gitops: { baseUrl: 'https://example.com/wego' },
+              }),
+            ],
+            [kubernetesApiRef, kubernetesApi],
+            [alertApiRef, mockAlertApi],
+            [
+              kubernetesAuthProvidersApiRef,
+              new StubKubernetesAuthProvidersApi(),
+            ],
+          ]}
+        >
+          <EntityProvider entity={entity}>
+            <FluxEntityHelmReleasesCard />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      const { findByTitle } = rendered;
+
+      const button = await findByTitle('sync default/normal');
+      expect(button).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(button!);
+      });
+
+      // We don't render whatever part of backstage actually renders the alerts
+      await waitFor(() => {
+        expect(mockAlertApi.post).toHaveBeenCalledWith({
+          display: 'transient',
+          message: 'Sync request successful',
+          severity: 'success',
+        });
+      });
     });
   });
 });
