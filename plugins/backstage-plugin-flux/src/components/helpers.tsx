@@ -1,10 +1,28 @@
 import React from 'react';
-import { Flex, HelmRelease } from '@weaveworks/weave-gitops';
+import styled from 'styled-components';
+import { DateTime } from 'luxon';
+import {
+  Flex,
+  HelmRelease,
+  KubeStatusIndicator,
+} from '@weaveworks/weave-gitops';
 import { Link } from '@backstage/core-components';
 import { Tooltip } from '@material-ui/core';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { GitRepository, OCIRepository, useWeaveFluxDeepLink } from '../hooks';
-import { VerifiableSource, findVerificationCondition } from './utils';
+import {
+  VerifiableSource,
+  automationLastUpdated,
+  findVerificationCondition,
+} from './utils';
+
+const UrlWrapper = styled.div`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  direction: rtl;
+  max-width: 350px;
+`;
 
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
@@ -30,6 +48,14 @@ export const NameLabel = ({
   );
 };
 
+export const Id = () => {
+  return {
+    title: 'id',
+    field: 'id',
+    hidden: true,
+  };
+};
+
 export const VerifiedStatus = ({
   resource,
 }: {
@@ -43,8 +69,6 @@ export const VerifiedStatus = ({
   } else if (condition?.status === 'False') {
     color = '#BC3B1D';
   }
-
-  // TODO: Alternative icon?
 
   return (
     <Tooltip title={condition?.message || ''}>
@@ -63,3 +87,69 @@ export const NameAndClusterName = ({
     <span>{resource.clusterName}</span>
   </Flex>
 );
+
+export const NameAndClusterNameColumn = () => {
+  return {
+    title: 'Name',
+    render: (
+      resource: HelmRelease | GitRepository | OCIRepository,
+    ): React.ReactNode => NameAndClusterName({ resource }),
+  };
+};
+
+export const VerifiedColumn = () => {
+  return {
+    title: 'Verified',
+    render: (resource: GitRepository | OCIRepository) => {
+      return VerifiedStatus({ resource });
+    },
+  };
+};
+
+export const UrlColumn = () => {
+  return {
+    title: 'URL',
+    render: (resource: GitRepository | OCIRepository) => {
+      return <UrlWrapper title={resource.url}>{resource.url}</UrlWrapper>;
+    },
+    field: 'url',
+    searchable: true,
+  };
+};
+
+export const TagColumn = () => {
+  return {
+    title: 'URL',
+    render: (resource: GitRepository | OCIRepository) => {
+      return <span>{resource.artifact?.revision.split('@')[0]}</span>;
+    },
+    field: 'revision',
+    searchable: true,
+  };
+};
+
+export const StatusColumn = () => {
+  return {
+    title: 'Status',
+    render: (resource: GitRepository | OCIRepository | HelmRelease) => {
+      return (
+        <KubeStatusIndicator
+          short
+          conditions={resource.conditions}
+          suspended={resource.suspended}
+        />
+      );
+    },
+  };
+};
+
+export const UpdatedColumn = () => {
+  return {
+    title: 'Updated',
+    render: (resource: GitRepository | OCIRepository | HelmRelease) => {
+      return DateTime.fromISO(automationLastUpdated(resource)).toRelative({
+        locale: 'en',
+      });
+    },
+  };
+};

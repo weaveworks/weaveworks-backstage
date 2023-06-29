@@ -1,24 +1,18 @@
 import React, { useMemo } from 'react';
-import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
+import { HelmRelease } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
-import { DateTime } from 'luxon';
-import { automationLastUpdated, useStyles } from '../utils';
-import { NameAndClusterName } from '../helpers';
+import { useStyles } from '../utils';
+import {
+  Id,
+  NameAndClusterNameColumn,
+  StatusColumn,
+  UpdatedColumn,
+} from '../helpers';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
-  {
-    title: 'id',
-    field: 'id',
-    hidden: true,
-  },
-  {
-    title: 'Name',
-    field: 'name',
-    searchable: true,
-    render: (hr: HelmRelease): React.ReactNode =>
-      NameAndClusterName({ resource: hr }),
-  },
+  Id(),
+  NameAndClusterNameColumn(),
   {
     title: 'Chart',
     field: 'helmChart.chart',
@@ -26,26 +20,8 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
       return `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
     },
   },
-  {
-    title: 'Status',
-    render: (hr: HelmRelease) => {
-      return (
-        <KubeStatusIndicator
-          short
-          conditions={hr.conditions}
-          suspended={hr.suspended}
-        />
-      );
-    },
-  },
-  {
-    title: 'Updated',
-    render: (hr: HelmRelease) => {
-      return DateTime.fromISO(automationLastUpdated(hr)).toRelative({
-        locale: 'en',
-      });
-    },
-  },
+  StatusColumn(),
+  UpdatedColumn(),
 ];
 
 type Props = {
@@ -66,16 +42,26 @@ export const FluxHelmReleasesTable = ({
 
   // TODO: Simplify this to store the ID and HelmRelease
   const data = helmReleases.map(hr => {
+    const {
+      clusterName,
+      namespace,
+      name,
+      helmChart,
+      conditions,
+      suspended,
+      type,
+      lastAppliedRevision,
+    } = hr;
     return {
-      id: `${hr.clusterName}/${hr.namespace}/${hr.name}`,
-      conditions: hr.conditions,
-      suspended: hr.suspended,
-      name: hr.name,
-      namespace: hr.namespace,
-      helmChart: hr.helmChart,
-      lastAppliedRevision: hr.lastAppliedRevision,
-      clusterName: hr.clusterName,
-      type: hr.type,
+      id: `${clusterName}/${namespace}/${name}`,
+      conditions,
+      suspended,
+      name,
+      namespace,
+      helmChart,
+      lastAppliedRevision,
+      clusterName,
+      type,
     } as HelmRelease & { id: string };
   });
 
