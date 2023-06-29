@@ -1,20 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import { DateTime } from 'luxon';
-import {
-  Flex,
-  HelmRelease,
-  KubeStatusIndicator,
-} from '@weaveworks/weave-gitops';
 import { Link } from '@backstage/core-components';
 import { Tooltip } from '@material-ui/core';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import { GitRepository, OCIRepository, useWeaveFluxDeepLink } from '../hooks';
+import { useWeaveFluxDeepLink } from '../hooks';
 import {
   VerifiableSource,
   automationLastUpdated,
   findVerificationCondition,
 } from './utils';
+import { GitRepository, HelmRelease, OCIRepository } from '../objects';
+import Flex from './Flex';
+import KubeStatusIndicator from './KubeStatusIndicator';
 
 const UrlWrapper = styled.div`
   overflow: hidden;

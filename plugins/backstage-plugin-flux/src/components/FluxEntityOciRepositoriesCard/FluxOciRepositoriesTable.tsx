@@ -10,8 +10,8 @@ import {
   StatusColumn,
   UpdatedColumn,
 } from '../helpers';
-import { OCIRepository } from '../../hooks';
 import { useStyles } from '../utils';
+import { OCIRepository } from '../../objects';
 
 export const defaultColumns: TableColumn<OCIRepository>[] = [
   Id(),

@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { HelmRelease } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { useStyles } from '../utils';
@@ -9,6 +8,7 @@ import {
   StatusColumn,
   UpdatedColumn,
 } from '../helpers';
+import { HelmRelease } from '../../objects';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   Id(),
@@ -69,7 +69,7 @@ export const FluxHelmReleasesTable = ({
     return (
       <Table
         columns={columns}
-        options={{ paging: true, search: true, pageSize: 5 }}
+        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
         title="Helm Releases"
         data={data}
         isLoading={isLoading}

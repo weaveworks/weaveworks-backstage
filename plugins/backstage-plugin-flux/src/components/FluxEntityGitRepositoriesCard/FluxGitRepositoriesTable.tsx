@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { useStyles } from '../utils';
-import { GitRepository } from '../../hooks';
 import {
   Id,
   NameAndClusterNameColumn,
@@ -12,6 +11,7 @@ import {
   StatusColumn,
   UpdatedColumn,
 } from '../helpers';
+import { GitRepository } from '../../objects';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
   Id(),
