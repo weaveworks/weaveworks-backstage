@@ -18,6 +18,7 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  nameLabel: { fontWeight: 600, marginBottom: '6px' },
 }));
 
 export interface VerifiableSource {

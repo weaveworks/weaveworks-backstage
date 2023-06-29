@@ -2,25 +2,25 @@ import React, { useMemo } from 'react';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import {
-  Id,
-  NameAndClusterNameColumn,
-  VerifiedColumn,
-  UrlColumn,
-  TagColumn,
-  StatusColumn,
-  UpdatedColumn,
+  idColumn,
+  nameAndClusterNameColumn,
+  verifiedColumn,
+  urlColumn,
+  tagColumn,
+  statusColumn,
+  updatedColumn,
 } from '../helpers';
 import { useStyles } from '../utils';
 import { OCIRepository } from '../../objects';
 
 export const defaultColumns: TableColumn<OCIRepository>[] = [
-  Id(),
-  NameAndClusterNameColumn(),
-  VerifiedColumn(),
-  UrlColumn(),
-  TagColumn(),
-  StatusColumn(),
-  UpdatedColumn(),
+  idColumn(),
+  nameAndClusterNameColumn(),
+  verifiedColumn(),
+  urlColumn(),
+  tagColumn(),
+  statusColumn(),
+  updatedColumn(),
 ];
 
 type Props = {

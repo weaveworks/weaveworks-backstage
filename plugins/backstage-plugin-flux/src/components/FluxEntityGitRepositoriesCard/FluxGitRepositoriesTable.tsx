@@ -3,24 +3,24 @@ import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { useStyles } from '../utils';
 import {
-  Id,
-  NameAndClusterNameColumn,
-  VerifiedColumn,
-  UrlColumn,
-  TagColumn,
-  StatusColumn,
-  UpdatedColumn,
+  idColumn,
+  nameAndClusterNameColumn,
+  verifiedColumn,
+  urlColumn,
+  tagColumn,
+  statusColumn,
+  updatedColumn,
 } from '../helpers';
 import { GitRepository } from '../../objects';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
-  Id(),
-  NameAndClusterNameColumn(),
-  VerifiedColumn(),
-  UrlColumn(),
-  TagColumn(),
-  StatusColumn(),
-  UpdatedColumn(),
+  idColumn(),
+  nameAndClusterNameColumn(),
+  verifiedColumn(),
+  urlColumn(),
+  tagColumn(),
+  statusColumn(),
+  updatedColumn(),
 ];
 
 type Props = {

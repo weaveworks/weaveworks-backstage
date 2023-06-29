@@ -3,16 +3,16 @@ import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { useStyles } from '../utils';
 import {
-  Id,
-  NameAndClusterNameColumn,
-  StatusColumn,
-  UpdatedColumn,
+  idColumn,
+  nameAndClusterNameColumn,
+  statusColumn,
+  updatedColumn,
 } from '../helpers';
 import { HelmRelease } from '../../objects';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
-  Id(),
-  NameAndClusterNameColumn(),
+  idColumn(),
+  nameAndClusterNameColumn(),
   {
     title: 'Chart',
     field: 'helmChart.chart',
@@ -20,8 +20,8 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
       return `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
     },
   },
-  StatusColumn(),
-  UpdatedColumn(),
+  statusColumn(),
+  updatedColumn(),
 ];
 
 type Props = {

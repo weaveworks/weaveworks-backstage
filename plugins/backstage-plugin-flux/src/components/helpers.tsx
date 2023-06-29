@@ -9,6 +9,7 @@ import {
   VerifiableSource,
   automationLastUpdated,
   findVerificationCondition,
+  useStyles,
 } from './utils';
 import { GitRepository, HelmRelease, OCIRepository } from '../objects';
 import Flex from './Flex';
@@ -34,28 +35,20 @@ export const NameLabel = ({
   const { name, namespace } = resource;
   const deepLink = useWeaveFluxDeepLink(resource);
   const label = `${namespace}/${name}`;
-  const style = { fontWeight: 600, marginBottom: '6px' };
+  const classes = useStyles();
 
   if (!deepLink) {
-    return <span style={style}>{label}</span>;
+    return <span className={classes.nameLabel}>{label}</span>;
   }
 
   return (
-    <Link style={style} to={deepLink}>
+    <Link className={classes.nameLabel} to={deepLink}>
       {label}
     </Link>
   );
 };
 
-export const Id = () => {
-  return {
-    title: 'id',
-    field: 'id',
-    hidden: true,
-  };
-};
-
-export const VerifiedStatus = ({
+export const verifiedStatus = ({
   resource,
 }: {
   resource: VerifiableSource;
@@ -78,7 +71,7 @@ export const VerifiedStatus = ({
   );
 };
 
-export const NameAndClusterName = ({
+export const nameAndClusterName = ({
   resource,
 }: {
   resource: HelmRelease | GitRepository | OCIRepository;
@@ -89,25 +82,33 @@ export const NameAndClusterName = ({
   </Flex>
 );
 
-export const NameAndClusterNameColumn = () => {
+export const idColumn = () => {
+  return {
+    title: 'id',
+    field: 'id',
+    hidden: true,
+  };
+};
+
+export const nameAndClusterNameColumn = () => {
   return {
     title: 'Name',
     render: (
       resource: HelmRelease | GitRepository | OCIRepository,
-    ): React.ReactNode => NameAndClusterName({ resource }),
+    ): React.ReactNode => nameAndClusterName({ resource }),
   };
 };
 
-export const VerifiedColumn = () => {
+export const verifiedColumn = () => {
   return {
     title: 'Verified',
     render: (resource: GitRepository | OCIRepository) => {
-      return VerifiedStatus({ resource });
+      return verifiedStatus({ resource });
     },
   };
 };
 
-export const UrlColumn = () => {
+export const urlColumn = () => {
   return {
     title: 'URL',
     render: (resource: GitRepository | OCIRepository) => {
@@ -118,7 +119,7 @@ export const UrlColumn = () => {
   };
 };
 
-export const TagColumn = () => {
+export const tagColumn = () => {
   return {
     title: 'URL',
     render: (resource: GitRepository | OCIRepository) => {
@@ -129,7 +130,7 @@ export const TagColumn = () => {
   };
 };
 
-export const StatusColumn = () => {
+export const statusColumn = () => {
   return {
     title: 'Status',
     render: (resource: GitRepository | OCIRepository | HelmRelease) => {
@@ -144,7 +145,7 @@ export const StatusColumn = () => {
   };
 };
 
-export const UpdatedColumn = () => {
+export const updatedColumn = () => {
   return {
     title: 'Updated',
     render: (resource: GitRepository | OCIRepository | HelmRelease) => {
