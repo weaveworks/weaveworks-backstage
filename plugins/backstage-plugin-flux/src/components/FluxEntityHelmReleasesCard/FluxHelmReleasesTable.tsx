@@ -85,7 +85,7 @@ export const FluxHelmReleasesTable = ({
     return (
       <Table
         columns={columns}
-        options={{ paging: true, search: true, pageSize: 5 }}
+        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
         title="Helm Releases"
         data={data}
         isLoading={isLoading}
