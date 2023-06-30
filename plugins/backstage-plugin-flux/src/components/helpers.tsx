@@ -158,9 +158,9 @@ export const urlColumn = () => {
   };
 };
 
-export const tagColumn = () => {
+export const tagColumn = (title: string) => {
   return {
-    title: 'URL',
+    title: title,
     render: (resource: GitRepository | OCIRepository) => {
       return <span>{resource.artifact?.revision.split('@')[0]}</span>;
     },

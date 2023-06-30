@@ -19,7 +19,7 @@ export const defaultColumns: TableColumn<GitRepository>[] = [
   nameAndClusterNameColumn(),
   verifiedColumn(),
   urlColumn(),
-  tagColumn(),
+  tagColumn('Ref'),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
@@ -68,7 +68,7 @@ export const FluxGitRepositoriesTable = ({
     return (
       <Table
         columns={columns}
-        options={{ padding: 'dense', paging: true, search: false, pageSize: 5 }}
+        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
         title="Git Repositories"
         data={data}
         isLoading={isLoading}
