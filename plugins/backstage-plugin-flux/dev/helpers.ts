@@ -1,34 +1,84 @@
 import { DateTime } from 'luxon';
-import * as verifiedOCIFixture from '../src/__fixtures__/verified_oci_repository.json';
-import * as unVerifiedOCIFixture from '../src/__fixtures__/unverified_oci_repository.json';
-import * as ociFixture from '../src/__fixtures__/oci_repository.json';
+import * as verifiedOCIRepository from '../src/__fixtures__/verified_oci_repository.json';
+import * as unverifiedOCIRepository from '../src/__fixtures__/unverified_oci_repository.json';
+import * as ociRepository from '../src/__fixtures__/oci_repository.json';
+import * as verifiedGitRepository from '../src/__fixtures__/verified_git_repository.json';
+import * as unverifiedGitRepository from '../src/__fixtures__/unverified_git_repository.json';
+import * as gitRepository from '../src/__fixtures__/git_repository.json';
+import { Condition } from '../src/objects';
 
 const randomInt = (max: number) => Math.floor(Math.random() * max);
+
+type RepoOpts = {
+  verify?: boolean;
+  verified?: boolean;
+  pending?: boolean;
+  ready?: boolean;
+};
+
+const copy = (obj: any): any => {
+  return JSON.parse(JSON.stringify(obj));
+};
+
+const removeVerifiedCondition = (conditions: Condition[]): Condition[]  => copy(conditions).filter((cond: Condition) => cond.type !== 'SourceVerified');
+
+const applyReadyCondition = (status: boolean, conditions: Condition[]): Condition[] => {
+  const ready = conditions.find(cond => cond.type === 'Ready');
+  if (ready === undefined) {
+    return conditions;
+  }
+
+  ready.status = Boolean(status) === true ? 'True' : 'False';
+  const result = conditions.filter((cond: Condition) => cond.type !== 'Ready')
+  result.unshift(ready);
+
+  return result;
+}
+
+const configureFixture = (name: string, url: string, fixture: any, verifiedFixture: any, unverifiedFixture: any, opts?: RepoOpts) => {
+  let result = copy(fixture);
+
+  if (opts?.verify) {
+    if (opts?.verified || opts?.pending) {
+      result = copy(verifiedFixture);
+    } else {
+      result = copy(unverifiedFixture);
+    }
+  }
+
+  if (opts?.verify && opts?.pending) {
+    result.status.conditions = removeVerifiedCondition(result.status.conditions);
+  }
+
+  if (opts?.ready !== undefined) {
+    result.status.conditions = applyReadyCondition(opts.ready!, result.status.conditions);
+  }
+
+  result.spec.url = url;
+  result.metadata.name = name;
+  result.status.conditions[0].lastTransitionTime = DateTime.now()
+    .minus({ hours: randomInt(22) + 1 })
+    .toISO()!;
+
+  return result;
+}
 
 export const newTestOCIRepository = (
   name: string,
   url: string,
-  verify: boolean = false,
-  verified: boolean = false,
+  opts?: RepoOpts
 ) => {
-  let fixture = ociFixture;
-
-  if (verify) {
-    if (verified) {
-      fixture = verifiedOCIFixture;
-    } else {
-      fixture = unVerifiedOCIFixture;
-    }
-  }
-
-  fixture.spec.url = url;
-  fixture.metadata.name = name;
-  fixture.status.conditions[0].lastTransitionTime = DateTime.now()
-    .minus({ hours: randomInt(22) + 1 })
-    .toISO()!;
-
-  return fixture;
+  return configureFixture(name, url, ociRepository, verifiedOCIRepository, unverifiedOCIRepository, opts);
 };
+
+export const newTestGitRepository = (
+  name: string,
+  url: string,
+  opts?: RepoOpts
+) => {
+  return configureFixture(name, url, gitRepository, verifiedGitRepository, unverifiedGitRepository, opts);
+};
+
 
 export const newTestHelmRelease = (
   name: string,
