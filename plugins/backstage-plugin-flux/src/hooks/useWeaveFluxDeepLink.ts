@@ -12,11 +12,12 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
     name: a.name,
     namespace: a.namespace,
   };
+
   const queryString = Object.entries(queryStringData)
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
 
-  return `${baseUrl}/${type}/details?${queryString}`;
+  return `${baseUrl.replace(/\/$/, "")}/${type}/details?${queryString}`;
 };
 
 export const useWeaveFluxDeepLink = (

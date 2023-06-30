@@ -19,7 +19,7 @@ export const defaultColumns: TableColumn<OCIRepository>[] = [
   nameAndClusterNameColumn(),
   verifiedColumn(),
   urlColumn(),
-  tagColumn(),
+  tagColumn('Tag'),
   statusColumn(),
   updatedColumn(),
   syncColumn(),

@@ -23,7 +23,11 @@ import {
   FluxEntityHelmReleasesCard,
   FluxEntityGitRepositoriesCard,
 } from '../src/plugin';
-import { newTestHelmRelease, newTestOCIRepository } from './helpers';
+import {
+  newTestHelmRelease,
+  newTestOCIRepository,
+  newTestGitRepository
+} from './helpers';
 import { FluxEntityOCIRepositoriesCard } from '../src/components/FluxEntityOCIRepositoriesCard';
 import { ReconcileRequestAnnotation } from '../src/hooks';
 
@@ -41,60 +45,6 @@ const fakeEntity: Entity = {
     lifecycle: 'production',
     type: 'service',
     owner: 'user:guest',
-  },
-};
-
-const fakeGitRepository = {
-  apiVersion: 'source.toolkit.fluxcd.io/v1',
-  kind: 'GitRepository',
-  metadata: {
-    creationTimestamp: '2023-06-22T17:58:23Z',
-    finalizers: ['finalizers.fluxcd.io'],
-    generation: 1,
-    name: 'podinfo',
-    namespace: 'default',
-    resourceVersion: '132764',
-    uid: '068ec137-b2a0-4b35-90ea-4e9a8a2fe5f6',
-  },
-  spec: {
-    interval: '1m',
-    ref: {
-      branch: 'master',
-    },
-    timeout: '60s',
-    url: 'https://github.com/stefanprodan/podinfo',
-  },
-  status: {
-    artifact: {
-      digest:
-        'sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51',
-      lastUpdateTime: '2023-06-22T17:58:24Z',
-      path: 'gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
-      revision: 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a',
-      size: 80053,
-      url: 'http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
-    },
-    conditions: [
-      {
-        lastTransitionTime: '2023-06-22T17:58:24Z',
-        message:
-          "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
-        observedGeneration: 1,
-        reason: 'Succeeded',
-        status: 'True',
-        type: 'Ready',
-      },
-      {
-        lastTransitionTime: '2023-06-22T17:58:24Z',
-        message:
-          "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
-        observedGeneration: 1,
-        reason: 'Succeeded',
-        status: 'True',
-        type: 'ArtifactInStorage',
-      },
-    ],
-    observedGeneration: 1,
   },
 };
 
@@ -271,7 +221,27 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego' },
             }),
           ],
-          [kubernetesApiRef, new StubKubernetesClient([fakeGitRepository])],
+          [kubernetesApiRef, new StubKubernetesClient([
+            newTestGitRepository(
+              'podinfo',
+              'https://github.com/stefanprodan/podinfo',
+              { verify: true, verified: true },
+            ),
+            newTestGitRepository(
+              'weave-gitops',
+              'https://github.com/weaveworks/weave-gitops',
+            ),
+            newTestGitRepository(
+              'weaveworks-backstage',
+              'https://github.com/weaveworks/weaveworks-backstage',
+              { verify: true, verified: false}
+            ),
+            newTestGitRepository(
+              'weave-gitops-enterprise',
+              'https://github.com/weaveworks/weave-gitops-enterprise',
+            ),                        
+          ])
+          ],
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
@@ -282,7 +252,7 @@ createDevApp()
     ),
   })
   .addPage({
-    title: 'Oci Repositories',
+    title: 'OCI Repositories',
     path: '/oci-repositories',
     element: (
       <TestApiProvider
@@ -299,8 +269,7 @@ createDevApp()
               newTestOCIRepository(
                 'podinfo',
                 'oci://ghcr.io/stefanprodan/manifests/podinfo',
-                true,
-                true,
+                { verify: true, verified: true },
               ),
               newTestOCIRepository(
                 'redis',
@@ -309,22 +278,22 @@ createDevApp()
               newTestOCIRepository(
                 'postgresql',
                 'oci://registry-1.docker.io/bitnamicharts/postgresql',
-                true,
-                false,
+                { verify: true, verified: false },
               ),
               newTestOCIRepository(
                 'apache',
                 'oci://registry-1.docker.io/bitnamicharts/apache',
+                {ready: false}
               ),
               newTestOCIRepository(
                 'supabase',
                 'oci://registry-1.docker.io/bitnamicharts/supabase',
+                { verify: true, pending: true },
               ),
               newTestOCIRepository(
                 'mariadb',
                 'oci://registry-1.docker.io/bitnamicharts/mariadb',
-                true,
-                false,
+                { verify: true, verified: false },
               ),
             ]),
           ],
