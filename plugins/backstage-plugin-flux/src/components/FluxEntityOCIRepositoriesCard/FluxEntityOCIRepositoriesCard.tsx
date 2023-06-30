@@ -6,7 +6,7 @@ import { useOCIRepositories } from '../../hooks';
 import {
   FluxOCIRepositoriesTable,
   defaultColumns,
-} from './FluxOciRepositoriesTable';
+} from './FluxOCIRepositoriesTable';
 
 const OCIRepositoryPanel = () => {
   const { entity } = useEntity();

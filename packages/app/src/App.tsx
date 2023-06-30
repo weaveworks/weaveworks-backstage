@@ -35,7 +35,7 @@ import { AppRouter, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { FluxEntityHelmReleasesCard } from '@weaveworks/backstage-plugin-flux';
+import { FluxEntityHelmReleasesCard } from '@weaveworksoss/backstage-plugin-flux';
 
 const app = createApp({
   components: {

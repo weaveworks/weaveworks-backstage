@@ -1,10 +1,9 @@
 {
-  "name": "@weaveworks/backstage-plugin-flux",
+  "name": "@weaveworksoss/backstage-plugin-flux",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
-  "license": "Apache-2.0",
-  "private": true,
+  "license": "MPL-2.0",
   "publishConfig": {
     "access": "public",
     "main": "dist/index.esm.js",
@@ -33,6 +32,7 @@
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
+    "lodash": "^4.17.21",
     "luxon": "^3.3.0",
     "react-query": "^3.39.3",
     "react-use": "^17.2.4",
@@ -57,6 +57,7 @@
     "msw": "^1.0.0"
   },
   "files": [
+    "LICENSE",
     "dist",
     "config.d.ts"
   ],

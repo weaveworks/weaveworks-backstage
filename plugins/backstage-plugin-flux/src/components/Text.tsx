@@ -35,7 +35,7 @@ const Text = styled.span<TextProps>`
   font-weight: ${props => {
     if (props.bold) return '800';
     else if (props.semiBold) return '600';
-    else return '400';
+    return '400';
   }};
   text-transform: ${textTransform};
 

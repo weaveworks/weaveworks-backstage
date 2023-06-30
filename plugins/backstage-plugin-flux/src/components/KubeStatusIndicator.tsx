@@ -156,7 +156,7 @@ const getBackstageIcon = (color: string) => {
       return <StatusAborted />;
 
     default:
-      return;
+      return undefined;
   }
 };
 

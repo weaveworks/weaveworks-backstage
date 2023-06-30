@@ -26,9 +26,9 @@ roleRef:
   kind: ClusterRole
   name: helmrelease-viewer-role
 subjects:
-- kind: ServiceAccount
-  name: backstage # replace with the name of the SA that your Backstage runs as
-  namespace: flux-system
+  - kind: ServiceAccount
+    name: backstage # replace with the name of the SA that your Backstage runs as
+    namespace: flux-system
 ```
 
 ## Installation
@@ -37,25 +37,26 @@ Install the plugin dependency in your Backstage app package:
 
 ```bash
 # From your Backstage root directory
-yarn add --cwd packages/app @weaveworks/backstage-plugin-flux
+yarn add --cwd packages/app @weaveworksoss/backstage-plugin-flux
 ```
 
 ## Configuration
 
-1. Add the card  to your app EntityPage.tsx
+1. Add the card to your app EntityPage.tsx
+
 ```tsx
 // In packages/app/src/components/catalog/EntityPage.tsx
-import { FluxEntityHelmReleasesCard } from '@weaveworks/backstage-plugin-flux';
+import { FluxEntityHelmReleasesCard } from '@weaveworksoss/backstage-plugin-flux';
 
 // You can add the tab to any number of pages, the service page is shown as an
 // example here
 const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
-      // ...
+    // ...
     <Grid item md={4} xs={12}>
       <FluxEntityHelmReleasesCard />
     </Grid>
-      // ...
+    // ...
   </Grid>
 );
 ```
@@ -80,6 +81,7 @@ spec:
 ```
 
 3. Label your Flux HelmRelease with the correct label:
+
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
