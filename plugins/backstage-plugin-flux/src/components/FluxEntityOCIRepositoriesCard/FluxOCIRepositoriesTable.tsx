@@ -9,6 +9,7 @@ import {
   tagColumn,
   statusColumn,
   updatedColumn,
+  syncColumn,
 } from '../helpers';
 import { useStyles } from '../utils';
 import { OCIRepository } from '../../objects';
@@ -21,6 +22,7 @@ export const defaultColumns: TableColumn<OCIRepository>[] = [
   tagColumn(),
   statusColumn(),
   updatedColumn(),
+  syncColumn(),
 ];
 
 type Props = {
@@ -35,6 +37,7 @@ export const FluxOCIRepositoriesTable = ({
   columns,
 }: Props) => {
   const classes = useStyles();
+
   // TODO: Simplify this to store the ID and OCIRepository
   const data = ociRepositories.map(or => {
     const {

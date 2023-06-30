@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { DateTime } from 'luxon';
-import { Link } from '@backstage/core-components';
-import { Tooltip } from '@material-ui/core';
+import { Link, Progress } from '@backstage/core-components';
+import { IconButton, Tooltip } from '@material-ui/core';
+import RetryIcon from '@material-ui/icons/Replay';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import { useWeaveFluxDeepLink } from '../hooks';
+import { SyncResource, useSyncResource, useWeaveFluxDeepLink } from '../hooks';
 import {
   VerifiableSource,
   automationLastUpdated,
@@ -47,6 +48,44 @@ export const NameLabel = ({
     </Link>
   );
 };
+
+export function SyncButton({ resource }: { resource: SyncResource }) {
+  const { sync, isSyncing } = useSyncResource(resource);
+
+  const classes = useStyles();
+  const label = `${resource.namespace}/${resource.name}`;
+  const title = isSyncing ? `Syncing ${label}` : `Sync ${label}`;
+
+  return (
+    <Tooltip title={title}>
+      {/* <Progress /> can't handle forwardRef (?) so we wrap in a div */}
+      <div>
+        {isSyncing ? (
+          <Progress data-testid="syncing" />
+        ) : (
+          <IconButton
+            data-testid={`sync ${label}`}
+            className={classes.syncButton}
+            size="small"
+            onClick={sync}
+          >
+            <RetryIcon />
+          </IconButton>
+        )}
+      </div>
+    </Tooltip>
+  );
+}
+
+export function syncColumn() {
+  return {
+    title: 'Sync',
+    render: (row: SyncResource) => {
+      return <SyncButton resource={row} />;
+    },
+    width: '24px',
+  };
+}
 
 export const verifiedStatus = ({
   resource,

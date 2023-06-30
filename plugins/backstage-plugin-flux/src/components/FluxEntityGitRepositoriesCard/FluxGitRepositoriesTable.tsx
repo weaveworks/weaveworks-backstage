@@ -10,6 +10,7 @@ import {
   tagColumn,
   statusColumn,
   updatedColumn,
+  syncColumn,
 } from '../helpers';
 import { GitRepository } from '../../objects';
 
@@ -21,6 +22,7 @@ export const defaultColumns: TableColumn<GitRepository>[] = [
   tagColumn(),
   statusColumn(),
   updatedColumn(),
+  syncColumn(),
 ];
 
 type Props = {

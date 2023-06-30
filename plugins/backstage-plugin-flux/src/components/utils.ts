@@ -19,6 +19,10 @@ export const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
   },
   nameLabel: { fontWeight: 600, marginBottom: '6px' },
+  syncButton: {
+    padding: 0,
+    margin: '-5px 0',
+  },
 }));
 
 export interface VerifiableSource {

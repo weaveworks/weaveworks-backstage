@@ -1,3 +1,4 @@
+import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 import _ from 'lodash';
 import { stringify } from 'yaml';
 
@@ -378,4 +379,47 @@ export class HelmRelease extends FluxObject {
   get lastAttemptedRevision(): string {
     return this.obj.status?.lastAttemptedRevision || '';
   }
+}
+
+export const helmReleaseGVK: CustomResourceMatcher = {
+  apiVersion: 'v2beta1',
+  group: 'helm.toolkit.fluxcd.io',
+  plural: 'helmreleases',
+};
+
+export const gitRepositoriesGVK: CustomResourceMatcher = {
+  apiVersion: 'v1beta2',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'gitrepositories',
+};
+
+export const ociRepositoriesGVK: CustomResourceMatcher = {
+  apiVersion: 'v1beta2',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'ocirepositories',
+};
+
+export const helmRepositoryGVK: CustomResourceMatcher = {
+  apiVersion: 'v1beta2',
+  group: 'source.toolkit.fluxcd.io',
+  plural: 'helmrepositories',
+};
+
+export function gvkFromKind(
+  kind: String | Kind | undefined,
+): CustomResourceMatcher | undefined {
+  switch (kind) {
+    case 'HelmRelease':
+      return helmReleaseGVK;
+    case 'GitRepository':
+      return gitRepositoriesGVK;
+    case 'OCIRepository':
+      return ociRepositoriesGVK;
+    case 'HelmRepository':
+      return helmRepositoryGVK;
+    default:
+      break;
+  }
+
+  return undefined;
 }

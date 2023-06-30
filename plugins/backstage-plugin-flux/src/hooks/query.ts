@@ -2,7 +2,6 @@ import { Entity } from '@backstage/catalog-model';
 import { useCustomResources } from '@backstage/plugin-kubernetes';
 import {
   ClusterAttributes,
-  CustomResourceMatcher,
   KubernetesFetchError,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
@@ -11,25 +10,10 @@ import {
   GitRepository,
   HelmRelease,
   OCIRepository,
+  gitRepositoriesGVK,
+  helmReleaseGVK,
+  ociRepositoriesGVK,
 } from '../objects';
-
-const helmReleaseGVK: CustomResourceMatcher = {
-  apiVersion: 'v2beta1',
-  group: 'helm.toolkit.fluxcd.io',
-  plural: 'helmreleases',
-};
-
-const gitRepositoriesGVK: CustomResourceMatcher = {
-  apiVersion: 'v1beta2',
-  group: 'source.toolkit.fluxcd.io',
-  plural: 'gitrepositories',
-};
-
-const ociRepositoriesGVK: CustomResourceMatcher = {
-  apiVersion: 'v1beta2',
-  group: 'source.toolkit.fluxcd.io',
-  plural: 'ocirepositories',
-};
 
 function toErrors(
   cluster: ClusterAttributes,
@@ -163,11 +147,9 @@ export function useGitRepositories(entity: Entity): GitRepositoriesResponse {
  * @public
  */
 export function useOCIRepositories(entity: Entity): OCIRepositoriesResponse {
-  const { kubernetesObjects, loading, error } = useCustomResources(
-    entity,
-    [ociRepositoriesGVK],
-    60000000,
-  );
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    ociRepositoriesGVK,
+  ]);
 
   const { data, kubernetesErrors } = toResponse<OCIRepository>(
     item => new OCIRepository(item),

@@ -6,6 +6,7 @@ import {
   idColumn,
   nameAndClusterNameColumn,
   statusColumn,
+  syncColumn,
   updatedColumn,
 } from '../helpers';
 import { HelmRelease } from '../../objects';
@@ -22,6 +23,7 @@ export const defaultColumns: TableColumn<HelmRelease>[] = [
   },
   statusColumn(),
   updatedColumn(),
+  syncColumn(),
 ];
 
 type Props = {
@@ -49,6 +51,7 @@ export const FluxHelmReleasesTable = ({
       helmChart,
       conditions,
       suspended,
+      sourceRef,
       type,
       lastAppliedRevision,
     } = hr;
@@ -61,6 +64,7 @@ export const FluxHelmReleasesTable = ({
       helmChart,
       lastAppliedRevision,
       clusterName,
+      sourceRef,
       type,
     } as HelmRelease & { id: string };
   });

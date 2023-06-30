@@ -8,9 +8,9 @@ roleRef:
   kind: ClusterRole
   name: view
 subjects:
-- kind: ServiceAccount
-  name: backstage
-  namespace: default
+  - kind: ServiceAccount
+    name: backstage
+    namespace: default
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -25,4 +25,37 @@ metadata:
     kubernetes.io/service-account.name: backstage
 type: kubernetes.io/service-account-token
 ---
-
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sync-flux-resources
+rules:
+  - apiGroups: ['source.toolkit.fluxcd.io']
+    resources:
+      [
+        'buckets',
+        'helmcharts',
+        'gitrepositories',
+        'helmrepositories',
+        'ocirepositories',
+      ]
+    verbs: ['patch']
+  - apiGroups: ['kustomize.toolkit.fluxcd.io']
+    resources: ['kustomizations']
+    verbs: ['patch']
+  - apiGroups: ['helm.toolkit.fluxcd.io']
+    resources: ['helmreleases']
+    verbs: ['patch']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: backstage-sync-flux-resources-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: sync-flux-resources
+subjects:
+  - kind: ServiceAccount
+    name: backstage
+    namespace: default

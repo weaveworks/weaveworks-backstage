@@ -4,6 +4,8 @@ kind: HelmRepository
 metadata:
   name: podinfo
   namespace: default
+  labels:
+    backstage.io/kubernetes-id: podinfo
 spec:
   interval: 10m0s
   url: https://stefanprodan.github.io/podinfo

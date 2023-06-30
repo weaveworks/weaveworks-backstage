@@ -3,7 +3,7 @@ import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
 import { FluxEntityHelmReleasesCard } from './FluxEntityHelmReleasesCard';
-import { configApiRef } from '@backstage/core-plugin-api';
+import { alertApiRef, configApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
   KubernetesApi,
@@ -16,6 +16,7 @@ import {
   KubernetesRequestBody,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 
 const makeTestHelmRelease = (name: string, chart: string, version: string) => {
   return {
@@ -122,45 +123,35 @@ const entity: Entity = {
   },
 };
 
+function renderHelmReleasesCard() {
+  return renderInTestApp(
+    <TestApiProvider
+      apis={[
+        [
+          configApiRef,
+          new ConfigReader({
+            gitops: { baseUrl: 'https://example.com/wego' },
+          }),
+        ],
+        [kubernetesApiRef, new StubKubernetesClient()],
+        [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+      ]}
+    >
+      <EntityProvider entity={entity}>
+        <FluxEntityHelmReleasesCard />
+      </EntityProvider>
+    </TestApiProvider>,
+  );
+}
+
 describe('<FluxEntityHelmReleasesCard />', () => {
-  let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
-
-  beforeEach(() => {
-    Wrapper = ({ children }: { children?: React.ReactNode }) => (
-      <div>{children}</div>
-    );
-  });
-
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
   describe('when the config contains a link to Weave GitOps', () => {
     it('shows the state of a HelmRelease', async () => {
-      const result = await renderInTestApp(
-        <Wrapper>
-          <TestApiProvider
-            apis={[
-              [
-                configApiRef,
-                new ConfigReader({
-                  gitops: { baseUrl: 'https://example.com/wego' },
-                }),
-              ],
-              [kubernetesApiRef, new StubKubernetesClient()],
-              [
-                kubernetesAuthProvidersApiRef,
-                new StubKubernetesAuthProvidersApi(),
-              ],
-            ]}
-          >
-            <EntityProvider entity={entity}>
-              <FluxEntityHelmReleasesCard />
-            </EntityProvider>
-          </TestApiProvider>
-        </Wrapper>,
-      );
-
+      const result = await renderHelmReleasesCard();
       const { getByText } = result;
 
       const testCases = [
@@ -195,22 +186,20 @@ describe('<FluxEntityHelmReleasesCard />', () => {
   describe('when the config is not configured with a link to Weave GitOps', () => {
     it('does not include a link to Weave GitOps', async () => {
       const rendered = await renderInTestApp(
-        <Wrapper>
-          <TestApiProvider
-            apis={[
-              [configApiRef, new ConfigReader({})],
-              [kubernetesApiRef, new StubKubernetesClient()],
-              [
-                kubernetesAuthProvidersApiRef,
-                new StubKubernetesAuthProvidersApi(),
-              ],
-            ]}
-          >
-            <EntityProvider entity={entity}>
-              <FluxEntityHelmReleasesCard />
-            </EntityProvider>
-          </TestApiProvider>
-        </Wrapper>,
+        <TestApiProvider
+          apis={[
+            [configApiRef, new ConfigReader({})],
+            [kubernetesApiRef, new StubKubernetesClient()],
+            [
+              kubernetesAuthProvidersApiRef,
+              new StubKubernetesAuthProvidersApi(),
+            ],
+          ]}
+        >
+          <EntityProvider entity={entity}>
+            <FluxEntityHelmReleasesCard />
+          </EntityProvider>
+        </TestApiProvider>,
       );
 
       const { getByText } = rendered;
@@ -220,6 +209,76 @@ describe('<FluxEntityHelmReleasesCard />', () => {
       const td = cell.closest('td');
       expect(td).toBeInTheDocument();
       expect(td!.querySelector('a')).toBeNull();
+    });
+  });
+
+  describe('syncing', () => {
+    it('should show a sync button', async () => {
+      const rendered = await renderHelmReleasesCard();
+
+      const { findByTestId } = rendered;
+      const button = await findByTestId('sync default/normal');
+      expect(button).toBeInTheDocument();
+    });
+
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('clicking the button should trigger a sync (error in this case)', async () => {
+      const kubernetesApi = new StubKubernetesClient();
+
+      (kubernetesApi.proxy as any).mockResolvedValue({
+        ok: false,
+        status: 403,
+        statusText: 'forbidden',
+      } as Response);
+
+      const mockAlertApi = {
+        post: jest.fn(),
+        alert$: jest.fn(),
+      };
+
+      const rendered = await renderInTestApp(
+        <TestApiProvider
+          apis={[
+            [
+              configApiRef,
+              new ConfigReader({
+                gitops: { baseUrl: 'https://example.com/wego' },
+              }),
+            ],
+            [kubernetesApiRef, kubernetesApi],
+            [alertApiRef, mockAlertApi],
+            [
+              kubernetesAuthProvidersApiRef,
+              new StubKubernetesAuthProvidersApi(),
+            ],
+          ]}
+        >
+          <EntityProvider entity={entity}>
+            <FluxEntityHelmReleasesCard />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      const { findByTestId } = rendered;
+
+      const button = await findByTestId('sync default/normal');
+      expect(button).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(button!);
+      });
+
+      // We don't render whatever part of backstage actually renders the alerts
+      await waitFor(() => {
+        expect(mockAlertApi.post).toHaveBeenCalledWith({
+          display: 'transient',
+          message: 'Sync error: Failed to sync resource: 403 forbidden',
+          severity: 'error',
+        });
+      });
     });
   });
 });
