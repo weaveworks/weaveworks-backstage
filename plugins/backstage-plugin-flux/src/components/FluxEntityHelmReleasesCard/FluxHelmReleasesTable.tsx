@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react';
-import { Typography } from '@material-ui/core';
-import { Table, TableColumn } from '@backstage/core-components';
-import { useStyles } from '../utils';
+import React from 'react';
+import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
@@ -10,6 +8,7 @@ import {
   updatedColumn,
 } from '../helpers';
 import { HelmRelease } from '../../objects';
+import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   idColumn(),
@@ -40,8 +39,6 @@ export const FluxHelmReleasesTable = ({
   isLoading,
   columns,
 }: Props) => {
-  const classes = useStyles();
-
   // TODO: Simplify this to store the ID and HelmRelease
   const data = helmReleases.map(hr => {
     const {
@@ -69,22 +66,12 @@ export const FluxHelmReleasesTable = ({
     } as HelmRelease & { id: string };
   });
 
-  return useMemo(() => {
-    return (
-      <Table
-        columns={columns}
-        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
-        title="Helm Releases"
-        data={data}
-        isLoading={isLoading}
-        emptyContent={
-          <div className={classes.empty}>
-            <Typography variant="body1">
-              No Helm Releases found for this entity.
-            </Typography>
-          </div>
-        }
-      />
-    );
-  }, [data, isLoading, columns, classes.empty]);
+  return (
+    <FluxEntityTable
+      columns={columns}
+      title="Helm Releases"
+      data={data}
+      isLoading={isLoading}
+    />
+  );
 };

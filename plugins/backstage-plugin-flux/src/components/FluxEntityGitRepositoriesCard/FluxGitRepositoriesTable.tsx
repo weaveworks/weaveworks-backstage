@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react';
-import { Typography } from '@material-ui/core';
-import { Table, TableColumn } from '@backstage/core-components';
-import { useStyles } from '../utils';
+import React from 'react';
+import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
@@ -13,6 +11,7 @@ import {
   syncColumn,
 } from '../helpers';
 import { GitRepository } from '../../objects';
+import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
   idColumn(),
@@ -36,8 +35,6 @@ export const FluxGitRepositoriesTable = ({
   isLoading,
   columns,
 }: Props) => {
-  const classes = useStyles();
-
   const data = gitRepositories.map(repo => {
     const {
       clusterName,
@@ -64,22 +61,12 @@ export const FluxGitRepositoriesTable = ({
     } as GitRepository & { id: string };
   });
 
-  return useMemo(() => {
-    return (
-      <Table
-        columns={columns}
-        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
-        title="Git Repositories"
-        data={data}
-        isLoading={isLoading}
-        emptyContent={
-          <div className={classes.empty}>
-            <Typography variant="body1">
-              No Git Repositories found for this entity.
-            </Typography>
-          </div>
-        }
-      />
-    );
-  }, [data, isLoading, columns, classes.empty]);
+  return (
+    <FluxEntityTable
+      columns={columns}
+      title="Git Repositories"
+      data={data}
+      isLoading={isLoading}
+    />
+  );
 };

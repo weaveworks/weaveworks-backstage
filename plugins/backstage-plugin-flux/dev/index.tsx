@@ -26,7 +26,7 @@ import {
 import {
   newTestHelmRelease,
   newTestOCIRepository,
-  newTestGitRepository
+  newTestGitRepository,
 } from './helpers';
 import { FluxEntityOCIRepositoriesCard } from '../src/components/FluxEntityOCIRepositoriesCard';
 import { ReconcileRequestAnnotation } from '../src/hooks';
@@ -63,6 +63,7 @@ class StubKubernetesClient implements KubernetesApi {
   }
 
   async getClusters(): Promise<{ name: string; authProvider: string }[]> {
+    await new Promise(resolve => setTimeout(resolve, 100));
     return [{ name: 'mock-cluster', authProvider: 'serviceAccount' }];
   }
 
@@ -71,10 +72,12 @@ class StubKubernetesClient implements KubernetesApi {
   ): Promise<ObjectsByEntityResponse> {
     throw new Error('getWorkloadsByEntityMethod not implemented.');
   }
-  getCustomObjectsByEntity(
+  async getCustomObjectsByEntity(
     _: CustomObjectsByEntityRequest,
   ): Promise<ObjectsByEntityResponse> {
-    return Promise.resolve({
+    // wait 100ms
+    await new Promise(resolve => setTimeout(resolve, 100));
+    return {
       items: [
         {
           cluster: {
@@ -90,7 +93,7 @@ class StubKubernetesClient implements KubernetesApi {
           ],
         },
       ],
-    });
+    };
   }
 
   // this is only used by sync right now, so it looks a little bit funny
@@ -102,6 +105,9 @@ class StubKubernetesClient implements KubernetesApi {
     path: string;
     init?: RequestInit | undefined;
   }): Promise<any> {
+    // wait 100ms
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     // Assumption: The initial request!
     // Generates 2 more subsequent requests that can be retrieved in order via GET'ing
     //
@@ -221,26 +227,28 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego' },
             }),
           ],
-          [kubernetesApiRef, new StubKubernetesClient([
-            newTestGitRepository(
-              'podinfo',
-              'https://github.com/stefanprodan/podinfo',
-              { verify: true, verified: true },
-            ),
-            newTestGitRepository(
-              'weave-gitops',
-              'https://github.com/weaveworks/weave-gitops',
-            ),
-            newTestGitRepository(
-              'weaveworks-backstage',
-              'https://github.com/weaveworks/weaveworks-backstage',
-              { verify: true, verified: false}
-            ),
-            newTestGitRepository(
-              'weave-gitops-enterprise',
-              'https://github.com/weaveworks/weave-gitops-enterprise',
-            ),                        
-          ])
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestGitRepository(
+                'podinfo',
+                'https://github.com/stefanprodan/podinfo',
+                { verify: true, verified: true },
+              ),
+              newTestGitRepository(
+                'weave-gitops',
+                'https://github.com/weaveworks/weave-gitops',
+              ),
+              newTestGitRepository(
+                'weaveworks-backstage',
+                'https://github.com/weaveworks/weaveworks-backstage',
+                { verify: true, verified: false },
+              ),
+              newTestGitRepository(
+                'weave-gitops-enterprise',
+                'https://github.com/weaveworks/weave-gitops-enterprise',
+              ),
+            ]),
           ],
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
@@ -283,7 +291,7 @@ createDevApp()
               newTestOCIRepository(
                 'apache',
                 'oci://registry-1.docker.io/bitnamicharts/apache',
-                {ready: false}
+                { ready: false },
               ),
               newTestOCIRepository(
                 'supabase',

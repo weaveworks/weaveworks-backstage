@@ -1,5 +1,4 @@
 import React from 'react';
-import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGitRepositories } from '../../hooks/query';
 import {
@@ -7,25 +6,10 @@ import {
   defaultColumns,
 } from './FluxGitRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
-import { GitRepository } from '../../objects';
-
-const GitRepositoriesSummary = ({ data }: { data: GitRepository[] }) => {
-  return (
-    <FluxGitRepositoriesTable
-      gitRepositories={data}
-      isLoading={false}
-      columns={defaultColumns}
-    />
-  );
-};
 
 const GitRepositoriesPanel = () => {
   const { entity } = useEntity();
   const { data, loading, errors } = useGitRepositories(entity);
-
-  if (loading) {
-    return <Progress />;
-  }
 
   if (errors) {
     return (
@@ -40,11 +24,13 @@ const GitRepositoriesPanel = () => {
     );
   }
 
-  if (!data) {
-    return <div>No Git Repositories found for this entity.</div>;
-  }
-
-  return <GitRepositoriesSummary data={data} />;
+  return (
+    <FluxGitRepositoriesTable
+      gitRepositories={data || []}
+      isLoading={loading && !data}
+      columns={defaultColumns}
+    />
+  );
 };
 
 /**
