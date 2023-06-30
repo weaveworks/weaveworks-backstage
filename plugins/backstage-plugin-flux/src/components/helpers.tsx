@@ -17,11 +17,14 @@ import Flex from './Flex';
 import KubeStatusIndicator from './KubeStatusIndicator';
 
 const UrlWrapper = styled.div`
+  // overflow hidden and white-space nowrap are needed for text-overflow to work
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   direction: rtl;
   max-width: 350px;
+  height: 16px;
+  margin-top: 2px;
 `;
 
 /**

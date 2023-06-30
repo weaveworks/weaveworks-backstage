@@ -232,8 +232,6 @@ function KubeStatusIndicator({
   let text = computeMessage(conditions);
   if (short || suspended) text = type;
 
-  console.log(color);
-
   return (
     <Flex start className={className} align>
       {getBackstageIcon(color)} {text}
