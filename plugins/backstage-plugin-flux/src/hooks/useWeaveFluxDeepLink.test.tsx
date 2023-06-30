@@ -80,6 +80,22 @@ describe('useWeaveFluxDeepLink', () => {
     });
   });
 
+  describe('when the url ends with a trailing slash', () => {
+    it('drops it from the generated URL', async () => {
+      gitOpsUrl = 'https://example.com/';
+
+      const { result } = renderHook(
+        () => useWeaveFluxDeepLink(testHelmRelease),
+        {
+          wrapper,
+        },
+      );
+      expect(result.current).toBe(
+        'https://example.com/helm_release/details?clusterName=&name=normal&namespace=default',
+      );
+    });
+  });
+
   describe('when configured without a gitops url', () => {
     it('returns undefined', async () => {
       const { result } = renderHook(
