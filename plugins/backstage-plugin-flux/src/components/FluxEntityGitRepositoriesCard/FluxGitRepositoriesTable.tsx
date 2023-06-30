@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react';
-import { Typography } from '@material-ui/core';
-import { Table, TableColumn } from '@backstage/core-components';
-import { useStyles } from '../utils';
+import React from 'react';
+import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
@@ -13,7 +11,7 @@ import {
   syncColumn,
 } from '../helpers';
 import { GitRepository } from '../../objects';
-import { isEqual } from 'lodash';
+import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
   idColumn(),
@@ -32,22 +30,11 @@ type Props = {
   columns: TableColumn<GitRepository>[];
 };
 
-export function useDeepCompareMemoize(value: React.DependencyList) {
-  const ref = React.useRef<React.DependencyList>([]);
-  // isEqual does a deep equal
-  if (!isEqual(value, ref.current)) {
-    ref.current = value;
-  }
-  return ref.current;
-}
-
 export const FluxGitRepositoriesTable = ({
   gitRepositories,
   isLoading,
   columns,
 }: Props) => {
-  const classes = useStyles();
-
   const data = gitRepositories.map(repo => {
     const {
       clusterName,
@@ -74,22 +61,12 @@ export const FluxGitRepositoriesTable = ({
     } as GitRepository & { id: string };
   });
 
-  return useMemo(() => {
-    return (
-      <Table
-        columns={columns}
-        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
-        title="Git Repositories"
-        data={data}
-        isLoading={isLoading}
-        emptyContent={
-          <div className={classes.empty}>
-            <Typography variant="body1">
-              No Git Repositories found for this entity.
-            </Typography>
-          </div>
-        }
-      />
-    );
-  }, useDeepCompareMemoize([data, isLoading, classes.empty, columns]));
+  return (
+    <FluxEntityTable
+      columns={columns}
+      title="Git Repositories"
+      data={data}
+      isLoading={isLoading}
+    />
+  );
 };
