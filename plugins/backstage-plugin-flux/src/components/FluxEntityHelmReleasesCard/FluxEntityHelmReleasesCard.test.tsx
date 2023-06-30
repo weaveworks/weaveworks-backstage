@@ -218,8 +218,8 @@ describe('<FluxEntityHelmReleasesCard />', () => {
     it('should show a sync button', async () => {
       const rendered = await renderHelmReleasesCard();
 
-      const { findByTitle } = rendered;
-      const button = await findByTitle('sync default/normal');
+      const { findByTestId } = rendered;
+      const button = await findByTestId('sync default/normal');
       expect(button).toBeInTheDocument();
     });
 
@@ -264,9 +264,9 @@ describe('<FluxEntityHelmReleasesCard />', () => {
         </TestApiProvider>,
       );
 
-      const { findByTitle } = rendered;
+      const { findByTestId } = rendered;
 
-      const button = await findByTitle('sync default/normal');
+      const button = await findByTestId('sync default/normal');
       expect(button).toBeInTheDocument();
 
       await act(async () => {

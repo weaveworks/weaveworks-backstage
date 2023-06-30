@@ -45,19 +45,22 @@ export function SyncButton({ resource }: { resource: SyncResource }) {
   const { sync, isSyncing } = useSyncResource(resource);
 
   const classes = useStyles();
-  const title = `sync ${resource.namespace}/${resource.name}`;
+  const title = `Sync ${resource.namespace}/${resource.name}. Last`;
+  const testId = `sync ${resource.namespace}/${resource.name}`;
 
   return isSyncing ? (
     <Progress title="syncing" />
   ) : (
-    <IconButton
-      title={title}
-      className={classes.syncButton}
-      size="small"
-      onClick={sync}
-    >
-      <RetryIcon />
-    </IconButton>
+    <Tooltip title={title}>
+      <IconButton
+        data-testid={testId}
+        className={classes.syncButton}
+        size="small"
+        onClick={sync}
+      >
+        <RetryIcon />
+      </IconButton>
+    </Tooltip>
   );
 }
 
