@@ -6,9 +6,7 @@ import {
   GitRepository,
   HelmRelease,
   OCIRepository,
-  gvkFromResource,
-  helmReleaseGVK,
-  helmRepositoryGVK,
+  gvkFromKind,
 } from '../objects';
 
 export const ReconcileRequestAnnotation = 'reconcile.fluxcd.io/requestedAt';
@@ -112,20 +110,25 @@ export async function syncResource(
   alertApi: AlertApi,
 ) {
   try {
-    const gvk = gvkFromResource(resource);
+    const gvk = gvkFromKind(resource.type);
     if (!gvk) {
       throw new Error(`Unknown resource type: ${resource.type}`);
     }
 
     if ('sourceRef' in resource && resource.sourceRef) {
+      const sourceGVK = gvkFromKind(resource.sourceRef.kind);
+      if (!sourceGVK) {
+        throw new Error(
+          `Unknown resource source type: ${resource.sourceRef.kind}`,
+        );
+      }
       // sync the source
       await requestSyncResource(
         kubernetesApi,
         resource.sourceRef.name!,
         resource.sourceRef.namespace || resource.namespace,
         resource.clusterName,
-        // TODO: derive from resource.sourceRef.kind
-        helmRepositoryGVK,
+        sourceGVK,
         new Date().toISOString(),
       );
     }
@@ -136,7 +139,7 @@ export async function syncResource(
       resource.name,
       resource.namespace,
       resource.clusterName,
-      helmReleaseGVK,
+      gvk,
       new Date().toISOString(),
     );
 

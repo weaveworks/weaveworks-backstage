@@ -54,24 +54,25 @@ export function SyncButton({ resource }: { resource: SyncResource }) {
 
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
+  const title = isSyncing ? `Syncing ${label}` : `Sync ${label}`;
 
-  return isSyncing ? (
-    <Tooltip title={`Syncing ${label}`}>
-      {/* seem to need a div here as tooltipping onto <Progress/> doesn't work */}
+  return (
+    <Tooltip title={title}>
+      {/* <Progress /> can't handle forwardRef (?) so we wrap in a div */}
       <div>
-        <Progress data-testid="syncing" />
+        {isSyncing ? (
+          <Progress data-testid="syncing" />
+        ) : (
+          <IconButton
+            data-testid={`sync ${label}`}
+            className={classes.syncButton}
+            size="small"
+            onClick={sync}
+          >
+            <RetryIcon />
+          </IconButton>
+        )}
       </div>
-    </Tooltip>
-  ) : (
-    <Tooltip title={`Sync ${label}`}>
-      <IconButton
-        data-testid={`sync ${label}`}
-        className={classes.syncButton}
-        size="small"
-        onClick={sync}
-      >
-        <RetryIcon />
-      </IconButton>
     </Tooltip>
   );
 }

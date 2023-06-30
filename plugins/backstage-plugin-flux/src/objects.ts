@@ -405,15 +405,21 @@ export const helmRepositoryGVK: CustomResourceMatcher = {
   plural: 'helmrepositories',
 };
 
-export function gvkFromResource(
-  resource: FluxObject,
+export function gvkFromKind(
+  kind: String | Kind | undefined,
 ): CustomResourceMatcher | undefined {
-  if (resource.type === 'HelmRelease') {
-    return helmReleaseGVK;
-  } else if (resource.type === 'GitRepository') {
-    return gitRepositoriesGVK;
-  } else if (resource.type === 'OCIRepository') {
-    return ociRepositoriesGVK;
+  switch (kind) {
+    case 'HelmRelease':
+      return helmReleaseGVK;
+    case 'GitRepository':
+      return gitRepositoriesGVK;
+    case 'OCIRepository':
+      return ociRepositoriesGVK;
+    case 'HelmRepository':
+      return helmRepositoryGVK;
+    default:
+      break;
   }
+
   return undefined;
 }

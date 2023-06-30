@@ -56,7 +56,11 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
-import { FluxEntityHelmReleasesCard } from '@weaveworksoss/backstage-plugin-flux';
+import {
+  FluxEntityGitRepositoriesCard,
+  FluxEntityHelmReleasesCard,
+  FluxEntityOCIRepositoriesCard,
+} from '@weaveworksoss/backstage-plugin-flux';
 
 const techdocsContent = (
   <EntityTechdocsContent>
@@ -149,6 +153,12 @@ const serviceEntityPage = (
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={12}>
           <FluxEntityHelmReleasesCard />
+        </Grid>
+        <Grid item md={12}>
+          <FluxEntityGitRepositoriesCard />
+        </Grid>
+        <Grid item md={12}>
+          <FluxEntityOCIRepositoriesCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>

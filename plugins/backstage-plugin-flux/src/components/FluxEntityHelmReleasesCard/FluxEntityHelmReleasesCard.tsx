@@ -21,7 +21,7 @@ const HelmReleasePanel = () => {
 
   const { data, loading, errors } = useHelmReleases(entity);
 
-  if (loading) {
+  if (loading && !data) {
     return <Progress />;
   }
 

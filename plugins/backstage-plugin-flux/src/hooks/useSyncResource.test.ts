@@ -177,6 +177,7 @@ describe('syncResource', () => {
     name: 'test-name',
     namespace: 'test-namespace',
     sourceRef: {
+      kind: 'HelmRepository',
       name: 'test-source-name',
     },
     clusterName: 'test-clusterName',
