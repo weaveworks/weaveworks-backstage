@@ -32,11 +32,11 @@
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "4.0.0-alpha.61",
-    "@weaveworks/weave-gitops": "^0.23.0",
     "luxon": "^3.3.0",
     "react-query": "^3.39.3",
     "react-use": "^17.2.4",
-    "styled-components": "^5.3.0"
+    "styled-components": "^5.3.0",
+    "yaml": "^2.3.1"
   },
   "peerDependencies": {
     "react": "^16.13.1 || ^17.0.0"

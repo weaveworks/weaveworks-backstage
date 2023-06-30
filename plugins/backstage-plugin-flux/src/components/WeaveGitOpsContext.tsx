@@ -6,7 +6,7 @@ import {
   QueryClientProvider,
 } from 'react-query';
 import { ThemeProvider } from 'styled-components';
-import { theme } from '@weaveworks/weave-gitops';
+import { theme } from '../theme';
 
 export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
   const queryOptions: QueryClientConfig = {

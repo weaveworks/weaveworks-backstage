@@ -1,6 +1,10 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { FluxObject, HelmRelease } from '@weaveworks/weave-gitops';
-import { OCIRepository, GitRepository } from './types';
+import {
+  FluxObject,
+  GitRepository,
+  HelmRelease,
+  OCIRepository,
+} from '../objects';
 
 const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
   const queryStringData = {
@@ -13,9 +17,11 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
     .join('&');
 
   return `${baseUrl}/${type}/details?${queryString}`;
-}
+};
 
-export const useWeaveFluxDeepLink = (resource: HelmRelease | GitRepository | OCIRepository): string | undefined => {
+export const useWeaveFluxDeepLink = (
+  resource: HelmRelease | GitRepository | OCIRepository,
+): string | undefined => {
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
 
@@ -24,11 +30,11 @@ export const useWeaveFluxDeepLink = (resource: HelmRelease | GitRepository | OCI
   }
 
   switch (resource.type) {
-    case "HelmRelease":
+    case 'HelmRelease':
       return typedUrl(baseUrl, resource as HelmRelease, 'helm_release');
-    case "GitRepository":
+    case 'GitRepository':
       return typedUrl(baseUrl, resource as GitRepository, 'git_repo');
-    case "OCIRepository":
+    case 'OCIRepository':
       return typedUrl(baseUrl, resource as OCIRepository, 'oci');
     default:
       return undefined;
