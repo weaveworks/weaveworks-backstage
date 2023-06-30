@@ -37,6 +37,7 @@
     "react-query": "^3.39.3",
     "react-use": "^17.2.4",
     "styled-components": "^5.3.0",
+    "use-deep-compare": "^1.1.0",
     "yaml": "^2.3.1"
   },
   "peerDependencies": {

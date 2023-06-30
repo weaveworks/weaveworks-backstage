@@ -1,16 +1,8 @@
 import { Table, TableProps } from '@backstage/core-components';
 import { Typography } from '@material-ui/core';
-import { isEqual } from 'lodash';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useStyles } from './utils';
-
-export function useDeepCompareMemoize(value: React.DependencyList) {
-  const ref = React.useRef<React.DependencyList>([]);
-  if (!isEqual(value, ref.current)) {
-    ref.current = value;
-  }
-  return ref.current;
-}
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 export function FluxEntityTable<T extends object = {}>({
   title,
@@ -20,7 +12,11 @@ export function FluxEntityTable<T extends object = {}>({
 }: TableProps<T>) {
   const classes = useStyles();
 
-  return useMemo(() => {
+  // We use this memo not really for performance, but to avoid
+  // re-rendering the table when the data changes. Makes it much easier to style etc.
+  // Review this decision if we run into hard to debug issues.
+  //
+  return useDeepCompareMemo(() => {
     return (
       <Table
         columns={columns}
@@ -37,6 +33,5 @@ export function FluxEntityTable<T extends object = {}>({
         }
       />
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, useDeepCompareMemoize([data, title, isLoading, classes.empty, columns]));
+  }, [data, title, isLoading, classes.empty, columns]);
 }
