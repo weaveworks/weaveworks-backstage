@@ -252,6 +252,10 @@ export class GitRepository extends FluxObject {
   get artifact(): Artifact | undefined {
     return this.obj.status.artifact;
   }
+
+  isVerifiable(): boolean {
+    return Boolean(this.obj.spec.verify?.provider !== undefined);
+  }
 }
 
 export class OCIRepository extends FluxObject {

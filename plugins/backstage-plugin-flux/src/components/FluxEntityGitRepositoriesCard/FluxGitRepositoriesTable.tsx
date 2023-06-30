@@ -1,55 +1,26 @@
 import React, { useMemo } from 'react';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
-import { automationLastUpdated, useStyles } from '../utils';
-import { DateTime } from 'luxon';
-import { NameLabel } from '../helpers';
-import KubeStatusIndicator from '../KubeStatusIndicator';
+import { useStyles } from '../utils';
+import {
+  idColumn,
+  nameAndClusterNameColumn,
+  verifiedColumn,
+  urlColumn,
+  tagColumn,
+  statusColumn,
+  updatedColumn,
+} from '../helpers';
 import { GitRepository } from '../../objects';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
-  {
-    title: 'id',
-    field: 'id',
-    hidden: true,
-  },
-  {
-    title: 'Name',
-    render: (repo: GitRepository) => <NameLabel resource={repo} />,
-  },
-  {
-    title: 'Cluster',
-    field: 'clusterName',
-  },
-  {
-    title: 'URL',
-    field: 'url',
-  },
-  {
-    title: 'Revision',
-    // TODO This should pull from the status.artifact.revision
-    field: 'artifact.revision',
-  },
-  {
-    title: 'Status',
-    render: (repo: GitRepository) => {
-      return (
-        <KubeStatusIndicator
-          short
-          conditions={repo.conditions}
-          suspended={repo.suspended}
-        />
-      );
-    },
-  },
-  {
-    title: 'Updated',
-    render: (repo: GitRepository) => {
-      return DateTime.fromISO(automationLastUpdated(repo)).toRelative({
-        locale: 'en',
-      });
-    },
-  },
+  idColumn(),
+  nameAndClusterNameColumn(),
+  verifiedColumn(),
+  urlColumn(),
+  tagColumn(),
+  statusColumn(),
+  updatedColumn(),
 ];
 
 type Props = {
@@ -66,17 +37,28 @@ export const FluxGitRepositoriesTable = ({
   const classes = useStyles();
 
   const data = gitRepositories.map(repo => {
+    const {
+      clusterName,
+      namespace,
+      name,
+      conditions,
+      suspended,
+      url,
+      reference,
+      type,
+      artifact,
+    } = repo;
     return {
-      id: `${repo.clusterName}/${repo.namespace}/${repo.name}`,
-      conditions: repo.conditions,
-      suspended: repo.suspended,
-      name: repo.name,
-      namespace: repo.namespace,
-      url: repo.url,
-      reference: repo.reference,
-      clusterName: repo.clusterName,
-      type: repo.type,
-      artifact: repo.artifact,
+      id: `${clusterName}/${namespace}/${name}`,
+      conditions,
+      suspended,
+      name,
+      namespace,
+      url,
+      reference,
+      clusterName,
+      type,
+      artifact,
     } as GitRepository & { id: string };
   });
 
