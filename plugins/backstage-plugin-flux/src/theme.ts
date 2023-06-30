@@ -53,15 +53,15 @@ export const baseTheme = {
 };
 
 export const theme = (mode: ThemeTypes = ThemeTypes.Light): DefaultTheme => {
-  //dark
-  if (mode === ThemeTypes.Dark)
+  // dark
+  if (mode === ThemeTypes.Dark) {
     return {
       ...baseTheme,
       colors: {
         black: '#fff',
         white: '#1a1a1a',
         primary: '#009CCC',
-        //only used in nav text when collapsed + selected/hover
+        // only used in nav text when collapsed + selected/hover
         primaryLight05: 'rgba(0,179,236,0.05)',
         primaryLight10: '#98E0F7',
         primary10: '#00b3ec',
@@ -95,47 +95,48 @@ export const theme = (mode: ThemeTypes = ThemeTypes.Light): DefaultTheme => {
       },
       mode: ThemeTypes.Dark,
     };
-  //light
-  else
-    return {
-      ...baseTheme,
-      colors: {
-        black: '#1a1a1a',
-        white: '#fff',
-        primary: '#00b3ec',
-        primaryLight05: '#E5F7FD',
-        primaryLight10: '#98E0F7',
-        primary10: '#009CCC',
-        primary20: '#006B8E',
-        successLight: '#C9EBD7',
-        successMedium: '#78CC9C',
-        successOriginal: '#27AE60',
-        successDark: '#156034',
-        alertLight: '#EECEC7',
-        alertMedium: '#D58572',
-        alertOriginal: '#BC3B1D',
-        alertDark: '#9F3119',
-        neutralGray: '#F6F7F9',
-        neutral00: '#ffffff',
-        neutral10: '#f5f5f5',
-        neutral20: '#d8d8d8',
-        neutral30: '#737373',
-        neutral40: '#1a1a1a',
-        whiteToPrimary: '#fff',
-        grayToPrimary: '#737373',
-        backGray: '#eef0f4',
-        blueWithOpacity: 'rgba(0, 179, 236, 0.1)',
-        feedbackLight: '#FCE6D2',
-        feedbackMedium: '#F7BF8E',
-        feedbackOriginal: '#F2994A',
-        feedbackDark: '#8A460A',
-        defaultLight: '#FCE6D2',
-        defaultMedium: '#F7BF8E',
-        defaultOriginal: '#F2994A',
-        defaultDark: '#8A460A',
-      },
-      mode: ThemeTypes.Light,
-    };
+  }
+
+  // light
+  return {
+    ...baseTheme,
+    colors: {
+      black: '#1a1a1a',
+      white: '#fff',
+      primary: '#00b3ec',
+      primaryLight05: '#E5F7FD',
+      primaryLight10: '#98E0F7',
+      primary10: '#009CCC',
+      primary20: '#006B8E',
+      successLight: '#C9EBD7',
+      successMedium: '#78CC9C',
+      successOriginal: '#27AE60',
+      successDark: '#156034',
+      alertLight: '#EECEC7',
+      alertMedium: '#D58572',
+      alertOriginal: '#BC3B1D',
+      alertDark: '#9F3119',
+      neutralGray: '#F6F7F9',
+      neutral00: '#ffffff',
+      neutral10: '#f5f5f5',
+      neutral20: '#d8d8d8',
+      neutral30: '#737373',
+      neutral40: '#1a1a1a',
+      whiteToPrimary: '#fff',
+      grayToPrimary: '#737373',
+      backGray: '#eef0f4',
+      blueWithOpacity: 'rgba(0, 179, 236, 0.1)',
+      feedbackLight: '#FCE6D2',
+      feedbackMedium: '#F7BF8E',
+      feedbackOriginal: '#F2994A',
+      feedbackDark: '#8A460A',
+      defaultLight: '#FCE6D2',
+      defaultMedium: '#F7BF8E',
+      defaultOriginal: '#F2994A',
+      defaultDark: '#8A460A',
+    },
+    mode: ThemeTypes.Light,
+  };
 };
 
 export default theme;

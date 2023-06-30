@@ -126,9 +126,8 @@ export class FluxObject {
     return Object.keys(annotations).flatMap(key => {
       if (!key.startsWith(prefix)) {
         return [];
-      } else {
-        return [[key.slice(prefix.length), annotations[key] as string]];
       }
+      return [[key.slice(prefix.length), annotations[key] as string]];
     });
   }
 
@@ -195,7 +194,7 @@ export class FluxObject {
 
 export class HelmRepository extends FluxObject {
   get repositoryType(): string {
-    return this.obj.spec?.type == 'oci' ? 'OCI' : 'Default';
+    return this.obj.spec?.type === 'oci' ? 'OCI' : 'Default';
   }
 
   get url(): string {
@@ -206,7 +205,7 @@ export class HelmRepository extends FluxObject {
 export class HelmChart extends FluxObject {
   get sourceRef(): ObjectRef | undefined {
     if (!this.obj.spec?.sourceRef) {
-      return;
+      return undefined;
     }
     const sourceRef = {
       ...this.obj.spec.sourceRef,
@@ -360,7 +359,7 @@ export class HelmRelease extends FluxObject {
     let chart = this.obj.spec?.chart;
     chart = { ...chart };
     chart.metadata = {
-      name: this.namespace + '-' + this.name,
+      name: `${this.namespace}-${this.name}`,
       namespace: chart.spec?.sourceRef?.namespace || this.namespace,
     };
     return new HelmChart({

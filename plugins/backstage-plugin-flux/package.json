@@ -1,10 +1,9 @@
 {
-  "name": "@weaveworks/backstage-plugin-flux",
+  "name": "@weaveworksoss/backstage-plugin-flux",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
-  "license": "Apache-2.0",
-  "private": true,
+  "license": "MPL-2.0",
   "publishConfig": {
     "access": "public",
     "main": "dist/index.esm.js",
@@ -58,6 +57,7 @@
     "msw": "^1.0.0"
   },
   "files": [
+    "LICENSE",
     "dist",
     "config.d.ts"
   ],

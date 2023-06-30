@@ -21,11 +21,15 @@ type Props = {
   'data-testid'?: string;
 };
 
-const Styled = (component: any) => styled(component)`
+const withStyles = (component: any) => styled(component)`
   display: flex;
   flex-direction: ${({ column }) => (column ? 'column' : 'row')};
-  align-items: ${({ align, alignItems }) =>
-    alignItems ? alignItems : align ? 'center' : 'start'};
+  align-items: ${({ align, alignItems }) => {
+    if (alignItems) {
+      return alignItems;
+    }
+    return align ? 'center' : 'start';
+  }};
   ${({ gap }) => gap && `gap: ${gap}px`};
   ${({ tall }) => tall && `height: 100%`};
   ${({ wide }) => wide && 'width: 100%'};
@@ -59,4 +63,4 @@ class Flex extends React.PureComponent<Props> {
   }
 }
 
-export default Styled(Flex);
+export default withStyles(Flex);
