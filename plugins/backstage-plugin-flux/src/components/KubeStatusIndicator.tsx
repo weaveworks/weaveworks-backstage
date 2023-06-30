@@ -1,17 +1,18 @@
 import _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
-import { colors } from '../typedefs/styled';
-import Flex from './Flex';
-import Icon, { IconType } from './Icon';
-import Text from './Text';
-import { Condition } from '../objects';
 import {
   StatusAborted,
   StatusError,
   StatusOK,
   StatusPending,
 } from '@backstage/core-components';
+import { colors } from '../typedefs/styled';
+import Flex from './Flex';
+import Icon, { IconType } from './Icon';
+import Text from './Text';
+import { Condition } from '../objects';
+import reconcile from '../images/reconcile.svg';
 
 type Props = {
   className?: string;
@@ -155,6 +156,15 @@ const getBackstageIcon = (color: string) => {
     case 'neutral20':
       return <StatusAborted />;
 
+    case 'primary':
+      return (
+        <img
+          width="13px"
+          style={{ marginLeft: '-2px', marginRight: '6px' }}
+          src={reconcile}
+        />
+      );
+
     default:
       return undefined;
   }
@@ -221,6 +231,8 @@ function KubeStatusIndicator({
 
   let text = computeMessage(conditions);
   if (short || suspended) text = type;
+
+  console.log(color);
 
   return (
     <Flex start className={className} align>

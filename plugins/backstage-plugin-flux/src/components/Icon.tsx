@@ -1,6 +1,6 @@
-import MuiCheckCircleIcon from '@material-ui/icons/CheckCircle';
-import MuiRemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import MuiErrorIcon from '@material-ui/icons/Error';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import ErrorIcon from '@material-ui/icons/Error';
 import * as React from 'react';
 import styled from 'styled-components';
 import suspended from '../images/suspended.svg';
@@ -33,28 +33,26 @@ type Props = {
 function getIcon(i: IconType) {
   switch (i) {
     case IconType.CheckCircleIcon:
-      return MuiCheckCircleIcon;
+      return CheckCircleIcon;
 
     case IconType.RemoveCircleIcon:
-      return MuiRemoveCircleIcon;
+      return RemoveCircleIcon;
 
     case IconType.FailedIcon:
-      return MuiErrorIcon;
+      return ErrorIcon;
 
     case IconType.SuspendedIcon:
-      return () => <img alt="suspended" src={suspended} />;
+      return () => <img src={suspended} />;
 
     case IconType.ReconcileIcon:
-      return () => <img alt="reconcile" src={reconcile} />;
+      return () => <img src={reconcile} />;
 
     case IconType.PendingActionIcon:
-      return () => <img alt="pending" src={pendingAction} />;
+      return () => <img src={pendingAction} />;
 
     default:
-      break;
+      return;
   }
-
-  return undefined;
 }
 
 function Icon({ className, type, text, color, fontSize }: Props) {
