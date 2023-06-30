@@ -57,6 +57,7 @@
     "msw": "^1.0.0"
   },
   "files": [
+    "LICENSE",
     "dist",
     "config.d.ts"
   ],
