@@ -94,7 +94,7 @@ function makeMockAlertApi() {
 }
 
 describe('requestSyncResource', () => {
-  it('resovles to undefined if everything goes okay', async () => {
+  it('resolves to undefined if everything goes okay', async () => {
     const kubernetesApi = makeMockKubernetesApi();
     // mock values in a sequence, first time the api is called return a 200
     // second time return a response body with the new lastHandledReconcileAt
