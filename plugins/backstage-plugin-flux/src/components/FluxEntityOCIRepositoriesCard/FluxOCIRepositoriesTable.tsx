@@ -4,10 +4,10 @@ import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { DateTime } from 'luxon';
 import { NameLabel, verifiedStatus } from '../helpers';
-import { OCIRepository } from '../../hooks';
 import { automationLastUpdated, useStyles } from '../utils';
 import Flex from '../Flex';
 import KubeStatusIndicator from '../KubeStatusIndicator';
+import { OCIRepository } from '../../objects';
 
 const UrlWrapper = styled.div`
   overflow: hidden;

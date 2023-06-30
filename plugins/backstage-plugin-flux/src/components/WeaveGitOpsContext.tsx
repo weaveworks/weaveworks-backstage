@@ -15,7 +15,7 @@ export const WeaveGitOpsContext = ({ children }: { children: ReactNode }) => {
   const queryClient = new QueryClient(queryOptions);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme()}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </ThemeProvider>
   );

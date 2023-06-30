@@ -1,5 +1,4 @@
-import { OCIRepository } from '../hooks';
-import { HelmRelease } from '../objects';
+import { HelmRelease, OCIRepository } from '../objects';
 import { automationLastUpdated, findVerificationCondition } from './utils';
 
 describe('automationLastUpdated', () => {

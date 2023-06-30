@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from '@backstage/core-components';
 import { Tooltip } from '@material-ui/core';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import { GitRepository, OCIRepository, useWeaveFluxDeepLink } from '../hooks';
+import { useWeaveFluxDeepLink } from '../hooks';
 import { VerifiableSource, findVerificationCondition } from './utils';
-import { HelmRelease } from '../objects';
+import { GitRepository, HelmRelease, OCIRepository } from '../objects';
 
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
