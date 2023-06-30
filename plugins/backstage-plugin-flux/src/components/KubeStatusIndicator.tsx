@@ -6,6 +6,12 @@ import Flex from './Flex';
 import Icon, { IconType } from './Icon';
 import Text from './Text';
 import { Condition } from '../objects';
+import {
+  StatusAborted,
+  StatusError,
+  StatusOK,
+  StatusPending,
+} from '@backstage/core-components';
 
 type Props = {
   className?: string;
@@ -115,6 +121,7 @@ export const getIndicatorInfo = (
       icon: IconType.PendingActionIcon,
       color: 'feedbackOriginal',
     };
+
   if (ready === ReadyType.Ready)
     return {
       type: ReadyType.Ready,
@@ -132,6 +139,25 @@ export const getIndicatorInfo = (
     icon: IconType.FailedIcon,
     color: 'alertOriginal',
   };
+};
+
+const getBackstageIcon = (color: string) => {
+  switch (color) {
+    case 'successOriginal':
+      return <StatusOK />;
+
+    case 'alertOriginal':
+      return <StatusError />;
+
+    case 'feedbackOriginal':
+      return <StatusPending />;
+
+    case 'neutral20':
+      return <StatusAborted />;
+
+    default:
+      return undefined;
+  }
 };
 
 export type SpecialObject = 'DaemonSet';
@@ -191,17 +217,14 @@ function KubeStatusIndicator({
   short,
   suspended,
 }: Props) {
-  const { type, color, icon } = getIndicatorInfo(
-    suspended as boolean,
-    conditions,
-  );
+  const { type, color } = getIndicatorInfo(suspended as boolean, conditions);
 
   let text = computeMessage(conditions);
   if (short || suspended) text = type;
 
   return (
     <Flex start className={className} align>
-      <Icon size="base" type={icon} color={color} text={text} />
+      {getBackstageIcon(color)} {text}
     </Flex>
   );
 }
