@@ -7,8 +7,8 @@ import {
   syncRequest,
   syncResource,
 } from './useSyncResource';
-import { HelmRelease } from '@weaveworks/weave-gitops';
 import { alertApiRef } from '@backstage/core-plugin-api';
+import { HelmRelease } from '../objects';
 
 describe('pathForResource', () => {
   it('returns the correct path', () => {

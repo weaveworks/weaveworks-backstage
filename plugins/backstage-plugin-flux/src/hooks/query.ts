@@ -5,15 +5,15 @@ import {
   KubernetesFetchError,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-
-import { FluxObject, HelmRelease } from '@weaveworks/weave-gitops';
 import {
-  OCIRepository,
+  FluxObject,
   GitRepository,
-  helmReleaseGVK,
+  HelmRelease,
+  OCIRepository,
   gitRepositoriesGVK,
+  helmReleaseGVK,
   ociRepositoriesGVK,
-} from './types';
+} from '../objects';
 
 function toErrors(
   cluster: ClusterAttributes,

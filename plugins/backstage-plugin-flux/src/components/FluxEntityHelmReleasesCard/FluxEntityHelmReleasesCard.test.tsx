@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
@@ -18,7 +17,6 @@ import {
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
 import { act, fireEvent, waitFor } from '@testing-library/react';
-import { ReconcileRequestAnnotation, useSyncResource } from '../../hooks';
 
 const makeTestHelmRelease = (name: string, chart: string, version: string) => {
   return {

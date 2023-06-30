@@ -1,11 +1,10 @@
 import React from 'react';
-
 import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { HelmRelease } from '@weaveworks/weave-gitops';
 import { useHelmReleases } from '../../hooks/query';
 import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import { HelmRelease } from '../../objects';
 
 const HelmReleasesSummary = ({ data }: { data: HelmRelease[] }) => {
   return (

@@ -1,7 +1,5 @@
 import { makeStyles } from '@material-ui/core';
-
-import { FluxObject } from '@weaveworks/weave-gitops';
-import { Condition } from '@weaveworks/weave-gitops/ui/lib/api/core/types.pb';
+import { Condition, FluxObject } from '../objects';
 
 /**
  * Find the timestamp of the first "Ready" condition.

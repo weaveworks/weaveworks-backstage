@@ -1,21 +1,16 @@
 import React from 'react';
-import { HelmRelease } from '@weaveworks/weave-gitops';
 import { Link, Progress } from '@backstage/core-components';
 import { IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import {
-  GitRepository,
-  OCIRepository,
-  SyncResource,
-  useWeaveFluxDeepLink,
-} from '../hooks';
+import { SyncResource, useWeaveFluxDeepLink } from '../hooks';
 import { useSyncResource } from '../hooks/useSyncResource';
 import {
   VerifiableSource,
   findVerificationCondition,
   useStyles,
 } from './utils';
+import { GitRepository, HelmRelease, OCIRepository } from '../objects';
 
 /**
  * Calculate a Name label for a resource with the namespace/name and link to

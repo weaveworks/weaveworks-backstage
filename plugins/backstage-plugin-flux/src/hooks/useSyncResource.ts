@@ -1,13 +1,15 @@
 import { AlertApi, alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
 import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
+import { useAsyncFn } from 'react-use';
 import {
   GitRepository,
   HelmRelease,
   OCIRepository,
-} from '@weaveworks/weave-gitops';
-import { useAsyncFn } from 'react-use';
-import { gvkFromResource, helmReleaseGVK, helmRepositoryGVK } from './types';
+  gvkFromResource,
+  helmReleaseGVK,
+  helmRepositoryGVK,
+} from '../objects';
 
 export const ReconcileRequestAnnotation = 'reconcile.fluxcd.io/requestedAt';
 

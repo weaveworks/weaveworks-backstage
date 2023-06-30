@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
-import { HelmRelease, KubeStatusIndicator } from '@weaveworks/weave-gitops';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { DateTime } from 'luxon';
 import { NameLabel, syncColumn } from '../helpers';
 import { automationLastUpdated, useStyles } from '../utils';
+import { HelmRelease } from '../../objects';
+import KubeStatusIndicator from '../KubeStatusIndicator';
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   {
@@ -87,7 +88,7 @@ export const FluxHelmReleasesTable = ({
     return (
       <Table
         columns={columns}
-        options={{ paging: true, search: true, pageSize: 5 }}
+        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
         title="Helm Releases"
         data={data}
         isLoading={isLoading}
