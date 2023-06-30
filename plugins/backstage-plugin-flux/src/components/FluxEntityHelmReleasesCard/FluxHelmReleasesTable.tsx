@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import { useStyles } from '../utils';
@@ -69,22 +69,20 @@ export const FluxHelmReleasesTable = ({
     } as HelmRelease & { id: string };
   });
 
-  return useMemo(() => {
-    return (
-      <Table
-        columns={columns}
-        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
-        title="Helm Releases"
-        data={data}
-        isLoading={isLoading}
-        emptyContent={
-          <div className={classes.empty}>
-            <Typography variant="body1">
-              No Helm Releases found for this entity.
-            </Typography>
-          </div>
-        }
-      />
-    );
-  }, [data, isLoading, columns, classes.empty]);
+  return (
+    <Table
+      columns={columns}
+      options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
+      title="Helm Releases"
+      data={data}
+      isLoading={isLoading}
+      emptyContent={
+        <div className={classes.empty}>
+          <Typography variant="body1">
+            No Helm Releases found for this entity.
+          </Typography>
+        </div>
+      }
+    />
+  );
 };

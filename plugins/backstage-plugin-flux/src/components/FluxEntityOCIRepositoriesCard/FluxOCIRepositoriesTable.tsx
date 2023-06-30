@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Typography } from '@material-ui/core';
 import { Table, TableColumn } from '@backstage/core-components';
 import {
@@ -65,22 +65,20 @@ export const FluxOCIRepositoriesTable = ({
     } as OCIRepository & { id: string };
   });
 
-  return useMemo(() => {
-    return (
-      <Table
-        columns={columns}
-        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
-        title="OCI Repositories"
-        data={data}
-        isLoading={isLoading}
-        emptyContent={
-          <div className={classes.empty}>
-            <Typography variant="body1">
-              No OCI Repositories found for this entity.
-            </Typography>
-          </div>
-        }
-      />
-    );
-  }, [data, isLoading, columns, classes.empty]);
+  return (
+    <Table
+      columns={columns}
+      options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
+      title="OCI Repositories"
+      data={data}
+      isLoading={isLoading}
+      emptyContent={
+        <div className={classes.empty}>
+          <Typography variant="body1">
+            No OCI Repositories found for this entity.
+          </Typography>
+        </div>
+      }
+    />
+  );
 };
