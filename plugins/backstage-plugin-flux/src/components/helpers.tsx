@@ -45,15 +45,19 @@ export function SyncButton({ resource }: { resource: SyncResource }) {
   const { sync, isSyncing } = useSyncResource(resource);
 
   const classes = useStyles();
-  const title = `Sync ${resource.namespace}/${resource.name}. Last`;
-  const testId = `sync ${resource.namespace}/${resource.name}`;
+  const label = `${resource.namespace}/${resource.name}`;
 
   return isSyncing ? (
-    <Progress title="syncing" />
+    <Tooltip title={`Syncing ${label}`}>
+      {/* seem to need a div here as tooltipping onto <Progress/> doesn't work */}
+      <div>
+        <Progress data-testid="syncing" />
+      </div>
+    </Tooltip>
   ) : (
-    <Tooltip title={title}>
+    <Tooltip title={`Sync ${label}`}>
       <IconButton
-        data-testid={testId}
+        data-testid={`sync ${label}`}
         className={classes.syncButton}
         size="small"
         onClick={sync}
@@ -66,7 +70,7 @@ export function SyncButton({ resource }: { resource: SyncResource }) {
 
 export function syncColumn() {
   return {
-    title: '',
+    title: 'Sync',
     render: (row: SyncResource) => {
       return <SyncButton resource={row} />;
     },

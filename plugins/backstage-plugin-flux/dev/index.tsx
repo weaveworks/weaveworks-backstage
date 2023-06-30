@@ -25,6 +25,7 @@ import {
 } from '../src/plugin';
 import { newTestHelmRelease, newTestOCIRepository } from './helpers';
 import { FluxEntityOCIRepositoriesCard } from '../src/components/FluxEntityOCIRepositoriesCard';
+import { ReconcileRequestAnnotation } from '../src/hooks';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -99,6 +100,7 @@ const fakeGitRepository = {
 
 class StubKubernetesClient implements KubernetesApi {
   private resources: any[];
+  private mockResponses: Record<string, Response[]> = {};
 
   constructor(resources: any[]) {
     this.resources = resources;
@@ -140,12 +142,60 @@ class StubKubernetesClient implements KubernetesApi {
       ],
     });
   }
-  async proxy(_options: {
+
+  // this is only used by sync right now, so it looks a little bit funny
+  async proxy({
+    init,
+    path,
+  }: {
     clusterName: string;
     path: string;
     init?: RequestInit | undefined;
   }): Promise<any> {
-    throw new Error('proxy not implemented.');
+    // Assumption: The initial request!
+    // Generates 2 more subsequent requests that can be retrieved in order via GET'ing
+    //
+    if (init?.method === 'PATCH') {
+      const data = JSON.parse(init.body as string);
+      const reconiliationRequestedAt =
+        data.metadata.annotations[ReconcileRequestAnnotation];
+      this.mockResponses[path] = [
+        // request 1, not ready yet, so you can see the progress bar
+        {
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              status: {
+                lastHandledReconcileAt: 'not quite',
+              },
+            }),
+        } as Response,
+        // request 2, ready! sync'd properly.
+        {
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              status: {
+                lastHandledReconcileAt: reconiliationRequestedAt,
+              },
+            }),
+        } as Response,
+      ];
+
+      return {
+        ok: true,
+      } as Response;
+    }
+
+    // very simple right now
+    if (this.mockResponses[path]?.length) {
+      // shift pops the [0]th element off the array
+      return this.mockResponses[path].shift();
+    }
+
+    throw new Error(
+      "The mock responses didn't seem to line up with the UI behaviour. Sorry about that",
+    );
   }
 }
 
