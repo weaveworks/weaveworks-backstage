@@ -15,7 +15,6 @@ jobs:
       - run: |
           cd plugins/backstage-plugin-flux
           yarn install --frozen-lockfile
-          ./publish
+          ./publish.sh
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
