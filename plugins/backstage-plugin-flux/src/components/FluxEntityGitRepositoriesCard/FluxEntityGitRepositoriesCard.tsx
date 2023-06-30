@@ -1,5 +1,4 @@
 import React from 'react';
-import { Progress } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useGitRepositories } from '../../hooks/query';
 import {
