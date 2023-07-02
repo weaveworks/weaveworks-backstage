@@ -125,7 +125,6 @@ export const nameAndClusterName = ({
   </Flex>
 );
 
-// With a generic type T
 export const idColumn = <T extends FluxObject>() => {
   return {
     title: 'id',
