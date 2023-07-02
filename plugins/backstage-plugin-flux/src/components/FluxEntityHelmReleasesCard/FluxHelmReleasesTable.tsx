@@ -4,22 +4,29 @@ import {
   idColumn,
   nameAndClusterNameColumn,
   statusColumn,
+  stringCompareFilter,
+  stringCompareSort,
   syncColumn,
   updatedColumn,
 } from '../helpers';
 import { HelmRelease } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
+function chartColumn() {
+  const formatContent = (hr: HelmRelease) =>
+    `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
+  return {
+    title: 'Chart',
+    customSort: stringCompareSort(hr => formatContent(hr)),
+    customFilterAndSearch: stringCompareFilter(hr => formatContent(hr)),
+    render: (hr: HelmRelease) => formatContent(hr),
+  } as TableColumn<HelmRelease>;
+}
+
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   idColumn(),
   nameAndClusterNameColumn(),
-  {
-    title: 'Chart',
-    field: 'helmChart.chart',
-    render: (hr: HelmRelease) => {
-      return `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
-    },
-  },
+  chartColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),

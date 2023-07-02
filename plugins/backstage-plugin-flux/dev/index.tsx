@@ -30,6 +30,7 @@ import {
 } from './helpers';
 import { FluxEntityOCIRepositoriesCard } from '../src/components/FluxEntityOCIRepositoriesCard';
 import { ReconcileRequestAnnotation } from '../src/hooks';
+import { Content } from '@backstage/core-components';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -210,7 +211,9 @@ createDevApp()
         ]}
       >
         <EntityProvider entity={fakeEntity}>
-          <FluxEntityHelmReleasesCard />
+          <Content>
+            <FluxEntityHelmReleasesCard />
+          </Content>
         </EntityProvider>
       </TestApiProvider>
     ),
@@ -254,7 +257,9 @@ createDevApp()
         ]}
       >
         <EntityProvider entity={fakeEntity}>
-          <FluxEntityGitRepositoriesCard />
+          <Content>
+            <FluxEntityGitRepositoriesCard />
+          </Content>
         </EntityProvider>
       </TestApiProvider>
     ),
@@ -310,7 +315,9 @@ createDevApp()
         ]}
       >
         <EntityProvider entity={fakeEntity}>
-          <FluxEntityOCIRepositoriesCard />
+          <Content>
+            <FluxEntityOCIRepositoriesCard />
+          </Content>
         </EntityProvider>
       </TestApiProvider>
     ),
