@@ -165,7 +165,11 @@ export const nameAndClusterNameColumn = <
 
 export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
-    title: 'Verified',
+    title: (
+      <Tooltip title="Verification status">
+        <VerifiedUserIcon style={{ height: '16px' }} />
+      </Tooltip>
+    ),
     render: resource => <VerifiedStatus resource={resource} />,
     ...sortAndFilterOptions(resource =>
       resource.isVerifiable

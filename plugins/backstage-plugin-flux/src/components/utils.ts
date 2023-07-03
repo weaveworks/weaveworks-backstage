@@ -24,7 +24,7 @@ export const useStyles = makeStyles(theme => ({
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     direction: 'rtl',
-    maxWidth: '325px',
+    maxWidth: '350px',
     height: '16px',
     marginTop: '2px',
   },
