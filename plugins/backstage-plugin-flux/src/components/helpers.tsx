@@ -5,7 +5,7 @@ import { Link, Progress, TableColumn } from '@backstage/core-components';
 import { Box, IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import { SyncResource, useSyncResource, useWeaveFluxDeepLink } from '../hooks';
+import { useSyncResource, useWeaveFluxDeepLink } from '../hooks';
 import {
   VerifiableSource,
   automationLastUpdated,
@@ -16,11 +16,14 @@ import {
   FluxObject,
   GitRepository,
   HelmRelease,
+  HelmRepository,
   OCIRepository,
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 
+export type Source = GitRepository | OCIRepository | HelmRepository;
+export type Deployment = HelmRelease;
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
  * this in Weave GitOps if possible.
@@ -28,7 +31,7 @@ import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 export const NameLabel = ({
   resource,
 }: {
-  resource: HelmRelease | GitRepository | OCIRepository;
+  resource: FluxObject;
 }): JSX.Element => {
   const { name, namespace } = resource;
   const deepLink = useWeaveFluxDeepLink(resource);
@@ -56,7 +59,7 @@ export const NameLabel = ({
 export const Url = ({
   resource,
 }: {
-  resource: GitRepository | OCIRepository;
+  resource: Source;
 }): JSX.Element => {
   const classes = useStyles();
   return (
@@ -66,7 +69,7 @@ export const Url = ({
   );
 };
 
-export function SyncButton({ resource }: { resource: SyncResource }) {
+export function SyncButton({ resource }: { resource: Source | Deployment }) {
   const { sync, isSyncing } = useSyncResource(resource);
 
   const classes = useStyles();
@@ -94,7 +97,7 @@ export function SyncButton({ resource }: { resource: SyncResource }) {
   );
 }
 
-export function syncColumn<T extends SyncResource>() {
+export function syncColumn<T extends Source | Deployment >() {
   return {
     title: 'Sync',
     render: row => <SyncButton resource={row} />,
@@ -134,7 +137,7 @@ export const VerifiedStatus = ({
 export const nameAndClusterName = ({
   resource,
 }: {
-  resource: HelmRelease | GitRepository | OCIRepository;
+  resource: FluxObject;
 }): JSX.Element => (
   <Flex column>
     <NameLabel resource={resource} />
@@ -150,9 +153,7 @@ export const idColumn = <T extends FluxObject>() => {
   } as TableColumn<T>;
 };
 
-export const nameAndClusterNameColumn = <
-  T extends HelmRelease | GitRepository | OCIRepository,
->() => {
+export const nameAndClusterNameColumn = <T extends FluxObject>() => {
   return {
     title: 'Name',
     render: resource => nameAndClusterName({ resource }),
@@ -180,7 +181,7 @@ export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   } as TableColumn<T>;
 };
 
-export const urlColumn = <T extends GitRepository | OCIRepository>() => {
+export const urlColumn = <T extends Source>() => {
   return {
     title: 'URL',
     field: 'url',
@@ -188,11 +189,9 @@ export const urlColumn = <T extends GitRepository | OCIRepository>() => {
   } as TableColumn<T>;
 };
 
-export const tagColumn = <T extends GitRepository | OCIRepository>(
-  title: string,
-) => {
+export const artifactColumn = <T extends Source>() => {
   return {
-    title,
+    title: 'Artifact',
     render: resource => (
       <Tooltip
         title={resource.artifact?.revision.split('@')[1] || 'unknown tag'}

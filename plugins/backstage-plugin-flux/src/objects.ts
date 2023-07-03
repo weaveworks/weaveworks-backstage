@@ -200,6 +200,14 @@ export class HelmRepository extends FluxObject {
   get url(): string {
     return this.obj.spec?.url || '';
   }
+
+  get provider(): string {
+    return this.obj.spec.provider || '';
+  }
+
+  get artifact(): Artifact | undefined {
+    return this.obj.status.artifact;
+  }
 }
 
 export class HelmChart extends FluxObject {
@@ -414,15 +422,16 @@ export const kustomizationsGVK: CustomResourceMatcher = {
 export function gvkFromKind(
   kind: String | Kind | undefined,
 ): CustomResourceMatcher | undefined {
+
   switch (kind) {
     case 'HelmRelease':
       return helmReleaseGVK;
+    case 'HelmRepository':
+      return helmRepositoryGVK;
     case 'GitRepository':
       return gitRepositoriesGVK;
     case 'OCIRepository':
       return ociRepositoriesGVK;
-    case 'HelmRepository':
-      return helmRepositoryGVK;
     case 'Kustomization':
       return kustomizationsGVK;
     default:

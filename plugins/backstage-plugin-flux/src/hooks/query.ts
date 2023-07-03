@@ -15,6 +15,8 @@ import {
   helmReleaseGVK,
   ociRepositoriesGVK,
   kustomizationsGVK,
+  helmRepositoryGVK,
+  HelmRepository,
 } from '../objects';
 
 function toErrors(
@@ -160,6 +162,29 @@ export function useKustomizations(entity: Entity): Response<Kustomization> {
 
   const { data, kubernetesErrors } = toResponse<Kustomization>(
     item => new Kustomization(item),
+    kubernetesObjects,
+  );
+
+  return {
+    data,
+    loading,
+    errors: error
+      ? [new Error(error), ...(kubernetesErrors || [])]
+      : kubernetesErrors,
+  };
+};
+
+/**
+ * Query for the HelmRepositories associated with this Entity.
+ * @public
+ */
+export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    helmRepositoryGVK,
+  ]);
+
+  const { data, kubernetesErrors } = toResponse<HelmRepository>(
+    item => new HelmRepository(item),
     kubernetesObjects,
   );
 
