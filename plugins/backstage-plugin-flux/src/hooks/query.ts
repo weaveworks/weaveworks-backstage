@@ -10,9 +10,11 @@ import {
   GitRepository,
   HelmRelease,
   OCIRepository,
+  Kustomization,
   gitRepositoriesGVK,
   helmReleaseGVK,
   ociRepositoriesGVK,
+  kustomizationGVK,
 } from '../objects';
 
 function toErrors(
@@ -97,6 +99,15 @@ export interface OCIRepositoriesResponse {
 }
 
 /**
+ * @public
+ */
+export interface KustomizationsResponse {
+  data?: Kustomization[];
+  loading: boolean;
+  errors?: Error[];
+}
+
+/**
  * Query for the HelmReleases associated with this Entity.
  * @public
  */
@@ -153,6 +164,29 @@ export function useOCIRepositories(entity: Entity): OCIRepositoriesResponse {
 
   const { data, kubernetesErrors } = toResponse<OCIRepository>(
     item => new OCIRepository(item),
+    kubernetesObjects,
+  );
+
+  return {
+    data,
+    loading,
+    errors: error
+      ? [new Error(error), ...(kubernetesErrors || [])]
+      : kubernetesErrors,
+  };
+}
+
+/**
+ * Query for the OCIRepositories associated with this Entity.
+ * @public
+ */
+export function useKustomizations(entity: Entity): KustomizationsResponse {
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    kustomizationGVK,
+  ]);
+
+  const { data, kubernetesErrors } = toResponse<Kustomization>(
+    item => new Kustomization(item),
     kubernetesObjects,
   );
 

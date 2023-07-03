@@ -60,3 +60,18 @@ export const FluxEntityOCIRepositoriesCard = weaveworksFluxPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+/**
+ * Card used to show the state of Flux OCIRepositories for an Entity.
+ * @public
+ */
+export const FluxEntityKustomizationsCard = weaveworksFluxPlugin.provide(
+  createRoutableExtension({
+    name: 'FluxEntityKustomizationsCard',
+    component: () =>
+      import('./components/FluxEntityKustomizationsCard').then(
+        m => m.FluxEntityKustomizationsCard,
+      ),
+    mountPoint: rootRouteRef,
+  }),
+);
