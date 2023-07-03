@@ -12,13 +12,13 @@ import Flex from './Flex';
 import Text from './Text';
 
 export enum IconType {
-  ErrorIcon,
-  CheckCircleIcon,
-  RemoveCircleIcon,
-  FailedIcon,
-  SuspendedIcon,
-  ReconcileIcon,
-  PendingActionIcon,
+  Error,
+  CheckCircle,
+  RemoveCircle,
+  Failed,
+  Suspended,
+  Reconcile,
+  PendingAction,
 }
 
 type Props = {
@@ -32,26 +32,26 @@ type Props = {
 
 function getIcon(i: IconType) {
   switch (i) {
-    case IconType.CheckCircleIcon:
+    case IconType.CheckCircle:
       return CheckCircleIcon;
 
-    case IconType.RemoveCircleIcon:
+    case IconType.RemoveCircle:
       return RemoveCircleIcon;
 
-    case IconType.FailedIcon:
+    case IconType.Failed:
       return ErrorIcon;
 
-    case IconType.SuspendedIcon:
-      return () => <img src={suspended} />;
+    case IconType.Suspended:
+      return () => <img alt="suspended" src={suspended} />;
 
-    case IconType.ReconcileIcon:
-      return () => <img src={reconcile} />;
+    case IconType.Reconcile:
+      return () => <img alt="reconcile" src={reconcile} />;
 
-    case IconType.PendingActionIcon:
-      return () => <img src={pendingAction} />;
+    case IconType.PendingAction:
+      return () => <img alt="pendingAction" src={pendingAction} />;
 
     default:
-      return;
+      return undefined;
   }
 }
 

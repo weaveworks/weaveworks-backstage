@@ -105,7 +105,7 @@ export const getIndicatorInfo = (
 ): IndicatorInfo => {
   if (suspended)
     return {
-      icon: IconType.SuspendedIcon,
+      icon: IconType.Suspended,
       color: 'feedbackOriginal',
       type: ReadyType.Suspended,
     };
@@ -113,31 +113,31 @@ export const getIndicatorInfo = (
   if (ready === ReadyType.Reconciling)
     return {
       type: ReadyType.Reconciling,
-      icon: IconType.ReconcileIcon,
+      icon: IconType.Reconcile,
       color: 'primary',
     };
   if (ready === ReadyType.PendingAction)
     return {
       type: ReadyType.PendingAction,
-      icon: IconType.PendingActionIcon,
+      icon: IconType.PendingAction,
       color: 'feedbackOriginal',
     };
 
   if (ready === ReadyType.Ready)
     return {
       type: ReadyType.Ready,
-      icon: IconType.CheckCircleIcon,
+      icon: IconType.CheckCircle,
       color: 'successOriginal',
     };
   if (ready === ReadyType.None)
     return {
       type: ReadyType.None,
-      icon: IconType.RemoveCircleIcon,
+      icon: IconType.RemoveCircle,
       color: 'neutral20',
     };
   return {
     type: ReadyType.NotReady,
-    icon: IconType.FailedIcon,
+    icon: IconType.Failed,
     color: 'alertOriginal',
   };
 };
