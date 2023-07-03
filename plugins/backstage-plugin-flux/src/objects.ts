@@ -405,6 +405,12 @@ export const helmRepositoryGVK: CustomResourceMatcher = {
   plural: 'helmrepositories',
 };
 
+export const kustomizationsGVK: CustomResourceMatcher = {
+  apiVersion: 'v1beta2',
+  group: 'kustomize.toolkit.fluxcd.io',
+  plural: 'kustomizations',
+};
+
 export function gvkFromKind(
   kind: String | Kind | undefined,
 ): CustomResourceMatcher | undefined {
@@ -417,6 +423,8 @@ export function gvkFromKind(
       return ociRepositoriesGVK;
     case 'HelmRepository':
       return helmRepositoryGVK;
+    case 'Kustomization':
+      return kustomizationsGVK;
     default:
       break;
   }
