@@ -252,7 +252,7 @@ export class GitRepository extends FluxObject {
     return this.obj.status.artifact;
   }
 
-  isVerifiable(): boolean {
+  get isVerifiable(): boolean {
     return Boolean(this.obj.spec.verify?.provider !== undefined);
   }
 }
@@ -278,7 +278,7 @@ export class OCIRepository extends FluxObject {
     return metadata['org.opencontainers.image.revision'] || '';
   }
 
-  isVerifiable(): boolean {
+  get isVerifiable(): boolean {
     return Boolean(this.obj.spec.verify?.provider !== undefined);
   }
 

@@ -1,8 +1,9 @@
 import React from 'react';
+import classNames from 'classnames';
 import styled from 'styled-components';
 import { DateTime } from 'luxon';
 import { Link, Progress } from '@backstage/core-components';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { Box, IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { SyncResource, useSyncResource, useWeaveFluxDeepLink } from '../hooks';
@@ -15,17 +16,6 @@ import {
 import { GitRepository, HelmRelease, OCIRepository } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator from './KubeStatusIndicator';
-
-const UrlWrapper = styled.div`
-  // overflow hidden and white-space nowrap are needed for text-overflow to work
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  direction: rtl;
-  max-width: 350px;
-  height: 16px;
-  margin-top: 2px;
-`;
 
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
@@ -42,13 +32,33 @@ export const NameLabel = ({
   const classes = useStyles();
 
   if (!deepLink) {
-    return <span className={classes.nameLabel}>{label}</span>;
+    return (
+      <span className={classNames(classes.textOverflow, classes.nameLabel)}>
+        {label}
+      </span>
+    );
   }
 
   return (
-    <Link className={classes.nameLabel} to={deepLink}>
+    <Link
+      className={classNames(classes.textOverflow, classes.nameLabel)}
+      to={deepLink}
+    >
       {label}
     </Link>
+  );
+};
+
+export const Url = ({
+  resource,
+}: {
+  resource: GitRepository | OCIRepository;
+}): JSX.Element => {
+  const classes = useStyles();
+  return (
+    <Box className={classes.textOverflow} title={resource.url}>
+      {resource.url}
+    </Box>
   );
 };
 
@@ -94,15 +104,17 @@ export const verifiedStatus = ({
   resource,
 }: {
   resource: VerifiableSource;
-}): JSX.Element => {
+}): JSX.Element | null => {
+  if (!resource.isVerifiable) return null;
+
   const condition = findVerificationCondition(resource);
 
-  let color = '#d8d8d8';
+  let color;
   if (condition?.status === 'True') {
     color = '#27AE60';
   } else if (condition?.status === 'False') {
     color = '#BC3B1D';
-  } else if (condition?.status !== undefined) {
+  } else if (condition?.status === undefined || !condition?.status) {
     color = '#FEF071';
   }
 
@@ -154,7 +166,7 @@ export const urlColumn = () => {
   return {
     title: 'URL',
     render: (resource: GitRepository | OCIRepository) => {
-      return <UrlWrapper title={resource.url}>{resource.url}</UrlWrapper>;
+      return <Url resource={resource} />;
     },
     field: 'url',
     searchable: true,
@@ -188,6 +200,7 @@ export const statusColumn = () => {
         />
       );
     },
+    minWidth: '130px',
   };
 };
 

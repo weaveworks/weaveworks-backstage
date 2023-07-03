@@ -25,7 +25,8 @@ export function FluxEntityTable<T extends object = {}>({
           padding: 'dense',
           paging: true,
           search: true,
-          pageSize: Math.min(data.length, 5),
+          pageSize: 5,
+          emptyRowsWhenPaging: false,
         }}
         title={title}
         data={data}

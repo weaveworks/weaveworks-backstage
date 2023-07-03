@@ -46,6 +46,7 @@ export const FluxGitRepositoriesTable = ({
       reference,
       type,
       artifact,
+      isVerifiable,
     } = repo;
     return {
       id: `${clusterName}/${namespace}/${name}`,
@@ -58,6 +59,7 @@ export const FluxGitRepositoriesTable = ({
       clusterName,
       type,
       artifact,
+      isVerifiable,
     } as GitRepository & { id: string };
   });
 
