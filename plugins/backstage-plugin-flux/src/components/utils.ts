@@ -42,8 +42,8 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '24px', // adjust size as needed
-    width: '24px', // adjust size as needed
+    height: '22px',
+    width: '22px',
   },
 }));
 
