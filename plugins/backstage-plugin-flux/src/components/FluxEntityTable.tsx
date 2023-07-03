@@ -15,12 +15,18 @@ export function FluxEntityTable<T extends object = {}>({
   // We use this memo not really for performance, but to avoid
   // re-rendering the table when the data changes. Makes it much easier to style etc.
   // Review this decision if we run into hard to debug issues.
-  //
+
   return useDeepCompareMemo(() => {
     return (
       <Table
+        key={data.length}
         columns={columns}
-        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
+        options={{
+          padding: 'dense',
+          paging: true,
+          search: true,
+          pageSize: Math.min(data.length, 5),
+        }}
         title={title}
         data={data}
         isLoading={isLoading}

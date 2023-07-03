@@ -165,7 +165,11 @@ export const tagColumn = (title: string) => {
   return {
     title: title,
     render: (resource: GitRepository | OCIRepository) => {
-      return <span>{resource.artifact?.revision.split('@')[0]}</span>;
+      return (
+        <span title={resource.artifact?.revision.split('@')[1]}>
+          {resource.artifact?.revision.split('@')[0]}
+        </span>
+      );
     },
     field: 'revision',
     searchable: true,
