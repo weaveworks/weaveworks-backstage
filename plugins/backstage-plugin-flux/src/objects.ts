@@ -253,7 +253,7 @@ export class GitRepository extends FluxObject {
   }
 
   get isVerifiable(): boolean {
-    return Boolean(this.obj.spec.verify?.provider !== undefined);
+    return Boolean(this.obj.spec.verify);
   }
 }
 
