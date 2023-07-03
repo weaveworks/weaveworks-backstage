@@ -3,9 +3,8 @@ import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
+  sortAndFilterOptions,
   statusColumn,
-  stringCompareFilter,
-  stringCompareSort,
   syncColumn,
   updatedColumn,
 } from '../helpers';
@@ -17,9 +16,8 @@ function chartColumn() {
     `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
   return {
     title: 'Chart',
-    customSort: stringCompareSort(hr => formatContent(hr)),
-    customFilterAndSearch: stringCompareFilter(hr => formatContent(hr)),
     render: (hr: HelmRelease) => formatContent(hr),
+    ...sortAndFilterOptions(hr => formatContent(hr)),
   } as TableColumn<HelmRelease>;
 }
 
