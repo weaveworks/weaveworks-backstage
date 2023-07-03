@@ -60,9 +60,9 @@ export const Url = ({
 }): JSX.Element => {
   const classes = useStyles();
   return (
-    <Box className={classes.textOverflow} title={resource.url}>
-      {resource.url}
-    </Box>
+    <Tooltip title={resource.url}>
+      <Box className={classes.textOverflow}>{resource.url}</Box>
+    </Tooltip>
   );
 };
 
@@ -186,18 +186,16 @@ export const urlColumn = <T extends GitRepository | OCIRepository>() => {
 export const tagColumn = <T extends GitRepository | OCIRepository>(
   title: string,
 ) => {
-  const formatContent = (resource: T) =>
-    resource.artifact?.revision.split('@')[0];
   return {
-    title: title,
+    title,
     render: resource => (
       <Tooltip
         title={resource.artifact?.revision.split('@')[1] || 'unknown tag'}
       >
-        <span>{formatContent(resource)}</span>
+        <span>{resource.artifact?.revision.split('@')[0]}</span>
       </Tooltip>
     ),
-    ...sortAndFilterOptions(resource => formatContent(resource)),
+    ...sortAndFilterOptions(resource => resource.artifact?.revision),
   } as TableColumn<T>;
 };
 
