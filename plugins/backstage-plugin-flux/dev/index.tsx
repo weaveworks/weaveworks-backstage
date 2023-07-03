@@ -322,5 +322,63 @@ createDevApp()
       </TestApiProvider>
     ),
   })
+  .addPage({
+    title: 'Kustomizations',
+    path: '/kustomizations',
+    element: (
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego' },
+            }),
+          ],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestOCIRepository(
+                'podinfo',
+                'oci://ghcr.io/stefanprodan/manifests/podinfo',
+                { verify: true, verified: true },
+              ),
+              newTestOCIRepository(
+                'redis',
+                'oci://registry-1.docker.io/bitnamicharts/redis',
+              ),
+              newTestOCIRepository(
+                'postgresql',
+                'oci://registry-1.docker.io/bitnamicharts/postgresql',
+                { verify: true, verified: false },
+              ),
+              newTestOCIRepository(
+                'apache',
+                'oci://registry-1.docker.io/bitnamicharts/apache',
+                { ready: false },
+              ),
+              newTestOCIRepository(
+                'supabase',
+                'oci://registry-1.docker.io/bitnamicharts/supabase',
+                { verify: true, pending: true },
+              ),
+              newTestOCIRepository(
+                'mariadb',
+                'oci://registry-1.docker.io/bitnamicharts/mariadb',
+                { verify: true, verified: false },
+              ),
+            ]),
+          ],
+
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <Content>
+            <FluxEntityOCIRepositoriesCard />
+          </Content>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
   .registerPlugin(weaveworksFluxPlugin)
   .render();
