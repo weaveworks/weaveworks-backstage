@@ -1,8 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
+import classNames from 'classnames';
 import { DateTime } from 'luxon';
 import { Link, Progress, TableColumn } from '@backstage/core-components';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { Box, IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { SyncResource, useSyncResource, useWeaveFluxDeepLink } from '../hooks';
@@ -21,14 +21,6 @@ import {
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 
-const UrlWrapper = styled.div`
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  direction: rtl;
-  max-width: 350px;
-`;
-
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
  * this in Weave GitOps if possible.
@@ -44,13 +36,33 @@ export const NameLabel = ({
   const classes = useStyles();
 
   if (!deepLink) {
-    return <span className={classes.nameLabel}>{label}</span>;
+    return (
+      <span className={classNames(classes.textOverflow, classes.nameLabel)}>
+        {label}
+      </span>
+    );
   }
 
   return (
-    <Link className={classes.nameLabel} to={deepLink}>
+    <Link
+      className={classNames(classes.textOverflow, classes.nameLabel)}
+      to={deepLink}
+    >
       {label}
     </Link>
+  );
+};
+
+export const Url = ({
+  resource,
+}: {
+  resource: GitRepository | OCIRepository;
+}): JSX.Element => {
+  const classes = useStyles();
+  return (
+    <Tooltip title={resource.url}>
+      <Box className={classes.textOverflow}>{resource.url}</Box>
+    </Tooltip>
   );
 };
 
@@ -90,25 +102,31 @@ export function syncColumn<T extends SyncResource>() {
   } as TableColumn<T>;
 }
 
-export const verifiedStatus = ({
+export const VerifiedStatus = ({
   resource,
 }: {
   resource: VerifiableSource;
-}): JSX.Element => {
+}): JSX.Element | null => {
+  const classes = useStyles();
+
+  if (!resource.isVerifiable) return null;
+
   const condition = findVerificationCondition(resource);
 
-  let color = '#d8d8d8';
+  let color;
   if (condition?.status === 'True') {
     color = '#27AE60';
   } else if (condition?.status === 'False') {
     color = '#BC3B1D';
-  } else if (condition?.status !== undefined) {
+  } else if (!condition?.status) {
     color = '#FEF071';
   }
 
   return (
-    <Tooltip title={condition?.message || ''}>
-      <VerifiedUserIcon style={{ color, height: '16px' }} />
+    <Tooltip title={condition?.message || 'pending verification'}>
+      <div className={classes.iconCircle}>
+        <VerifiedUserIcon style={{ color, height: '16px' }} />
+      </div>
     </Tooltip>
   );
 };
@@ -147,33 +165,42 @@ export const nameAndClusterNameColumn = <
 
 export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
-    title: 'Verified',
-    render: resource => verifiedStatus({ resource }),
-    ...sortAndFilterOptions(
-      resource => findVerificationCondition(resource)?.status,
+    title: (
+      <Tooltip title="Verification status">
+        <VerifiedUserIcon style={{ height: '16px' }} />
+      </Tooltip>
     ),
+    render: resource => <VerifiedStatus resource={resource} />,
+    ...sortAndFilterOptions(resource =>
+      resource.isVerifiable
+        ? findVerificationCondition(resource)?.status || 'unknown'
+        : '',
+    ),
+    width: '90px',
   } as TableColumn<T>;
 };
 
 export const urlColumn = <T extends GitRepository | OCIRepository>() => {
   return {
     title: 'URL',
-    render: resource => (
-      <UrlWrapper title={resource.url}>{resource.url}</UrlWrapper>
-    ),
     field: 'url',
+    render: resource => <Url resource={resource} />,
   } as TableColumn<T>;
 };
 
 export const tagColumn = <T extends GitRepository | OCIRepository>(
   title: string,
 ) => {
-  const formatContent = (resource: T) =>
-    resource.artifact?.revision.split('@')[0];
   return {
-    title: title,
-    render: resource => <span>{formatContent(resource)}</span>,
-    ...sortAndFilterOptions(resource => formatContent(resource)),
+    title,
+    render: resource => (
+      <Tooltip
+        title={resource.artifact?.revision.split('@')[1] || 'unknown tag'}
+      >
+        <span>{resource.artifact?.revision.split('@')[0]}</span>
+      </Tooltip>
+    ),
+    ...sortAndFilterOptions(resource => resource.artifact?.revision),
   } as TableColumn<T>;
 };
 
@@ -202,6 +229,7 @@ export const updatedColumn = <T extends FluxObject>() => {
         locale: 'en',
       }),
     ...sortAndFilterOptions(resource => automationLastUpdated(resource)),
+    minWidth: '130px',
   } as TableColumn<T>;
 };
 

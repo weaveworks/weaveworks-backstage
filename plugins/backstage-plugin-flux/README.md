@@ -61,7 +61,36 @@ const overviewContent = (
 );
 ```
 
-2. Add the [backstage.io/kubernetes-id](https://backstage.io/docs/features/kubernetes/configuration/#common-backstageiokubernetes-id-label) to your Backstage entity.
+2. Add a page to your app EntityPage.tsx
+
+```tsx
+// In packages/app/src/components/catalog/EntityPage.tsx
+import {
+  FluxEntityHelmReleasesCard,
+  FluxEntityGitRepositoriesCard,
+  FluxEntityOCIRepositoriesCard,
+} from '@weaveworksoss/backstage-plugin-flux';
+
+const serviceEntityPage = (
+  <EntityLayout>
+    // ...
+    <Grid container spacing={3} alignItems="stretch">
+      <Grid item md={12}>
+        <FluxEntityHelmReleasesCard />
+      </Grid>
+      <Grid item md={12}>
+        <FluxEntityGitRepositoriesCard />
+      </Grid>
+      <Grid item md={12}>
+        <FluxEntityOCIRepositoriesCard />
+      </Grid>
+    </Grid>
+    // ...
+  </EntityLayout>
+);
+```
+
+3. Add the [backstage.io/kubernetes-id](https://backstage.io/docs/features/kubernetes/configuration/#common-backstageiokubernetes-id-label) to your Backstage entity.
 
 ```yaml
 apiVersion: backstage.io/v1alpha1
@@ -80,7 +109,7 @@ spec:
   system: carts
 ```
 
-3. Label your Flux HelmRelease with the correct label:
+4. Label your Flux HelmRelease with the correct label:
 
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
@@ -101,7 +130,7 @@ spec:
   interval: 1m0s
 ```
 
-4. Configure your `app-config.yaml`
+5. Configure your `app-config.yaml`
 
 ```yaml
 # app.config.yaml

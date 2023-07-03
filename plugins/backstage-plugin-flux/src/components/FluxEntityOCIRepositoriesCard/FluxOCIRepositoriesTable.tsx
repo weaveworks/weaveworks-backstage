@@ -46,6 +46,7 @@ export const FluxOCIRepositoriesTable = ({
       url,
       type,
       artifact,
+      isVerifiable,
     } = or;
     return {
       // make material-table happy and add an id to each row
@@ -59,6 +60,7 @@ export const FluxOCIRepositoriesTable = ({
       clusterName,
       type,
       artifact,
+      isVerifiable,
     } as OCIRepository & { id: string };
   });
 

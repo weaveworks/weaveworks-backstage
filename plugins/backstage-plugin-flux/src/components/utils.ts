@@ -18,15 +18,37 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
-  nameLabel: { fontWeight: 600, marginBottom: '6px' },
+  textOverflow: {
+    // overflow hidden and white-space nowrap are needed for text-overflow to work
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    direction: 'rtl',
+    maxWidth: '350px',
+    height: '16px',
+    marginTop: '2px',
+  },
+  nameLabel: {
+    fontWeight: 600,
+    marginBottom: '6px',
+  },
   syncButton: {
     padding: 0,
     margin: '-5px 0',
   },
+  iconCircle: {
+    backgroundColor: '#ccc',
+    borderRadius: '50%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '22px',
+    width: '22px',
+  },
 }));
 
 export interface VerifiableSource {
-  isVerifiable(): boolean;
+  isVerifiable: boolean;
   conditions: Condition[];
 }
 

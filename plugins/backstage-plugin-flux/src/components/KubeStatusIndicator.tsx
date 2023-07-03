@@ -1,17 +1,16 @@
 import _ from 'lodash';
 import * as React from 'react';
 import styled from 'styled-components';
-import { colors } from '../typedefs/styled';
-import Flex from './Flex';
-import Icon, { IconType } from './Icon';
-import Text from './Text';
-import { Condition } from '../objects';
 import {
   StatusAborted,
   StatusError,
   StatusOK,
   StatusPending,
 } from '@backstage/core-components';
+import { colors } from '../typedefs/styled';
+import Flex from './Flex';
+import { Condition } from '../objects';
+import reconcile from '../images/reconcile.svg';
 
 type Props = {
   className?: string;
@@ -19,6 +18,16 @@ type Props = {
   short?: boolean;
   suspended?: boolean;
 };
+
+export enum IconType {
+  Error,
+  Check,
+  Remove,
+  Failed,
+  Suspended,
+  Reconcile,
+  Pending,
+}
 
 export enum ReadyType {
   Ready = 'Ready',
@@ -104,7 +113,7 @@ export const getIndicatorInfo = (
 ): IndicatorInfo => {
   if (suspended)
     return {
-      icon: IconType.SuspendedIcon,
+      icon: IconType.Suspended,
       color: 'feedbackOriginal',
       type: ReadyType.Suspended,
     };
@@ -112,31 +121,31 @@ export const getIndicatorInfo = (
   if (ready === ReadyType.Reconciling)
     return {
       type: ReadyType.Reconciling,
-      icon: IconType.ReconcileIcon,
+      icon: IconType.Reconcile,
       color: 'primary',
     };
   if (ready === ReadyType.PendingAction)
     return {
       type: ReadyType.PendingAction,
-      icon: IconType.PendingActionIcon,
+      icon: IconType.Pending,
       color: 'feedbackOriginal',
     };
 
   if (ready === ReadyType.Ready)
     return {
       type: ReadyType.Ready,
-      icon: IconType.CheckCircleIcon,
+      icon: IconType.Check,
       color: 'successOriginal',
     };
   if (ready === ReadyType.None)
     return {
       type: ReadyType.None,
-      icon: IconType.RemoveCircleIcon,
+      icon: IconType.Remove,
       color: 'neutral20',
     };
   return {
     type: ReadyType.NotReady,
-    icon: IconType.FailedIcon,
+    icon: IconType.Failed,
     color: 'alertOriginal',
   };
 };
@@ -154,6 +163,16 @@ const getBackstageIcon = (color: string) => {
 
     case 'neutral20':
       return <StatusAborted />;
+
+    case 'primary':
+      return (
+        <img
+          alt="reconcile"
+          width="13px"
+          style={{ marginLeft: '-2px', marginRight: '6px' }}
+          src={reconcile}
+        />
+      );
 
     default:
       return undefined;
@@ -231,9 +250,4 @@ function KubeStatusIndicator({
 
 export default styled(KubeStatusIndicator).attrs({
   className: KubeStatusIndicator.name,
-})`
-  ${Icon} ${Text} {
-    color: ${props => props.theme.colors.black};
-    font-weight: 400;
-  }
-`;
+})``;
