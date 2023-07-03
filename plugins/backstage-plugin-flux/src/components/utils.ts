@@ -18,17 +18,7 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
-  nameLabel: {
-    fontWeight: 600,
-    // padding instead of margin to make sure bottoms of the "g" and "y"
-    // chars are not cut off by the `overflow: hidden`
-    paddingBottom: '5px',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-    direction: 'rtl',
-    maxWidth: '350px',
-  },
+  nameLabel: { fontWeight: 600, marginBottom: '6px' },
   syncButton: {
     padding: 0,
     margin: '-5px 0',

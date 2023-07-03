@@ -25,8 +25,6 @@ export function FluxEntityTable<T extends object = {}>({
           paging: true,
           search: true,
           pageSize: 10,
-          // collapse table down
-          emptyRowsWhenPaging: false,
           // Don't revert to "unsorted" on the 3rd click, just toggle between asc/desc
           thirdSortClick: false,
         }}

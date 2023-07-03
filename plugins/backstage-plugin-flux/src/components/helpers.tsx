@@ -23,7 +23,6 @@ import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 
 const UrlWrapper = styled.div`
   overflow: hidden;
-  line-height: 1.5em;
   white-space: nowrap;
   text-overflow: ellipsis;
   direction: rtl;
