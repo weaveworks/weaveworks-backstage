@@ -177,9 +177,11 @@ export const tagColumn = (title: string) => {
     title: title,
     render: (resource: GitRepository | OCIRepository) => {
       return (
-        <span title={resource.artifact?.revision.split('@')[1]}>
-          {resource.artifact?.revision.split('@')[0]}
-        </span>
+        <Tooltip
+          title={resource.artifact?.revision.split('@')[1] || 'unknown tag'}
+        >
+          <span>{resource.artifact?.revision.split('@')[0]}</span>
+        </Tooltip>
       );
     },
     field: 'revision',
