@@ -159,6 +159,7 @@ const getBackstageIcon = (color: string) => {
     case 'primary':
       return (
         <img
+          alt="reconcile"
           width="13px"
           style={{ marginLeft: '-2px', marginRight: '6px' }}
           src={reconcile}
