@@ -61,7 +61,7 @@ const overviewContent = (
 );
 ```
 
-2. Add the card collection to your app EntityPage.tsx
+2. Add a page to your app EntityPage.tsx
 
 ```tsx
 // In packages/app/src/components/catalog/EntityPage.tsx
@@ -71,8 +71,6 @@ import {
   FluxEntityOCIRepositoriesCard,
 } from '@weaveworksoss/backstage-plugin-flux';
 
-// You can add the tab to any number of pages, the service page is shown as an
-// example here
 const serviceEntityPage = (
   <EntityLayout>
     // ...

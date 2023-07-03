@@ -9,7 +9,6 @@ import {
 } from '@backstage/core-components';
 import { colors } from '../typedefs/styled';
 import Flex from './Flex';
-import Text from './Text';
 import { Condition } from '../objects';
 import reconcile from '../images/reconcile.svg';
 
