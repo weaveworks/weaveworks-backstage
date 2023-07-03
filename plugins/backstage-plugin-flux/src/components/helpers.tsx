@@ -118,7 +118,7 @@ export const verifiedStatus = ({
   }
 
   return (
-    <Tooltip title={condition?.message || ''}>
+    <Tooltip title={condition?.message || 'pending verification'}>
       <VerifiedUserIcon style={{ color, height: '16px' }} />
     </Tooltip>
   );
