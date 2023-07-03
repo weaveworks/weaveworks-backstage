@@ -172,6 +172,7 @@ export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
         ? findVerificationCondition(resource)?.status || 'unknown'
         : '',
     ),
+    width: '90px',
   } as TableColumn<T>;
 };
 
