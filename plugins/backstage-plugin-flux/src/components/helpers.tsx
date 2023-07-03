@@ -1,6 +1,5 @@
 import React from 'react';
 import classNames from 'classnames';
-import styled from 'styled-components';
 import { DateTime } from 'luxon';
 import { Link, Progress } from '@backstage/core-components';
 import { Box, IconButton, Tooltip } from '@material-ui/core';
@@ -114,7 +113,7 @@ export const verifiedStatus = ({
     color = '#27AE60';
   } else if (condition?.status === 'False') {
     color = '#BC3B1D';
-  } else if (condition?.status === undefined || !condition?.status) {
+  } else if (!condition?.status) {
     color = '#FEF071';
   }
 

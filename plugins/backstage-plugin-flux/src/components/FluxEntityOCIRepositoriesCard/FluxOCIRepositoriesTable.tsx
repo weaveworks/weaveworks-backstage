@@ -12,7 +12,6 @@ import {
 } from '../helpers';
 import { OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
-import { useStyles } from '../utils';
 
 export const defaultColumns: TableColumn<OCIRepository>[] = [
   idColumn(),
