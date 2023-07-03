@@ -10,11 +10,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
-          scope: '@weaveworksoss'
       - run: |
           cd plugins/backstage-plugin-flux
           yarn install --frozen-lockfile
+
+          # copy over the example npmrc file and publish
+          cp .npmrc.example .npmrc
           ./publish.sh
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
