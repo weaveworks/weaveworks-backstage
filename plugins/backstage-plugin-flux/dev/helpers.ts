@@ -5,6 +5,7 @@ import * as ociRepository from '../src/__fixtures__/oci_repository.json';
 import * as verifiedGitRepository from '../src/__fixtures__/verified_git_repository.json';
 import * as unverifiedGitRepository from '../src/__fixtures__/unverified_git_repository.json';
 import * as gitRepository from '../src/__fixtures__/git_repository.json';
+import * as kustomization from '../src/__fixtures__/kustomization.json';
 import { Condition } from '../src/objects';
 
 const randomInt = (max: number) => Math.floor(Math.random() * max);
@@ -79,6 +80,19 @@ export const newTestGitRepository = (
   return configureFixture(name, url, gitRepository, verifiedGitRepository, unverifiedGitRepository, opts);
 };
 
+export const newTestKustomization = (
+  name: string,
+  path: string,
+  ready: boolean,
+) => {
+    const result = copy(kustomization);
+
+    result.metadata.name = name;
+    result.spec.path = path;
+    result.status.conditions = applyReadyCondition(ready, result.status.conditions);
+
+    return result;
+};
 
 export const newTestHelmRelease = (
   name: string,
