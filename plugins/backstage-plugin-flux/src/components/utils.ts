@@ -36,6 +36,15 @@ export const useStyles = makeStyles(theme => ({
     padding: 0,
     margin: '-5px 0',
   },
+  iconCircle: {
+    backgroundColor: '#ccc',
+    borderRadius: '50%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '24px', // adjust size as needed
+    width: '24px', // adjust size as needed
+  },
 }));
 
 export interface VerifiableSource {

@@ -99,11 +99,13 @@ export function syncColumn() {
   };
 }
 
-export const verifiedStatus = ({
+export const VerifiedStatus = ({
   resource,
 }: {
   resource: VerifiableSource;
 }): JSX.Element | null => {
+  const classes = useStyles();
+
   if (!resource.isVerifiable) return null;
 
   const condition = findVerificationCondition(resource);
@@ -119,7 +121,9 @@ export const verifiedStatus = ({
 
   return (
     <Tooltip title={condition?.message || 'pending verification'}>
-      <VerifiedUserIcon style={{ color, height: '16px' }} />
+      <div className={classes.iconCircle}>
+        <VerifiedUserIcon style={{ color, height: '16px' }} />
+      </div>
     </Tooltip>
   );
 };
@@ -156,7 +160,7 @@ export const verifiedColumn = () => {
   return {
     title: 'Verified',
     render: (resource: GitRepository | OCIRepository) => {
-      return verifiedStatus({ resource });
+      return <VerifiedStatus resource={resource} />;
     },
   };
 };
