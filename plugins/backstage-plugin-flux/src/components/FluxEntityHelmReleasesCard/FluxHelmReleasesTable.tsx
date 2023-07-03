@@ -3,6 +3,7 @@ import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
+  sortAndFilterOptions,
   statusColumn,
   syncColumn,
   updatedColumn,
@@ -10,16 +11,20 @@ import {
 import { HelmRelease } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
+function chartColumn() {
+  const formatContent = (hr: HelmRelease) =>
+    `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
+  return {
+    title: 'Chart',
+    render: (hr: HelmRelease) => formatContent(hr),
+    ...sortAndFilterOptions(hr => formatContent(hr)),
+  } as TableColumn<HelmRelease>;
+}
+
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   idColumn(),
   nameAndClusterNameColumn(),
-  {
-    title: 'Chart',
-    field: 'helmChart.chart',
-    render: (hr: HelmRelease) => {
-      return `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
-    },
-  },
+  chartColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),

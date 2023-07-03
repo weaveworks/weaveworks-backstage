@@ -20,7 +20,14 @@ export function FluxEntityTable<T extends object = {}>({
     return (
       <Table
         columns={columns}
-        options={{ padding: 'dense', paging: true, search: true, pageSize: 5 }}
+        options={{
+          padding: 'dense',
+          paging: true,
+          search: true,
+          pageSize: 5,
+          // Don't revert to "unsorted" on the 3rd click, just toggle between asc/desc
+          thirdSortClick: false,
+        }}
         title={title}
         data={data}
         isLoading={isLoading}

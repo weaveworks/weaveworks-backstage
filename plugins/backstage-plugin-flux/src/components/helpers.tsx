@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { DateTime } from 'luxon';
-import { Link, Progress } from '@backstage/core-components';
+import { Link, Progress, TableColumn } from '@backstage/core-components';
 import { IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
@@ -12,9 +12,14 @@ import {
   findVerificationCondition,
   useStyles,
 } from './utils';
-import { GitRepository, HelmRelease, OCIRepository } from '../objects';
+import {
+  FluxObject,
+  GitRepository,
+  HelmRelease,
+  OCIRepository,
+} from '../objects';
 import Flex from './Flex';
-import KubeStatusIndicator from './KubeStatusIndicator';
+import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 
 const UrlWrapper = styled.div`
   overflow: hidden;
@@ -77,14 +82,12 @@ export function SyncButton({ resource }: { resource: SyncResource }) {
   );
 }
 
-export function syncColumn() {
+export function syncColumn<T extends SyncResource>() {
   return {
     title: 'Sync',
-    render: (row: SyncResource) => {
-      return <SyncButton resource={row} />;
-    },
+    render: row => <SyncButton resource={row} />,
     width: '24px',
-  };
+  } as TableColumn<T>;
 }
 
 export const verifiedStatus = ({
@@ -121,76 +124,110 @@ export const nameAndClusterName = ({
   </Flex>
 );
 
-export const idColumn = () => {
+export const idColumn = <T extends FluxObject>() => {
   return {
     title: 'id',
     field: 'id',
     hidden: true,
-  };
+  } as TableColumn<T>;
 };
 
-export const nameAndClusterNameColumn = () => {
+export const nameAndClusterNameColumn = <
+  T extends HelmRelease | GitRepository | OCIRepository,
+>() => {
   return {
     title: 'Name',
-    render: (
-      resource: HelmRelease | GitRepository | OCIRepository,
-    ): React.ReactNode => nameAndClusterName({ resource }),
-  };
+    render: resource => nameAndClusterName({ resource }),
+    ...sortAndFilterOptions(
+      resource =>
+        `${resource.namespace}/${resource.name}/${resource.clusterName}`,
+    ),
+  } as TableColumn<T>;
 };
 
-export const verifiedColumn = () => {
+export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
     title: 'Verified',
-    render: (resource: GitRepository | OCIRepository) => {
-      return verifiedStatus({ resource });
-    },
-  };
+    render: resource => verifiedStatus({ resource }),
+    ...sortAndFilterOptions(
+      resource => findVerificationCondition(resource)?.status,
+    ),
+  } as TableColumn<T>;
 };
 
-export const urlColumn = () => {
+export const urlColumn = <T extends GitRepository | OCIRepository>() => {
   return {
     title: 'URL',
-    render: (resource: GitRepository | OCIRepository) => {
-      return <UrlWrapper title={resource.url}>{resource.url}</UrlWrapper>;
-    },
+    render: resource => (
+      <UrlWrapper title={resource.url}>{resource.url}</UrlWrapper>
+    ),
     field: 'url',
-    searchable: true,
-  };
+  } as TableColumn<T>;
 };
 
-export const tagColumn = (title: string) => {
+export const tagColumn = <T extends GitRepository | OCIRepository>(
+  title: string,
+) => {
+  const formatContent = (resource: T) =>
+    resource.artifact?.revision.split('@')[0];
   return {
     title: title,
-    render: (resource: GitRepository | OCIRepository) => {
-      return <span>{resource.artifact?.revision.split('@')[0]}</span>;
-    },
-    field: 'revision',
-    searchable: true,
-  };
+    render: resource => <span>{formatContent(resource)}</span>,
+    ...sortAndFilterOptions(resource => formatContent(resource)),
+  } as TableColumn<T>;
 };
 
-export const statusColumn = () => {
+export function statusColumn<T extends FluxObject>() {
   return {
     title: 'Status',
-    render: (resource: GitRepository | OCIRepository | HelmRelease) => {
-      return (
-        <KubeStatusIndicator
-          short
-          conditions={resource.conditions}
-          suspended={resource.suspended}
-        />
-      );
-    },
-  };
-};
+    render: resource => (
+      <KubeStatusIndicator
+        short
+        conditions={resource.conditions}
+        suspended={resource.suspended}
+      />
+    ),
+    ...sortAndFilterOptions(
+      resource =>
+        getIndicatorInfo(resource.suspended, resource.conditions).type,
+    ),
+  } as TableColumn<T>;
+}
 
-export const updatedColumn = () => {
+export const updatedColumn = <T extends FluxObject>() => {
   return {
     title: 'Updated',
-    render: (resource: GitRepository | OCIRepository | HelmRelease) => {
-      return DateTime.fromISO(automationLastUpdated(resource)).toRelative({
+    render: resource =>
+      DateTime.fromISO(automationLastUpdated(resource)).toRelative({
         locale: 'en',
-      });
-    },
-  };
+      }),
+    ...sortAndFilterOptions(resource => automationLastUpdated(resource)),
+  } as TableColumn<T>;
 };
+
+//
+// sorting and filtering helpers
+//
+
+export function sortAndFilterOptions<T extends object>(
+  fn: (item: T) => string | undefined,
+) {
+  return {
+    customFilterAndSearch: stringCompareFilter(fn),
+    customSort: stringCompareSort(fn),
+  } as TableColumn<T>;
+}
+
+export function stringCompareSort<T>(fn: (item: T) => string | undefined) {
+  return (a: T, b: T) => {
+    return (fn(a) || '').localeCompare(fn(b) || '');
+  };
+}
+
+export function stringCompareFilter<T>(fn: (item: T) => string | undefined) {
+  return (filter: any, item: T) => {
+    return (fn(item) || '')
+      .toLocaleLowerCase()
+      .includes((filter as string).toLocaleLowerCase());
+  };
+}
