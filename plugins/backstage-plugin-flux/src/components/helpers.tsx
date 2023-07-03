@@ -167,8 +167,10 @@ export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
     title: 'Verified',
     render: resource => <VerifiedStatus resource={resource} />,
-    ...sortAndFilterOptions(
-      resource => findVerificationCondition(resource)?.status,
+    ...sortAndFilterOptions(resource =>
+      resource.isVerifiable
+        ? findVerificationCondition(resource)?.status || 'unknown'
+        : '',
     ),
   } as TableColumn<T>;
 };
