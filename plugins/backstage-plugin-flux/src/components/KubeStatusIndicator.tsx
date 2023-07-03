@@ -9,7 +9,6 @@ import {
 } from '@backstage/core-components';
 import { colors } from '../typedefs/styled';
 import Flex from './Flex';
-import Icon, { IconType } from './Icon';
 import Text from './Text';
 import { Condition } from '../objects';
 import reconcile from '../images/reconcile.svg';
@@ -20,6 +19,16 @@ type Props = {
   short?: boolean;
   suspended?: boolean;
 };
+
+export enum IconType {
+  Error,
+  Check,
+  Remove,
+  Failed,
+  Suspended,
+  Reconcile,
+  Pending,
+}
 
 export enum ReadyType {
   Ready = 'Ready',
@@ -119,20 +128,20 @@ export const getIndicatorInfo = (
   if (ready === ReadyType.PendingAction)
     return {
       type: ReadyType.PendingAction,
-      icon: IconType.PendingAction,
+      icon: IconType.Pending,
       color: 'feedbackOriginal',
     };
 
   if (ready === ReadyType.Ready)
     return {
       type: ReadyType.Ready,
-      icon: IconType.CheckCircle,
+      icon: IconType.Check,
       color: 'successOriginal',
     };
   if (ready === ReadyType.None)
     return {
       type: ReadyType.None,
-      icon: IconType.RemoveCircle,
+      icon: IconType.Remove,
       color: 'neutral20',
     };
   return {
@@ -243,8 +252,8 @@ function KubeStatusIndicator({
 export default styled(KubeStatusIndicator).attrs({
   className: KubeStatusIndicator.name,
 })`
-  ${Icon} ${Text} {
-    color: ${props => props.theme.colors.black};
-    font-weight: 400;
-  }
+  // ${Icon} ${Text} {
+  //   color: ${props => props.theme.colors.black};
+  //   font-weight: 400;
+  // }
 `;
