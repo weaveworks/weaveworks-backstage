@@ -16,6 +16,7 @@ import {
   FluxObject,
   GitRepository,
   HelmRelease,
+  Kustomization,
   HelmRepository,
   OCIRepository,
 } from '../objects';
@@ -23,7 +24,7 @@ import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
-export type Deployment = HelmRelease;
+export type Deployment = HelmRelease | Kustomization;
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
  * this in Weave GitOps if possible.
@@ -56,11 +57,7 @@ export const NameLabel = ({
   );
 };
 
-export const Url = ({
-  resource,
-}: {
-  resource: Source;
-}): JSX.Element => {
+export const Url = ({ resource }: { resource: Source }): JSX.Element => {
   const classes = useStyles();
   return (
     <Tooltip title={resource.url}>
@@ -97,7 +94,7 @@ export function SyncButton({ resource }: { resource: Source | Deployment }) {
   );
 }
 
-export function syncColumn<T extends Source | Deployment >() {
+export function syncColumn<T extends Source | Deployment>() {
   return {
     title: 'Sync',
     render: row => <SyncButton resource={row} />,
@@ -200,6 +197,22 @@ export const artifactColumn = <T extends Source>() => {
       </Tooltip>
     ),
     ...sortAndFilterOptions(resource => resource.artifact?.revision),
+  } as TableColumn<T>;
+};
+
+export const repoColumn = <T extends Kustomization>() => {
+  return {
+    title: 'Repo',
+    field: 'repo',
+    render: resource => <span>{resource?.sourceRef?.name}</span>,
+  } as TableColumn<T>;
+};
+
+export const pathColumn = <T extends Kustomization>() => {
+  return {
+    title: 'Path',
+    field: 'path',
+    render: resource => <span>{resource?.path}</span>,
   } as TableColumn<T>;
 };
 

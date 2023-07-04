@@ -422,7 +422,6 @@ export const kustomizationsGVK: CustomResourceMatcher = {
 export function gvkFromKind(
   kind: String | Kind | undefined,
 ): CustomResourceMatcher | undefined {
-
   switch (kind) {
     case 'HelmRelease':
       return helmReleaseGVK;

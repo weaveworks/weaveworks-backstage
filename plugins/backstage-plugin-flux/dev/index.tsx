@@ -18,18 +18,19 @@ import {
   CustomObjectsByEntityRequest,
 } from '@backstage/plugin-kubernetes-common';
 import { TestApiProvider } from '@backstage/test-utils';
-
 import {
   weaveworksFluxPlugin,
   FluxEntityHelmReleasesCard,
   FluxEntityGitRepositoriesCard,
   FluxEntityOCIRepositoriesCard,
   FluxEntityHelmRepositoriesCard,
+  FluxEntityKustomizationsCard,
 } from '../src/plugin';
 import {
   newTestHelmRelease,
   newTestOCIRepository,
   newTestGitRepository,
+  newTestKustomization,
   newTestHelmRepository,
 } from './helpers';
 import { ReconcileRequestAnnotation } from '../src/hooks';
@@ -319,6 +320,45 @@ createDevApp()
         <EntityProvider entity={fakeEntity}>
           <Content>
             <FluxEntityOCIRepositoriesCard />
+          </Content>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
+  .addPage({
+    title: 'Kustomizations',
+    path: '/kustomizations',
+    element: (
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego' },
+            }),
+          ],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestKustomization(
+                'flux-system',
+                './clusters/my-cluster',
+                true,
+              ),
+              newTestKustomization(
+                'test-kustomization',
+                './clusters/my-cluster',
+                true,
+              ),
+            ]),
+          ],
+
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <Content>
+            <FluxEntityKustomizationsCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>

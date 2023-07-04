@@ -3,5 +3,6 @@ export {
   FluxEntityHelmReleasesCard,
   FluxEntityGitRepositoriesCard,
   FluxEntityOCIRepositoriesCard,
+  FluxEntityKustomizationsCard,
   FluxEntityHelmRepositoriesCard,
 } from './plugin';

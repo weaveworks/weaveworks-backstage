@@ -71,7 +71,7 @@ function toResponse<T extends FluxObject>(
     data,
     errors: kubernetesErrors.length > 0 ? kubernetesErrors : undefined,
   };
-};
+}
 
 /**
  * @public
@@ -80,7 +80,16 @@ export interface Response<T> {
   data?: T[];
   loading: boolean;
   errors?: Error[];
-};
+}
+
+/**
+ * @public
+ */
+export interface KustomizationsResponse {
+  data?: Kustomization[];
+  loading: boolean;
+  errors?: Error[];
+}
 
 /**
  * Query for the HelmReleases associated with this Entity.
@@ -103,7 +112,7 @@ export function useHelmReleases(entity: Entity): Response<HelmRelease> {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
-};
+}
 
 /**
  * Query for the GitRepositories associated with this Entity.
@@ -126,7 +135,7 @@ export function useGitRepositories(entity: Entity): Response<GitRepository> {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
-};
+}
 
 /**
  * Query for the OCIRepositories associated with this Entity.
@@ -149,7 +158,7 @@ export function useOCIRepositories(entity: Entity): Response<OCIRepository> {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
-};
+}
 
 /**
  * Query for the Kustomizations associated with this Entity.
@@ -172,7 +181,7 @@ export function useKustomizations(entity: Entity): Response<Kustomization> {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
-};
+}
 
 /**
  * Query for the HelmRepositories associated with this Entity.
@@ -195,4 +204,4 @@ export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
       ? [new Error(error), ...(kubernetesErrors || [])]
       : kubernetesErrors,
   };
-};
+}
