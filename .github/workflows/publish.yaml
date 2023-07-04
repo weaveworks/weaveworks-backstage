@@ -8,7 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          # get all the tags
+          # get all the tags from git so we can run
+          # $(git describe --tags) and get something useful
+          # e.g. v0.6.0 or v0.6.0-1-gf0a2b3c
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
