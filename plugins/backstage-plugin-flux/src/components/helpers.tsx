@@ -208,6 +208,14 @@ export const repoColumn = <T extends Kustomization>() => {
   } as TableColumn<T>;
 };
 
+export const pathColumn = <T extends Kustomization>() => {
+  return {
+    title: 'Path',
+    field: 'path',
+    render: resource => <span>{resource?.path}</span>,
+  } as TableColumn<T>;
+};
+
 export function statusColumn<T extends FluxObject>() {
   return {
     title: 'Status',

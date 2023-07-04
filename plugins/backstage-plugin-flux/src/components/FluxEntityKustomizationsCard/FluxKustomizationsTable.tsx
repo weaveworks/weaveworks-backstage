@@ -3,6 +3,7 @@ import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
+  pathColumn,
   repoColumn,
   statusColumn,
   updatedColumn,
@@ -14,6 +15,7 @@ import { FluxEntityTable } from '../FluxEntityTable';
 export const defaultColumns: TableColumn<Kustomization>[] = [
   idColumn(),
   nameAndClusterNameColumn(),
+  pathColumn(),
   repoColumn(),
   statusColumn(),
   updatedColumn(),
