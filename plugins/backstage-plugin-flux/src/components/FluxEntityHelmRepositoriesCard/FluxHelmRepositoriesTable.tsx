@@ -3,39 +3,43 @@ import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
-  verifiedColumn,
   urlColumn,
-  artifactColumn,
   statusColumn,
   updatedColumn,
   syncColumn,
 } from '../helpers';
-import { GitRepository } from '../../objects';
+import { HelmRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
-export const defaultColumns: TableColumn<GitRepository>[] = [
+export const defaultColumns: TableColumn<HelmRepository>[] = [
   idColumn(),
   nameAndClusterNameColumn(),
-  verifiedColumn(),
   urlColumn(),
-  artifactColumn(),
+  {
+    title: 'Provider',
+    field: 'provider',
+  },
+  {
+    title: 'revision',
+    field: 'artifact.revision',
+  },
   statusColumn(),
   updatedColumn(),
   syncColumn(),
 ];
 
 type Props = {
-  gitRepositories: GitRepository[];
+  helmRepositories: HelmRepository[];
   isLoading: boolean;
-  columns: TableColumn<GitRepository>[];
+  columns: TableColumn<HelmRepository>[];
 };
 
-export const FluxGitRepositoriesTable = ({
-  gitRepositories,
+export const FluxHelmRepositoriesTable = ({
+  helmRepositories,
   isLoading,
   columns,
 }: Props) => {
-  const data = gitRepositories.map(repo => {
+  const data = helmRepositories.map(repo => {
     const {
       clusterName,
       namespace,
@@ -43,10 +47,9 @@ export const FluxGitRepositoriesTable = ({
       conditions,
       suspended,
       url,
-      reference,
       type,
+      provider,
       artifact,
-      isVerifiable,
     } = repo;
     return {
       id: `${clusterName}/${namespace}/${name}`,
@@ -55,18 +58,17 @@ export const FluxGitRepositoriesTable = ({
       name,
       namespace,
       url,
-      reference,
       clusterName,
       type,
+      provider,
       artifact,
-      isVerifiable,
-    } as GitRepository & { id: string };
+    } as HelmRepository & { id: string };
   });
 
   return (
     <FluxEntityTable
       columns={columns}
-      title="Git Repositories"
+      title="Helm Repositories"
       data={data}
       isLoading={isLoading}
     />

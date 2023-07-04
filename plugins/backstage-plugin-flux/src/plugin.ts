@@ -1,6 +1,6 @@
 import {
+  createComponentExtension,
   createPlugin,
-  createRoutableExtension,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
@@ -21,13 +21,14 @@ export const weaveworksFluxPlugin = createPlugin({
  * @public
  */
 export const FluxEntityHelmReleasesCard = weaveworksFluxPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'FluxEntityHelmReleasesCard',
-    component: () =>
-      import('./components/FluxEntityHelmReleasesCard').then(
-        m => m.FluxEntityHelmReleasesCard,
-      ),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/FluxEntityHelmReleasesCard').then(
+          m => m.FluxEntityHelmReleasesCard,
+        ),
+    },
   }),
 );
 
@@ -36,13 +37,14 @@ export const FluxEntityHelmReleasesCard = weaveworksFluxPlugin.provide(
  * @public
  */
 export const FluxEntityGitRepositoriesCard = weaveworksFluxPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'FluxEntityGitRepositoriesCard',
-    component: () =>
-      import('./components/FluxEntityGitRepositoriesCard').then(
-        m => m.FluxEntityGitRepositoriesCard,
-      ),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/FluxEntityGitRepositoriesCard').then(
+          m => m.FluxEntityGitRepositoriesCard,
+        ),
+    },
   }),
 );
 
@@ -51,12 +53,29 @@ export const FluxEntityGitRepositoriesCard = weaveworksFluxPlugin.provide(
  * @public
  */
 export const FluxEntityOCIRepositoriesCard = weaveworksFluxPlugin.provide(
-  createRoutableExtension({
+  createComponentExtension({
     name: 'FluxEntityOCIRepositoriesCard',
-    component: () =>
-      import('./components/FluxEntityOCIRepositoriesCard').then(
-        m => m.FluxEntityOCIRepositoriesCard,
-      ),
-    mountPoint: rootRouteRef,
+    component: {
+      lazy: () =>
+        import('./components/FluxEntityOCIRepositoriesCard').then(
+          m => m.FluxEntityOCIRepositoriesCard,
+        ),
+    },
+  }),
+);
+
+/**
+ * Card used to show the state of Flux HelmRepositories for an Entity.
+ * @public
+ */
+export const FluxEntityHelmRepositoriesCard = weaveworksFluxPlugin.provide(
+  createComponentExtension({
+    name: 'FluxEntityHelmRepositoriesCard',
+    component: {
+      lazy: () =>
+        import('./components/FluxEntityHelmRepositoriesCard').then(
+          m => m.FluxEntityHelmRepositoriesCard,
+        ),
+    },
   }),
 );

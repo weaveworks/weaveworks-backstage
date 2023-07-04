@@ -6,7 +6,12 @@ The Flux plugin for Backstage provides views of [Flux](https://fluxcd.io/) resou
 
 ## Content
 
-- FluxEntityHelmReleasesCard - displays the state of HelmReleases for the Entity.
+All these cards display the relevant resources for the currently displayed entity.
+
+- FluxEntityHelmReleasesCard
+- FluxEntityGitRepositoriesCard
+- FluxEntityOCIRepositoriesCard
+- FluxEntityHelmRepositoriesCard
 
 ## Prerequisite
 
@@ -42,6 +47,8 @@ yarn add --cwd packages/app @weaveworksoss/backstage-plugin-flux
 
 ## Configuration
 
+The Flux plugins provide several different Cards, which are composable into your Backstage App.
+
 1. Add the card to your app EntityPage.tsx
 
 ```tsx
@@ -69,6 +76,7 @@ import {
   FluxEntityHelmReleasesCard,
   FluxEntityGitRepositoriesCard,
   FluxEntityOCIRepositoriesCard,
+  FluxEntityHelmRepositoriesCard,
 } from '@weaveworksoss/backstage-plugin-flux';
 
 const serviceEntityPage = (
@@ -77,6 +85,9 @@ const serviceEntityPage = (
     <Grid container spacing={3} alignItems="stretch">
       <Grid item md={12}>
         <FluxEntityHelmReleasesCard />
+      </Grid>
+      <Grid item md={12}>
+        <FluxEntityHelmRepositoriesCard />
       </Grid>
       <Grid item md={12}>
         <FluxEntityGitRepositoriesCard />
@@ -130,11 +141,16 @@ spec:
   interval: 1m0s
 ```
 
-5. Configure your `app-config.yaml`
+5. [Optional] Configure linking through to Weave GitOps, configure your `app-config.yaml`
+
+If you have [Weave GitOps](https://www.weave.works/product/gitops/) or [Weave GitOps Enterprise](https://www.weave.works/product/gitops-enterprise/) you can configure the plugins to link through to the UI which will provide more information on the resources.
+
+This will generate link URLs through to the relevant UIs relative to the configured URL, for example to view Helm Repositories, this would generate a URL that looks like this `https://wego.example.com/wego/helm_repo/details?clusterName=demo-cluster&name=podinfo&namespace=default`.
 
 ```yaml
-# app.config.yaml
+# app-config.yaml
 
 gitops:
-  baseUrl: https://wego.example.com/
+  #
+  baseUrl: https://wego.example.com
 ```

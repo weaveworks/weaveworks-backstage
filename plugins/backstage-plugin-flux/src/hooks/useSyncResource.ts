@@ -3,15 +3,11 @@ import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
 import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 import { useAsyncFn } from 'react-use';
 import {
-  GitRepository,
-  HelmRelease,
-  OCIRepository,
   gvkFromKind,
 } from '../objects';
+import { Deployment, Source } from '../components/helpers';
 
 export const ReconcileRequestAnnotation = 'reconcile.fluxcd.io/requestedAt';
-
-export type SyncResource = HelmRelease | OCIRepository | GitRepository;
 
 export const pathForResource = (
   name: string,
@@ -105,7 +101,7 @@ export async function requestSyncResource(
 }
 
 export async function syncResource(
-  resource: SyncResource,
+  resource: Source | Deployment,
   kubernetesApi: KubernetesApi,
   alertApi: AlertApi,
 ) {
@@ -157,7 +153,11 @@ export async function syncResource(
   }
 }
 
-export function useSyncResource(resource: SyncResource) {
+/**
+ * 
+ * @public
+ */
+export function useSyncResource(resource: Source | Deployment) {
   const kubernetesApi = useApi(kubernetesApiRef);
   const alertApi = useApi(alertApiRef);
 

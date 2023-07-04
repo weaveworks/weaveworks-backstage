@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { Condition } from '../src/objects';
 import * as verifiedOCIRepository from '../src/__fixtures__/verified_oci_repository.json';
 import * as unverifiedOCIRepository from '../src/__fixtures__/unverified_oci_repository.json';
 import * as ociRepository from '../src/__fixtures__/oci_repository.json';
@@ -6,7 +7,7 @@ import * as verifiedGitRepository from '../src/__fixtures__/verified_git_reposit
 import * as unverifiedGitRepository from '../src/__fixtures__/unverified_git_repository.json';
 import * as gitRepository from '../src/__fixtures__/git_repository.json';
 import * as kustomization from '../src/__fixtures__/kustomization.json';
-import { Condition } from '../src/objects';
+import * as helmRepository from '../src/__fixtures__/helm_repository.json';
 
 const randomInt = (max: number) => Math.floor(Math.random() * max);
 
@@ -89,6 +90,23 @@ export const newTestKustomization = (
 
     result.metadata.name = name;
     result.spec.path = path;
+
+    result.metadata.name = name;
+    result.spec.path = path;
+    result.status.conditions = applyReadyCondition(ready, result.status.conditions);
+
+    return result;
+};
+
+export const newTestHelmRepository = (
+  name: string,
+  url: string,
+  ready: boolean = true,
+) => {
+    const result = copy(helmRepository);
+
+    result.metadata.name = name;
+    result.spec.url = url;
     result.status.conditions = applyReadyCondition(ready, result.status.conditions);
 
     return result;

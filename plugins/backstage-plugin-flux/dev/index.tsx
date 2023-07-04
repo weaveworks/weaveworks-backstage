@@ -1,4 +1,5 @@
 import React from 'react';
+import { Content } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
@@ -22,15 +23,16 @@ import {
   weaveworksFluxPlugin,
   FluxEntityHelmReleasesCard,
   FluxEntityGitRepositoriesCard,
+  FluxEntityOCIRepositoriesCard,
+  FluxEntityHelmRepositoriesCard,
 } from '../src/plugin';
 import {
   newTestHelmRelease,
   newTestOCIRepository,
   newTestGitRepository,
+  newTestHelmRepository,
 } from './helpers';
-import { FluxEntityOCIRepositoriesCard } from '../src/components/FluxEntityOCIRepositoriesCard';
 import { ReconcileRequestAnnotation } from '../src/hooks';
-import { Content } from '@backstage/core-components';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -317,6 +319,39 @@ createDevApp()
         <EntityProvider entity={fakeEntity}>
           <Content>
             <FluxEntityOCIRepositoriesCard />
+          </Content>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
+  .addPage({
+    title: 'Helm Repositories',
+    path: '/helm-repositories',
+    element: (
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego' },
+            }),
+          ],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestHelmRepository(
+                'podinfo',
+                'https://stefanprodan.github.io/podinfo',
+              ),
+            ]),
+          ],
+
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <Content>
+            <FluxEntityHelmRepositoriesCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>
