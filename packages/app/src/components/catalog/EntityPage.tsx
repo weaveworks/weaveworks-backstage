@@ -157,6 +157,9 @@ const serviceEntityPage = (
           <FluxEntityHelmReleasesCard />
         </Grid>
         <Grid item md={12}>
+          <FluxEntityKustomizationsCard />
+        </Grid>
+        <Grid item md={12}>
           <FluxEntityHelmRepositoriesCard />
         </Grid>
         <Grid item md={12}>
@@ -164,9 +167,6 @@ const serviceEntityPage = (
         </Grid>
         <Grid item md={12}>
           <FluxEntityOCIRepositoriesCard />
-        </Grid>
-        <Grid item md={12}>
-          <FluxEntityKustomizationsCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>
