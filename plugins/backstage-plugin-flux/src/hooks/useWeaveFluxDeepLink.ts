@@ -22,7 +22,7 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
 };
 
 export const useWeaveFluxDeepLink = (
-  resource: HelmRelease | GitRepository | OCIRepository,
+  resource: HelmRelease | GitRepository | OCIRepository | Kustomization,
 ): string | undefined => {
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
@@ -38,6 +38,8 @@ export const useWeaveFluxDeepLink = (
       return typedUrl(baseUrl, resource as GitRepository, 'git_repo');
     case 'OCIRepository':
       return typedUrl(baseUrl, resource as OCIRepository, 'oci');
+    case 'Kustomization':
+      return typedUrl(baseUrl, resource as Kustomization, 'kustomization');
     default:
       return undefined;
   }

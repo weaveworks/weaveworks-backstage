@@ -3,9 +3,7 @@ import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
-  verifiedColumn,
-  urlColumn,
-  tagColumn,
+  repoColumn,
   statusColumn,
   updatedColumn,
   syncColumn,
@@ -15,13 +13,11 @@ import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<Kustomization>[] = [
   idColumn(),
-  // nameAndClusterNameColumn(),
-  // verifiedColumn(),
-  // urlColumn(),
-  // tagColumn('Tag'),
+  nameAndClusterNameColumn(),
+  repoColumn(),
   statusColumn(),
   updatedColumn(),
-  // syncColumn(),
+  syncColumn(),
 ];
 
 type Props = {
@@ -35,32 +31,27 @@ export const FluxKustomizationsTable = ({
   isLoading,
   columns,
 }: Props) => {
-  console.log('kustomizations: ', kustomizations);
   const data = kustomizations.map(k => {
     const {
       clusterName,
       namespace,
       name,
-      // conditions,
-      // suspended,
-      // url,
-      // type,
-      // artifact,
-      // isVerifiable,
+      sourceRef,
+      path,
+      conditions,
+      suspended,
+      type,
     } = k;
     return {
-      // make material-table happy and add an id to each row
-      // FIXME: maybe we can tell material-table to use a custome key?
       id: `${clusterName}/${namespace}/${name}`,
-      // conditions,
-      // suspended,
-      // name,
-      // namespace,
-      // url,
-      // clusterName,
-      // type,
-      // artifact,
-      // isVerifiable,
+      conditions,
+      suspended,
+      name,
+      namespace,
+      clusterName,
+      sourceRef,
+      path,
+      type,
     } as Kustomization & { id: string };
   });
 

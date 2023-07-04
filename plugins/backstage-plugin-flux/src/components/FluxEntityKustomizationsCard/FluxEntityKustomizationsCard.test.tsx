@@ -17,7 +17,7 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import { FluxEntityKustomizationsCard } from './FluxEntityKustomizationsCard';
 
-const makeTestKustomization = (name: string, path: string, ready: boolean) => {
+const makeTestKustomization = (name: string, path: string) => {
   return {
     apiVersion: 'kustomize.toolkit.fluxcd.io/v1',
     kind: 'Kustomization',
@@ -55,7 +55,7 @@ const makeTestKustomization = (name: string, path: string, ready: boolean) => {
             'Applied revision: main@sha1:c933408394a3af8fa7208af8c9abf7fe430f99d4',
           observedGeneration: 1,
           reason: 'ReconciliationSucceeded',
-          status: ready,
+          status: 'True',
           type: 'Ready',
         },
       ],
@@ -244,11 +244,7 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestKustomization(
-                  'flux-system',
-                  './clusters/my-cluster',
-                  true,
-                ),
+                makeTestKustomization('flux-system', './clusters/my-cluster'),
               ],
             },
           ],
@@ -330,7 +326,7 @@ describe('<FluxKustomizationsCard />', () => {
         {
           name: 'flux-system',
           path: './clusters/my-cluster',
-          ready: true,
+          repo: 'flux-system',
         },
       ];
 
@@ -341,7 +337,7 @@ describe('<FluxKustomizationsCard />', () => {
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
         expect(tr).toHaveTextContent(testCase.path);
-        // expect(tr).toHaveTextContent(testCase.cluster);
+        expect(tr).toHaveTextContent(testCase.repo);
       }
     });
   });

@@ -16,6 +16,7 @@ import {
   FluxObject,
   GitRepository,
   HelmRelease,
+  Kustomization,
   OCIRepository,
 } from '../objects';
 import Flex from './Flex';
@@ -28,7 +29,7 @@ import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 export const NameLabel = ({
   resource,
 }: {
-  resource: HelmRelease | GitRepository | OCIRepository;
+  resource: HelmRelease | GitRepository | OCIRepository | Kustomization;
 }): JSX.Element => {
   const { name, namespace } = resource;
   const deepLink = useWeaveFluxDeepLink(resource);
@@ -134,7 +135,7 @@ export const VerifiedStatus = ({
 export const nameAndClusterName = ({
   resource,
 }: {
-  resource: HelmRelease | GitRepository | OCIRepository;
+  resource: HelmRelease | GitRepository | OCIRepository | Kustomization;
 }): JSX.Element => (
   <Flex column>
     <NameLabel resource={resource} />
@@ -151,7 +152,7 @@ export const idColumn = <T extends FluxObject>() => {
 };
 
 export const nameAndClusterNameColumn = <
-  T extends HelmRelease | GitRepository | OCIRepository,
+  T extends HelmRelease | GitRepository | OCIRepository | Kustomization,
 >() => {
   return {
     title: 'Name',
@@ -185,6 +186,14 @@ export const urlColumn = <T extends GitRepository | OCIRepository>() => {
     title: 'URL',
     field: 'url',
     render: resource => <Url resource={resource} />,
+  } as TableColumn<T>;
+};
+
+export const repoColumn = <T extends Kustomization>() => {
+  return {
+    title: 'Repo',
+    field: 'repo',
+    render: resource => <span>{resource?.sourceRef?.name}</span>,
   } as TableColumn<T>;
 };
 
