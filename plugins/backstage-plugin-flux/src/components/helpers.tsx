@@ -200,6 +200,14 @@ export const artifactColumn = <T extends Source>() => {
   } as TableColumn<T>;
 };
 
+export const repoColumn = <T extends Kustomization>() => {
+  return {
+    title: 'Repo',
+    field: 'repo',
+    render: resource => <span>{resource?.sourceRef?.name}</span>,
+  } as TableColumn<T>;
+};
+
 export function statusColumn<T extends FluxObject>() {
   return {
     title: 'Status',
