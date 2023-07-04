@@ -9,4 +9,5 @@ STRIPPED_NEW_VERSION=$(echo $NEW_VERSION | sed -e 's/^v//')
 yarn clean
 yarn tsc
 yarn build
-yarn publish --new-version $STRIPPED_NEW_VERSION
+# don't git commit or push
+yarn publish --new-version $STRIPPED_NEW_VERSION --no-git-tag-version
