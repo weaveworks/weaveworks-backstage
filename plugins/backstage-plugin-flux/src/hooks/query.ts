@@ -14,7 +14,9 @@ import {
   gitRepositoriesGVK,
   helmReleaseGVK,
   ociRepositoriesGVK,
-  kustomizationGVK,
+  kustomizationsGVK,
+  helmRepositoryGVK,
+  HelmRepository,
 } from '../objects';
 
 function toErrors(
@@ -74,26 +76,8 @@ function toResponse<T extends FluxObject>(
 /**
  * @public
  */
-export interface HelmReleasesResponse {
-  data?: HelmRelease[];
-  loading: boolean;
-  errors?: Error[];
-}
-
-/**
- * @public
- */
-export interface GitRepositoriesResponse {
-  data?: GitRepository[];
-  loading: boolean;
-  errors?: Error[];
-}
-
-/**
- * @public
- */
-export interface OCIRepositoriesResponse {
-  data?: OCIRepository[];
+export interface Response<T> {
+  data?: T[];
   loading: boolean;
   errors?: Error[];
 }
@@ -111,7 +95,7 @@ export interface KustomizationsResponse {
  * Query for the HelmReleases associated with this Entity.
  * @public
  */
-export function useHelmReleases(entity: Entity): HelmReleasesResponse {
+export function useHelmReleases(entity: Entity): Response<HelmRelease> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
     helmReleaseGVK,
   ]);
@@ -134,7 +118,7 @@ export function useHelmReleases(entity: Entity): HelmReleasesResponse {
  * Query for the GitRepositories associated with this Entity.
  * @public
  */
-export function useGitRepositories(entity: Entity): GitRepositoriesResponse {
+export function useGitRepositories(entity: Entity): Response<GitRepository> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
     gitRepositoriesGVK,
   ]);
@@ -157,7 +141,7 @@ export function useGitRepositories(entity: Entity): GitRepositoriesResponse {
  * Query for the OCIRepositories associated with this Entity.
  * @public
  */
-export function useOCIRepositories(entity: Entity): OCIRepositoriesResponse {
+export function useOCIRepositories(entity: Entity): Response<OCIRepository> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
     ociRepositoriesGVK,
   ]);
@@ -182,11 +166,34 @@ export function useOCIRepositories(entity: Entity): OCIRepositoriesResponse {
  */
 export function useKustomizations(entity: Entity): KustomizationsResponse {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    kustomizationGVK,
+    kustomizationsGVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<Kustomization>(
     item => new Kustomization(item),
+    kubernetesObjects,
+  );
+
+  return {
+    data,
+    loading,
+    errors: error
+      ? [new Error(error), ...(kubernetesErrors || [])]
+      : kubernetesErrors,
+  };
+}
+
+/**
+ * Query for the HelmRepositories associated with this Entity.
+ * @public
+ */
+export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    helmRepositoryGVK,
+  ]);
+
+  const { data, kubernetesErrors } = toResponse<HelmRepository>(
+    item => new HelmRepository(item),
     kubernetesObjects,
   );
 

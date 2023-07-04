@@ -200,6 +200,14 @@ export class HelmRepository extends FluxObject {
   get url(): string {
     return this.obj.spec?.url || '';
   }
+
+  get provider(): string {
+    return this.obj.spec.provider || '';
+  }
+
+  get artifact(): Artifact | undefined {
+    return this.obj.status.artifact;
+  }
 }
 
 export class HelmChart extends FluxObject {
@@ -405,9 +413,9 @@ export const helmRepositoryGVK: CustomResourceMatcher = {
   plural: 'helmrepositories',
 };
 
-export const kustomizationGVK: CustomResourceMatcher = {
+export const kustomizationsGVK: CustomResourceMatcher = {
   apiVersion: 'v1beta2',
-  group: 'source.toolkit.fluxcd.io',
+  group: 'kustomize.toolkit.fluxcd.io',
   plural: 'kustomizations',
 };
 
@@ -417,14 +425,14 @@ export function gvkFromKind(
   switch (kind) {
     case 'HelmRelease':
       return helmReleaseGVK;
+    case 'HelmRepository':
+      return helmRepositoryGVK;
     case 'GitRepository':
       return gitRepositoriesGVK;
     case 'OCIRepository':
       return ociRepositoriesGVK;
-    case 'HelmRepository':
-      return helmRepositoryGVK;
     case 'Kustomization':
-      return kustomizationGVK;
+      return kustomizationsGVK;
     default:
       break;
   }

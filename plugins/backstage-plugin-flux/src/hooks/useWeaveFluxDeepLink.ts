@@ -4,6 +4,7 @@ import {
   GitRepository,
   HelmRelease,
   Kustomization,
+  HelmRepository,
   OCIRepository,
 } from '../objects';
 
@@ -22,7 +23,7 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
 };
 
 export const useWeaveFluxDeepLink = (
-  resource: HelmRelease | GitRepository | OCIRepository | Kustomization,
+  resource: FluxObject,
 ): string | undefined => {
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
@@ -40,6 +41,8 @@ export const useWeaveFluxDeepLink = (
       return typedUrl(baseUrl, resource as OCIRepository, 'oci');
     case 'Kustomization':
       return typedUrl(baseUrl, resource as Kustomization, 'kustomization');
+    case 'HelmRepository':
+      return typedUrl(baseUrl, resource as HelmRepository, 'helm_repo');
     default:
       return undefined;
   }
