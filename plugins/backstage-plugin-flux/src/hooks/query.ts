@@ -161,10 +161,10 @@ export function useOCIRepositories(entity: Entity): Response<OCIRepository> {
 }
 
 /**
- * Query for the OCIRepositories associated with this Entity.
+ * Query for the Kustomizations associated with this Entity.
  * @public
  */
-export function useKustomizations(entity: Entity): KustomizationsResponse {
+export function useKustomizations(entity: Entity): Response<Kustomization> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
     kustomizationsGVK,
   ]);

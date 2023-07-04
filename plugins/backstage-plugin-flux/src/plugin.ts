@@ -81,7 +81,7 @@ export const FluxEntityHelmRepositoriesCard = weaveworksFluxPlugin.provide(
 );
 
 /**
- * Card used to show the state of Flux OCIRepositories for an Entity.
+ * Card used to show the state of Flux Kustomizations for an Entity.
  * @public
  */
 export const FluxEntityKustomizationsCard = weaveworksFluxPlugin.provide(

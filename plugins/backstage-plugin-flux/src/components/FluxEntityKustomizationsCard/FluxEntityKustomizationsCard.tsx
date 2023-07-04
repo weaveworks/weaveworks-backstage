@@ -34,7 +34,7 @@ const KustomizationPanel = () => {
 };
 
 /**
- * Render the OCIRepositories associated with the current Entity.
+ * Render the Kustomizations associated with the current Entity.
  *
  * @public
  */
