@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: podinfo
+  name: podinfo-staging
   namespace: default
   labels:
     backstage.io/kubernetes-id: podinfo
@@ -21,7 +21,7 @@ spec:
           - kind: Deployment
             apiVersion: apps/v1
             metadata:
-              name: podinfo
+              name: podinfo-staging
               labels:
                 backstage.io/kubernetes-id: podinfo
             spec:
@@ -37,7 +37,7 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: podinfo-dev
+  name: podinfo-prod
   namespace: default
   labels:
     backstage.io/kubernetes-id: podinfo
@@ -57,7 +57,7 @@ spec:
           - kind: Deployment
             apiVersion: apps/v1
             metadata:
-              name: podinfo-dev
+              name: podinfo-prod
               labels:
                 backstage.io/kubernetes-id: podinfo
             spec:
