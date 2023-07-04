@@ -7,7 +7,7 @@ import { Condition, FluxObject } from '../objects';
  */
 export function automationLastUpdated(a: FluxObject): string {
   return (
-    (a.conditions.find(condition => condition.type === 'Ready') || {})
+    (a.conditions?.find(condition => condition.type === 'Ready') || {})
       .timestamp || ''
   );
 }

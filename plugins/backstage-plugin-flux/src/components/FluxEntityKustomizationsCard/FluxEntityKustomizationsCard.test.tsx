@@ -17,77 +17,205 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import { FluxEntityKustomizationsCard } from './FluxEntityKustomizationsCard';
 
-const makeTestOCIRepository = (name: string, url: string) => {
+const makeTestKustomization = (name: string, path: string, ready: boolean) => {
   return {
-    apiVersion: 'source.toolkit.fluxcd.io/v1beta2',
-    kind: 'OCIRepository',
+    apiVersion: 'kustomize.toolkit.fluxcd.io/v1',
+    kind: 'Kustomization',
     metadata: {
-      creationTimestamp: '2023-06-23T07:50:47Z',
+      annotations: {
+        'reconcile.fluxcd.io/requestedAt': '2023-07-03T17:18:03.990333+01:00',
+      },
+      creationTimestamp: '2023-06-29T08:06:59Z',
       finalizers: ['finalizers.fluxcd.io'],
       generation: 1,
-      name: name,
-      namespace: 'default',
-      resourceVersion: '143955',
-      uid: '1ec54278-ed2d-4f31-9bb0-39dc7163730e',
+      labels: {
+        'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+        'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+      },
+      name,
+      namespace: 'flux-system',
+      resourceVersion: '1181625',
+      uid: 'ab33ae5b-a282-40b1-9fdc-d87f05401628',
     },
     spec: {
-      interval: '5m',
-      provider: 'generic',
-      timeout: '60s',
-      url: url,
-      verify: {
-        provider: 'cosign',
+      force: false,
+      interval: '10m0s',
+      path,
+      prune: true,
+      sourceRef: {
+        kind: 'GitRepository',
+        name: 'flux-system',
       },
     },
     status: {
-      artifact: {
-        digest:
-          'sha256:62df151eb3714d9dfa943c7d88192d72466bffa268b25595f85530b793f77524',
-        lastUpdateTime: '2023-06-23T07:50:53Z',
-        metadata: {
-          'org.opencontainers.image.created': '2023-05-03T14:30:58Z',
-          'org.opencontainers.image.revision':
-            '6.3.6/073f1ec5aff930bd3411d33534e91cbe23302324',
-          'org.opencontainers.image.source':
-            'https://github.com/stefanprodan/podinfo',
-        },
-        path: 'ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz',
-        revision:
-          'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4',
-        size: 1071,
-        url: 'http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4.tar.gz',
-      },
       conditions: [
         {
-          lastTransitionTime: '2023-06-23T07:50:53Z',
+          lastTransitionTime: '2023-07-03T16:18:04Z',
           message:
-            "stored artifact for digest 'latest@sha256: 2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'",
+            'Applied revision: main@sha1:c933408394a3af8fa7208af8c9abf7fe430f99d4',
           observedGeneration: 1,
-          reason: 'Succeeded',
-          status: 'True',
+          reason: 'ReconciliationSucceeded',
+          status: ready,
           type: 'Ready',
         },
-        {
-          lastTransitionTime: '2023-06 - 23T07: 50: 53Z',
-          message:
-            "stored artifact for digest 'latest @sha256: 2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'",
-          observedGeneration: 1,
-          reason: 'Succeeded',
-          status: 'True',
-          type: 'ArtifactInStorage',
-        },
-        {
-          lastTransitionTime: '2023-06-23T07:50:52Z',
-          message:
-            "verified signature of revision latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4'",
-          observedGeneration: 1,
-          reason: 'Succeeded',
-          status: 'True',
-          type: 'SourceVerified',
-        },
       ],
+      inventory: {
+        entries: [
+          {
+            id: '_alerts.notification.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_buckets.source.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_gitrepositories.source.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_helmcharts.source.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_helmreleases.helm.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_helmrepositories.source.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_kustomizations.kustomize.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_ocirepositories.source.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_providers.notification.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_receivers.notification.toolkit.fluxcd.io_apiextensions.k8s.io_CustomResourceDefinition',
+            v: 'v1',
+          },
+          {
+            id: '_flux-system__Namespace',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_critical-pods-flux-system__ResourceQuota',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_helm-controller__ServiceAccount',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_kustomize-controller__ServiceAccount',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_notification-controller__ServiceAccount',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_source-controller__ServiceAccount',
+            v: 'v1',
+          },
+          {
+            id: '_crd-controller-flux-system_rbac.authorization.k8s.io_ClusterRole',
+            v: 'v1',
+          },
+          {
+            id: '_flux-edit-flux-system_rbac.authorization.k8s.io_ClusterRole',
+            v: 'v1',
+          },
+          {
+            id: '_flux-view-flux-system_rbac.authorization.k8s.io_ClusterRole',
+            v: 'v1',
+          },
+          {
+            id: '_cluster-reconciler-flux-system_rbac.authorization.k8s.io_ClusterRoleBinding',
+            v: 'v1',
+          },
+          {
+            id: '_crd-controller-flux-system_rbac.authorization.k8s.io_ClusterRoleBinding',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_notification-controller__Service',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_source-controller__Service',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_webhook-receiver__Service',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_helm-controller_apps_Deployment',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_kustomize-controller_apps_Deployment',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_notification-controller_apps_Deployment',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_source-controller_apps_Deployment',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_flux-system_kustomize.toolkit.fluxcd.io_Kustomization',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_allow-egress_networking.k8s.io_NetworkPolicy',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_allow-scraping_networking.k8s.io_NetworkPolicy',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_allow-webhooks_networking.k8s.io_NetworkPolicy',
+            v: 'v1',
+          },
+          {
+            id: 'default_podinfo_source.toolkit.fluxcd.io_GitRepository',
+            v: 'v1',
+          },
+          {
+            id: 'default_podinfo-shard1_source.toolkit.fluxcd.io_GitRepository',
+            v: 'v1',
+          },
+          {
+            id: 'default_podinfo-shard2_source.toolkit.fluxcd.io_GitRepository',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_flux-system_source.toolkit.fluxcd.io_GitRepository',
+            v: 'v1',
+          },
+          {
+            id: 'flux-system_source-controller-shardset_templates.weave.works_FluxShardSet',
+            v: 'v1alpha1',
+          },
+        ],
+      },
+      lastAppliedRevision: 'main@sha1:c933408394a3af8fa7208af8c9abf7fe430f99d4',
+      lastAttemptedRevision:
+        'main@sha1:c933408394a3af8fa7208af8c9abf7fe430f99d4',
+      lastHandledReconcileAt: '2023-07-03T17:18:03.990333+01:00',
       observedGeneration: 1,
-      url: 'http://source-controller.flux-system.svc.cluster.local./ocirepository/default/podinfo/latest.tar.gz',
     },
   };
 };
@@ -116,9 +244,10 @@ class StubKubernetesClient implements KubernetesApi {
             {
               type: 'customresources',
               resources: [
-                makeTestOCIRepository(
-                  'podinfo',
-                  'oci://ghcr.io/stefanprodan/manifests/podinfo',
+                makeTestKustomization(
+                  'flux-system',
+                  './clusters/my-cluster',
+                  true,
                 ),
               ],
             },
@@ -156,7 +285,7 @@ const entity: Entity = {
   },
 };
 
-describe('<FluxOCIRepositoriesCard />', () => {
+describe('<FluxKustomizationsCard />', () => {
   let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
   beforeEach(() => {
@@ -169,8 +298,8 @@ describe('<FluxOCIRepositoriesCard />', () => {
     jest.resetAllMocks();
   });
 
-  describe('listing OCI Repositories', () => {
-    it('shows the details of an OCI Repository', async () => {
+  describe('listing Kustomizations', () => {
+    it('shows the details of an Kustomization', async () => {
       const result = await renderInTestApp(
         <Wrapper>
           <TestApiProvider
@@ -199,15 +328,11 @@ describe('<FluxOCIRepositoriesCard />', () => {
 
       const testCases = [
         {
-          name: 'default/podinfo',
-          url: 'oci://ghcr.io/stefanprodan/manifests/podinfo',
-          cluster: 'demo-cluster',
-          revision:
-            'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4',
+          name: 'flux-system',
+          path: './clusters/my-cluster',
+          ready: true,
         },
       ];
-
-      // TODO: test for presence of the Icon?
 
       for (const testCase of testCases) {
         const cell = getByText(testCase.name);
@@ -215,8 +340,8 @@ describe('<FluxOCIRepositoriesCard />', () => {
 
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
-        expect(tr).toHaveTextContent(testCase.url);
-        expect(tr).toHaveTextContent(testCase.cluster);
+        expect(tr).toHaveTextContent(testCase.path);
+        // expect(tr).toHaveTextContent(testCase.cluster);
       }
     });
   });

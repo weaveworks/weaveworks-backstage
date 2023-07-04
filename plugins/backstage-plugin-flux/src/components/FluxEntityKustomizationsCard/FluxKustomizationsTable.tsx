@@ -35,7 +35,7 @@ export const FluxKustomizationsTable = ({
   isLoading,
   columns,
 }: Props) => {
-  // TODO: Simplify this to store the ID and OCIRepository
+  console.log('kustomizations: ', kustomizations);
   const data = kustomizations.map(k => {
     const {
       clusterName,

@@ -3,6 +3,7 @@ import {
   FluxObject,
   GitRepository,
   HelmRelease,
+  Kustomization,
   OCIRepository,
 } from '../objects';
 
@@ -17,7 +18,7 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
 
-  return `${baseUrl.replace(/\/$/, "")}/${type}/details?${queryString}`;
+  return `${baseUrl.replace(/\/$/, '')}/${type}/details?${queryString}`;
 };
 
 export const useWeaveFluxDeepLink = (

@@ -27,8 +27,10 @@ import {
   newTestHelmRelease,
   newTestOCIRepository,
   newTestGitRepository,
+  newTestKustomization,
 } from './helpers';
 import { FluxEntityOCIRepositoriesCard } from '../src/components/FluxEntityOCIRepositoriesCard';
+import { FluxEntityKustomizationsCard } from '../src/components/FluxEntityKustomizationsCard';
 import { ReconcileRequestAnnotation } from '../src/hooks';
 import { Content } from '@backstage/core-components';
 
@@ -337,34 +339,15 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestOCIRepository(
-                'podinfo',
-                'oci://ghcr.io/stefanprodan/manifests/podinfo',
-                { verify: true, verified: true },
+              newTestKustomization(
+                'flux-system',
+                './clusters/my-cluster',
+                true,
               ),
-              newTestOCIRepository(
-                'redis',
-                'oci://registry-1.docker.io/bitnamicharts/redis',
-              ),
-              newTestOCIRepository(
-                'postgresql',
-                'oci://registry-1.docker.io/bitnamicharts/postgresql',
-                { verify: true, verified: false },
-              ),
-              newTestOCIRepository(
-                'apache',
-                'oci://registry-1.docker.io/bitnamicharts/apache',
-                { ready: false },
-              ),
-              newTestOCIRepository(
-                'supabase',
-                'oci://registry-1.docker.io/bitnamicharts/supabase',
-                { verify: true, pending: true },
-              ),
-              newTestOCIRepository(
-                'mariadb',
-                'oci://registry-1.docker.io/bitnamicharts/mariadb',
-                { verify: true, verified: false },
+              newTestKustomization(
+                'test-kustomization',
+                './clusters/my-cluster',
+                true,
               ),
             ]),
           ],
@@ -374,7 +357,7 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntityOCIRepositoriesCard />
+            <FluxEntityKustomizationsCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>

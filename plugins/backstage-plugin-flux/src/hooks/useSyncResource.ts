@@ -5,13 +5,18 @@ import { useAsyncFn } from 'react-use';
 import {
   GitRepository,
   HelmRelease,
+  Kustomization,
   OCIRepository,
   gvkFromKind,
 } from '../objects';
 
 export const ReconcileRequestAnnotation = 'reconcile.fluxcd.io/requestedAt';
 
-export type SyncResource = HelmRelease | OCIRepository | GitRepository;
+export type SyncResource =
+  | HelmRelease
+  | OCIRepository
+  | GitRepository
+  | Kustomization;
 
 export const pathForResource = (
   name: string,
