@@ -24,7 +24,7 @@ import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
-export type Deployment = HelmRelease;
+export type Deployment = HelmRelease | Kustomization;
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
  * this in Weave GitOps if possible.
