@@ -18,6 +18,7 @@ import {
   helmRepositoryGVK,
   HelmRepository,
 } from '../objects';
+import { Deployment } from '../components/helpers';
 
 function toErrors(
   cluster: ClusterAttributes,
@@ -211,16 +212,17 @@ export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
  * @public
  */
 
-export interface T extends FluxObject {}
-
-export function useFluxDeployments(entity: Entity): Response<T> {
+export function useFluxDeployments(entity: Entity): Response<Deployment> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
     helmReleaseGVK,
     kustomizationsGVK,
   ]);
 
-  const { data, kubernetesErrors } = toResponse<T>(
-    item => new FluxObject(item),
+  const { data, kubernetesErrors } = toResponse<Deployment>(
+    item =>
+      item instanceof Kustomization
+        ? new Kustomization(item)
+        : new HelmRelease(item),
     kubernetesObjects,
   );
 
