@@ -68,7 +68,6 @@ export const Url = ({ resource }: { resource: Source }): JSX.Element => {
 
 export function SyncButton({ resource }: { resource: Source | Deployment }) {
   const { sync, isSyncing } = useSyncResource(resource);
-
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = isSyncing ? `Syncing ${label}` : `Sync ${label}`;
@@ -85,6 +84,7 @@ export function SyncButton({ resource }: { resource: Source | Deployment }) {
             className={classes.syncButton}
             size="small"
             onClick={sync}
+            disabled={resource.suspended}
           >
             <RetryIcon />
           </IconButton>
@@ -107,8 +107,6 @@ export const VerifiedStatus = ({
 }: {
   resource: VerifiableSource;
 }): JSX.Element | null => {
-  const classes = useStyles();
-
   if (!resource.isVerifiable) return null;
 
   const condition = findVerificationCondition(resource);
@@ -124,9 +122,7 @@ export const VerifiedStatus = ({
 
   return (
     <Tooltip title={condition?.message || 'pending verification'}>
-      <div className={classes.iconCircle}>
-        <VerifiedUserIcon style={{ color, height: '16px' }} />
-      </div>
+      <VerifiedUserIcon style={{ color, height: '16px' }} />
     </Tooltip>
   );
 };
@@ -138,7 +134,7 @@ export const nameAndClusterName = ({
 }): JSX.Element => (
   <Flex column>
     <NameLabel resource={resource} />
-    <span>{resource.clusterName}</span>
+    <span>cluster: {resource.clusterName}</span>
   </Flex>
 );
 
@@ -230,6 +226,7 @@ export function statusColumn<T extends FluxObject>() {
       resource =>
         getIndicatorInfo(resource.suspended, resource.conditions).type,
     ),
+    minWidth: '130px',
   } as TableColumn<T>;
 }
 
