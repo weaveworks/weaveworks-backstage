@@ -226,6 +226,7 @@ export function statusColumn<T extends FluxObject>() {
       resource =>
         getIndicatorInfo(resource.suspended, resource.conditions).type,
     ),
+    minWidth: '130px',
   } as TableColumn<T>;
 }
 
