@@ -154,3 +154,14 @@ gitops:
   #
   baseUrl: https://wego.example.com
 ```
+
+Alternatively, if you have multiple installations, you can provide a per-Cluster
+configuration URL.
+
+```yaml
+gitops:
+  cluster1:
+    baseUrl: https://cluster1.example.com
+  cluster2:
+    baseUrl: https://cluser2.example.com
+```
