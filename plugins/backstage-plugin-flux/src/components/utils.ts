@@ -24,7 +24,7 @@ export const useStyles = makeStyles(theme => ({
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
     direction: 'rtl',
-    maxWidth: '350px',
+    maxWidth: '300px',
     height: '16px',
     marginTop: '2px',
   },
@@ -35,15 +35,6 @@ export const useStyles = makeStyles(theme => ({
   syncButton: {
     padding: 0,
     margin: '-5px 0',
-  },
-  iconCircle: {
-    backgroundColor: '#ccc',
-    borderRadius: '50%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '22px',
-    width: '22px',
   },
 }));
 
