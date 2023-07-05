@@ -5,4 +5,5 @@ export {
   FluxEntityOCIRepositoriesCard,
   FluxEntityKustomizationsCard,
   FluxEntityHelmRepositoriesCard,
+  FluxEntityDeploymentsCard,
 } from './plugin';

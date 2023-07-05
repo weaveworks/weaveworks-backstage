@@ -95,3 +95,19 @@ export const FluxEntityKustomizationsCard = weaveworksFluxPlugin.provide(
     },
   }),
 );
+
+/**
+ * Card used to show the state of Flux Kustomizations for an Entity.
+ * @public
+ */
+export const FluxEntityDeploymentsCard = weaveworksFluxPlugin.provide(
+  createComponentExtension({
+    name: 'FluxEntityDeploymentsCard',
+    component: {
+      lazy: () =>
+        import('./components/FluxEntityDeploymentsCard').then(
+          m => m.FluxEntityDeploymentsCard,
+        ),
+    },
+  }),
+);

@@ -205,3 +205,30 @@ export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
       : kubernetesErrors,
   };
 }
+
+/**
+ * Query for the Flux Deployments - Kustomizations and Helm Releases - associated with this Entity.
+ * @public
+ */
+
+export interface T extends FluxObject {}
+
+export function useFluxDeployments(entity: Entity): Response<T> {
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    helmReleaseGVK,
+    kustomizationsGVK,
+  ]);
+
+  const { data, kubernetesErrors } = toResponse<T>(
+    item => new FluxObject(item),
+    kubernetesObjects,
+  );
+
+  return {
+    data,
+    loading,
+    errors: error
+      ? [new Error(error), ...(kubernetesErrors || [])]
+      : kubernetesErrors,
+  };
+}
