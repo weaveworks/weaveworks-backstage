@@ -37,16 +37,29 @@ flux install
 # setup cluster auth and create an example podinfo helmrelease
 kubectl apply -f ./demo
 
-# install deps
+# install deps (node version 14 || >=16.14 required)
 yarn install
-(node version 14 || >=16.14 required)
 
-# copy the kubernetes config to local config (.gitignore'd)
-cp ./app-config.kubernetes.yaml ./app-config.local.yaml
-
-# start the app, configuring backstage to use serviceaccount in ./demo
-./startup.sh
+# (Optional) Provide the base URL to the weave-gitops app to link through from resources displayed in Backstage.
+WEAVE_GITOPS_URL=http://localhost:9001 ./startup.sh
 ```
+
+## _(optional)_ Install `weave-gitops` to demonstrate linking through to resources details
+
+Backstage shows the important information about each resource, you can click through to the weave-gitops UI to see even more details. The URL is provided by the `WEAVE_GITOPS_URL` environment variable as shown above.
+
+Follow the weave-gitops [installation instructions](https://docs.gitops.weave.works/docs/next/open-source/getting-started/install-OSS/).
+
+In short:
+
+> ```sh
+> brew tap weaveworks/tap
+> brew install weaveworks/tap/gitops
+> gitops create dashboard ww-gitops --password="some-password"
+> kubectl port-forward svc/ww-gitops-weave-gitops -n flux-system 9001:9001
+> ```
+
+Login to http://localhost:9001 with the username `admin` and the password you provided when creating the dashboard.
 
 ## Releasing
 
