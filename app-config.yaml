@@ -111,11 +111,6 @@ gitops:
   baseUrl: ${WEAVE_GITOPS_URL}
 
 kubernetes:
-  # Show matching helmreleases in the kubernetes panel
-  customResources:
-    - group: 'helm.toolkit.fluxcd.io'
-      apiVersion: 'v2beta1'
-      plural: 'helmreleases'
   serviceLocatorMethod:
     type: 'multiTenant'
   clusterLocatorMethods:
