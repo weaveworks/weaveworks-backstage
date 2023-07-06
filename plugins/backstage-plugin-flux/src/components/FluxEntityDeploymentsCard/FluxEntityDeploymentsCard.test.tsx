@@ -388,7 +388,7 @@ describe('<FluxEntityDeploymentsCard />', () => {
       expect(ktr).toHaveTextContent(testCases[0].type as string);
       expect(ktr).toHaveTextContent(testCases[0].repo as string);
 
-      //helmrelease
+      // helmrelease
       const hrcell = getByText(testCases[1].name);
       expect(hrcell).toBeInTheDocument();
       const hrtr = hrcell.closest('tr');

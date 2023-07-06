@@ -210,7 +210,8 @@ export const chartColumn = <T extends Deployment>() => {
       return `${(resource as HelmRelease)?.helmChart?.chart}/${
         resource?.lastAppliedRevision
       }`;
-    } else return '';
+    }
+    return '';
   };
 
   return {
