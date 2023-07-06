@@ -14,7 +14,7 @@ import {
   gitRepositoriesGVK,
   helmReleaseGVK,
   ociRepositoriesGVK,
-  kustomizationsGVK,
+  kustomizationGVK,
   helmRepositoryGVK,
   HelmRepository,
 } from '../objects';
@@ -167,7 +167,7 @@ export function useOCIRepositories(entity: Entity): Response<OCIRepository> {
  */
 export function useKustomizations(entity: Entity): Response<Kustomization> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    kustomizationsGVK,
+    kustomizationGVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<Kustomization>(
@@ -215,16 +215,15 @@ export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
 export function useFluxDeployments(entity: Entity): Response<Deployment> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
     helmReleaseGVK,
-    kustomizationsGVK,
+    kustomizationGVK,
   ]);
 
-  const { data, kubernetesErrors } = toResponse<Deployment>(
-    item =>
-      item instanceof Kustomization
-        ? new Kustomization(item)
-        : new HelmRelease(item),
-    kubernetesObjects,
-  );
+  const { data, kubernetesErrors } = toResponse<Deployment>(item => {
+    const { kind } = JSON.parse(item.payload as string);
+    return kind === 'Kustomization'
+      ? new Kustomization(item)
+      : new HelmRelease(item);
+  }, kubernetesObjects);
 
   return {
     data,

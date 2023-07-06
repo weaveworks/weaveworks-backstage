@@ -157,6 +157,14 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
   } as TableColumn<T>;
 };
 
+export const typeColumn = <T extends Deployment>() => {
+  return {
+    title: 'Type',
+    field: 'type',
+    render: resource => <span>{resource?.type}</span>,
+  } as TableColumn<T>;
+};
+
 export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
     title: (
@@ -196,7 +204,23 @@ export const artifactColumn = <T extends Source>() => {
   } as TableColumn<T>;
 };
 
-export const repoColumn = <T extends Kustomization>() => {
+export const chartColumn = <T extends Deployment>() => {
+  const formatContent = (resource: Deployment) => {
+    if (resource.type === 'HelmRelease') {
+      return `${(resource as HelmRelease)?.helmChart?.chart}/${
+        resource?.lastAppliedRevision
+      }`;
+    } else return '';
+  };
+
+  return {
+    title: 'Chart',
+    render: (resource: Deployment) => formatContent(resource),
+    ...sortAndFilterOptions(resource => formatContent(resource)),
+  } as TableColumn<T>;
+};
+
+export const repoColumn = <T extends Deployment>() => {
   return {
     title: 'Repo',
     field: 'repo',
@@ -204,11 +228,17 @@ export const repoColumn = <T extends Kustomization>() => {
   } as TableColumn<T>;
 };
 
-export const pathColumn = <T extends Kustomization>() => {
+export const pathColumn = <T extends Deployment>() => {
   return {
     title: 'Path',
     field: 'path',
-    render: resource => <span>{resource?.path}</span>,
+    render: resource => (
+      <span>
+        {resource.type === 'Kustomization'
+          ? (resource as Kustomization)?.path
+          : ''}
+      </span>
+    ),
   } as TableColumn<T>;
 };
 

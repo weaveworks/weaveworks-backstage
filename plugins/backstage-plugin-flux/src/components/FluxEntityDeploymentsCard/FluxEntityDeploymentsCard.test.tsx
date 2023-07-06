@@ -17,6 +17,7 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import { FluxEntityDeploymentsCard } from './FluxEntityDeploymentsCard';
 
+// add a helm release also
 const makeTestKustomization = (name: string, path: string) => {
   return {
     apiVersion: 'kustomize.toolkit.fluxcd.io/v1',

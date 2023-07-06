@@ -7,13 +7,21 @@ import {
   updatedColumn,
   syncColumn,
   Deployment,
+  typeColumn,
+  pathColumn,
+  chartColumn,
+  repoColumn,
 } from '../helpers';
-import { HelmRelease, Kustomization } from '../../objects';
+import { HelmChart, HelmRelease, Kustomization } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<Deployment>[] = [
   idColumn(),
   nameAndClusterNameColumn(),
+  typeColumn(),
+  pathColumn(),
+  repoColumn(),
+  chartColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
@@ -30,55 +38,48 @@ export const FluxDeploymentsTable = ({
   isLoading,
   columns,
 }: Props) => {
-  console.log(deployments);
+  let helmChart = {} as HelmChart;
+  let path = '';
+  let repo = '';
 
   const data = deployments.map(d => {
-    // TODO: Simplify the the below, extract common fields and add custom
+    const {
+      clusterName,
+      namespace,
+      name,
+      conditions,
+      suspended,
+      sourceRef,
+      type,
+      lastAppliedRevision,
+    } = d;
     if (d instanceof Kustomization) {
-      const {
-        clusterName,
-        namespace,
-        name,
-        sourceRef,
-        path,
-        conditions,
-        suspended,
-        type,
-      } = d;
+      path = d.path;
       return {
         id: `${clusterName}/${namespace}/${name}`,
         conditions,
         suspended,
         name,
         namespace,
+        lastAppliedRevision,
         clusterName,
         sourceRef,
-        path,
         type,
+        path,
       } as Kustomization & { id: string };
     } else if (d instanceof HelmRelease) {
-      const {
-        clusterName,
-        namespace,
-        name,
-        helmChart,
-        conditions,
-        suspended,
-        sourceRef,
-        type,
-        lastAppliedRevision,
-      } = d;
+      helmChart = d.helmChart;
       return {
         id: `${clusterName}/${namespace}/${name}`,
         conditions,
         suspended,
         name,
         namespace,
-        helmChart,
         lastAppliedRevision,
         clusterName,
         sourceRef,
         type,
+        helmChart,
       } as HelmRelease & { id: string };
     }
   });
@@ -87,7 +88,11 @@ export const FluxDeploymentsTable = ({
     <FluxEntityTable
       columns={columns}
       title="Deployments"
-      data={data}
+      data={
+        data as
+          | (HelmRelease & { id: string })[]
+          | (Kustomization & { id: string })[]
+      }
       isLoading={isLoading}
     />
   );
