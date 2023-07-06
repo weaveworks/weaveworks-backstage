@@ -81,6 +81,7 @@ export const FluxDeploymentsTable = ({
         helmChart,
       } as HelmRelease & { id: string };
     }
+    return null;
   });
 
   return (

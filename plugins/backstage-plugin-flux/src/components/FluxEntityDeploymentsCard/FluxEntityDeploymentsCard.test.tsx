@@ -379,22 +379,23 @@ describe('<FluxEntityDeploymentsCard />', () => {
         },
       ];
 
-      for (let i = 0; i < testCases.length; i++) {
-        const cell = getByText(testCases[i].name);
-        expect(cell).toBeInTheDocument();
+      // kustomization
+      const kcell = getByText(testCases[0].name);
+      expect(kcell).toBeInTheDocument();
+      const ktr = kcell.closest('tr');
+      expect(ktr).toBeInTheDocument();
+      expect(ktr).toHaveTextContent(testCases[0].path as string);
+      expect(ktr).toHaveTextContent(testCases[0].type as string);
+      expect(ktr).toHaveTextContent(testCases[0].repo as string);
 
-        const tr = cell.closest('tr');
-        expect(tr).toBeInTheDocument();
-
-        if (i === 0) {
-          expect(tr).toHaveTextContent(testCases?.[i].path as string);
-        }
-        if (i === 1) {
-          expect(tr).toHaveTextContent(testCases?.[i].version as string);
-        }
-        expect(tr).toHaveTextContent(testCases?.[i].type as string);
-        expect(tr).toHaveTextContent(testCases[i].repo as string);
-      }
+      //helmrelease
+      const hrcell = getByText(testCases[1].name);
+      expect(hrcell).toBeInTheDocument();
+      const hrtr = hrcell.closest('tr');
+      expect(hrtr).toBeInTheDocument();
+      expect(hrtr).toHaveTextContent(testCases[1].version as string);
+      expect(hrtr).toHaveTextContent(testCases[1].type as string);
+      expect(hrtr).toHaveTextContent(testCases[1].repo as string);
     });
   });
 });
