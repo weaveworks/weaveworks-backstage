@@ -17,7 +17,6 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import { FluxEntityDeploymentsCard } from './FluxEntityDeploymentsCard';
 
-// add a helm release also
 const makeTestKustomization = (name: string, path: string) => {
   return {
     apiVersion: 'kustomize.toolkit.fluxcd.io/v1',
@@ -220,6 +219,48 @@ const makeTestKustomization = (name: string, path: string) => {
     },
   };
 };
+const makeTestHelmRelease = (name: string, chart: string, version: string) => {
+  return {
+    apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
+    kind: 'HelmRelease',
+    metadata: {
+      annotations: {
+        'metadata.weave.works/test': 'value',
+      },
+      creationTimestamp: '2023-05-25T14:14:46Z',
+      finalizers: ['finalizers.fluxcd.io'],
+      name: name,
+      namespace: 'default',
+    },
+    spec: {
+      interval: '5m',
+      chart: {
+        spec: {
+          chart,
+          version: '45.x',
+          sourceRef: {
+            kind: 'HelmRepository',
+            name: 'prometheus-community',
+            namespace: 'default',
+          },
+          interval: '60m',
+        },
+      },
+    },
+    status: {
+      lastAppliedRevision: version,
+      conditions: [
+        {
+          lastTransitionTime: '2023-05-25T15:03:33Z',
+          message: 'pulled "test" chart with version "1.0.0"',
+          reason: 'ChartPullSucceeded',
+          status: 'True',
+          type: 'Ready',
+        },
+      ],
+    },
+  };
+};
 
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
@@ -246,6 +287,7 @@ class StubKubernetesClient implements KubernetesApi {
               type: 'customresources',
               resources: [
                 makeTestKustomization('flux-system', './clusters/my-cluster'),
+                makeTestHelmRelease('redis', 'redis', '1.2.3'),
               ],
             },
           ],
@@ -295,7 +337,7 @@ describe('<FluxEntityDeploymentsCard />', () => {
     jest.resetAllMocks();
   });
 
-  describe('listing Kustomizations', () => {
+  describe('listing Deployments', () => {
     it('shows the details of an Kustomization', async () => {
       const result = await renderInTestApp(
         <Wrapper>
@@ -328,17 +370,30 @@ describe('<FluxEntityDeploymentsCard />', () => {
           name: 'flux-system',
           path: './clusters/my-cluster',
           repo: 'flux-system',
+          type: 'Kustomization',
+        },
+        {
+          name: 'default/normal',
+          version: 'kube-prometheus-stack/6.3.5',
+          type: 'HelmRelease',
         },
       ];
 
-      for (const testCase of testCases) {
-        const cell = getByText(testCase.name);
+      for (let i = 0; i < testCases.length; i++) {
+        const cell = getByText(testCases[i].name);
         expect(cell).toBeInTheDocument();
 
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
-        expect(tr).toHaveTextContent(testCase.path);
-        expect(tr).toHaveTextContent(testCase.repo);
+
+        if (i === 0) {
+          expect(tr).toHaveTextContent(testCases?.[i].path as string);
+        }
+        if (i === 1) {
+          expect(tr).toHaveTextContent(testCases?.[i].version as string);
+        }
+        expect(tr).toHaveTextContent(testCases?.[i].type as string);
+        expect(tr).toHaveTextContent(testCases[i].repo as string);
       }
     });
   });
