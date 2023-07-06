@@ -40,7 +40,6 @@ export const FluxDeploymentsTable = ({
 }: Props) => {
   let helmChart = {} as HelmChart;
   let path = '';
-  let repo = '';
 
   const data = deployments.map(d => {
     const {
@@ -89,9 +88,10 @@ export const FluxDeploymentsTable = ({
       columns={columns}
       title="Deployments"
       data={
-        data as
-          | (HelmRelease & { id: string })[]
-          | (Kustomization & { id: string })[]
+        data as (
+          | (HelmRelease & { id: string })
+          | (Kustomization & { id: string })
+        )[]
       }
       isLoading={isLoading}
     />
