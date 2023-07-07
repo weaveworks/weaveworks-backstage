@@ -7,10 +7,8 @@ import {
   updatedColumn,
   syncColumn,
   Deployment,
-  typeColumn,
-  pathColumn,
-  chartColumn,
   repoColumn,
+  referenceColumn,
 } from '../helpers';
 import { HelmChart, HelmRelease, Kustomization } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
@@ -18,10 +16,8 @@ import { FluxEntityTable } from '../FluxEntityTable';
 export const defaultColumns: TableColumn<Deployment>[] = [
   idColumn(),
   nameAndClusterNameColumn(),
-  typeColumn(),
-  pathColumn(),
   repoColumn(),
-  chartColumn(),
+  referenceColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),

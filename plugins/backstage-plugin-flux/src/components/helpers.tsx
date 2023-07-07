@@ -22,6 +22,8 @@ import {
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
+import kustomize from '../images/kustomize.png';
+import helm from '../images/helm.png';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -157,14 +159,6 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
   } as TableColumn<T>;
 };
 
-export const typeColumn = <T extends Deployment>() => {
-  return {
-    title: 'Type',
-    field: 'type',
-    render: resource => <span>{resource?.type}</span>,
-  } as TableColumn<T>;
-};
-
 export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
     title: (
@@ -204,7 +198,7 @@ export const artifactColumn = <T extends Source>() => {
   } as TableColumn<T>;
 };
 
-export const chartColumn = <T extends Deployment>() => {
+export const referenceColumn = <T extends Deployment>() => {
   const formatContent = (resource: Deployment) => {
     if (resource.type === 'HelmRelease') {
       return `${(resource as HelmRelease)?.helmChart?.chart}/${
@@ -215,9 +209,22 @@ export const chartColumn = <T extends Deployment>() => {
   };
 
   return {
-    title: 'Chart',
-    render: (resource: Deployment) => formatContent(resource),
-    ...sortAndFilterOptions(resource => formatContent(resource)),
+    title: 'Reference',
+    render: (resource: Deployment) =>
+      resource.type === 'HelmRelease' ? (
+        formatContent(resource)
+      ) : (
+        <span>
+          {resource.type === 'Kustomization'
+            ? (resource as Kustomization)?.path
+            : ''}
+        </span>
+      ),
+    ...sortAndFilterOptions(resource =>
+      resource.type === 'HelmRelease'
+        ? formatContent(resource)
+        : (resource as Kustomization)?.path,
+    ),
   } as TableColumn<T>;
 };
 
@@ -225,21 +232,39 @@ export const repoColumn = <T extends Deployment>() => {
   return {
     title: 'Repo',
     field: 'repo',
-    render: resource => <span>{resource?.sourceRef?.name}</span>,
+    render: resource => (
+      <Tooltip title={resource.type || 'Unknown'}>
+        <div>
+          <Flex align>
+            <img
+              alt="repo"
+              width="25px"
+              style={{ marginRight: '6px' }}
+              src={resource?.type === 'HelmRelease' ? helm : kustomize}
+            />
+            <span>{resource?.sourceRef?.name}</span>
+          </Flex>
+        </div>
+      </Tooltip>
+    ),
   } as TableColumn<T>;
 };
 
-export const pathColumn = <T extends Deployment>() => {
+export const pathColumn = <T extends Kustomization>() => {
   return {
     title: 'Path',
     field: 'path',
-    render: resource => (
-      <span>
-        {resource.type === 'Kustomization'
-          ? (resource as Kustomization)?.path
-          : ''}
-      </span>
-    ),
+    render: resource => <span>{resource?.path}</span>,
+  } as TableColumn<T>;
+};
+
+export const chartColumn = <T extends HelmRelease>() => {
+  const formatContent = (resource: HelmRelease) =>
+    `${resource.helmChart.chart}/${resource.lastAppliedRevision}`;
+  return {
+    title: 'Chart',
+    render: (resource: HelmRelease) => formatContent(resource),
+    ...sortAndFilterOptions(resource => formatContent(resource)),
   } as TableColumn<T>;
 };
 

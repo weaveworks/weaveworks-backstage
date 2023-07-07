@@ -213,10 +213,11 @@ export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
  */
 
 export function useFluxDeployments(entity: Entity): Response<Deployment> {
-  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    helmReleaseGVK,
-    kustomizationGVK,
-  ]);
+  const { kubernetesObjects, loading, error } = useCustomResources(
+    entity,
+    [helmReleaseGVK, kustomizationGVK],
+    60000000,
+  );
 
   const { data, kubernetesErrors } = toResponse<Deployment>(item => {
     const { kind } = JSON.parse(item.payload as string);
