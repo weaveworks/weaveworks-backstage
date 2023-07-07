@@ -338,7 +338,7 @@ describe('<FluxEntityDeploymentsCard />', () => {
   });
 
   describe('listing Deployments', () => {
-    it('shows the details of an Kustomization', async () => {
+    it('shows the details of a Deployment', async () => {
       const result = await renderInTestApp(
         <Wrapper>
           <TestApiProvider
@@ -372,7 +372,7 @@ describe('<FluxEntityDeploymentsCard />', () => {
           reference: './clusters/my-cluster',
         },
         {
-          name: 'default/normal',
+          name: 'normal',
           repo: 'prometheus-community',
           reference: 'kube-prometheus-stack/6.3.5',
         },
