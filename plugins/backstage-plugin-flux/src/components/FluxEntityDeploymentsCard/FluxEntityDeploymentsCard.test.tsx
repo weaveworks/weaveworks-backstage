@@ -368,34 +368,25 @@ describe('<FluxEntityDeploymentsCard />', () => {
       const testCases = [
         {
           name: 'flux-system',
-          path: './clusters/my-cluster',
           repo: 'flux-system',
-          type: 'Kustomization',
+          reference: './clusters/my-cluster',
         },
         {
           name: 'default/normal',
-          version: 'kube-prometheus-stack/6.3.5',
-          type: 'HelmRelease',
+          repo: 'prometheus-community',
+          reference: 'kube-prometheus-stack/6.3.5',
         },
       ];
 
-      // kustomization
-      const kcell = getByText(testCases[0].name);
-      expect(kcell).toBeInTheDocument();
-      const ktr = kcell.closest('tr');
-      expect(ktr).toBeInTheDocument();
-      expect(ktr).toHaveTextContent(testCases[0].path as string);
-      expect(ktr).toHaveTextContent(testCases[0].type as string);
-      expect(ktr).toHaveTextContent(testCases[0].repo as string);
+      for (const testCase of testCases) {
+        const cell = getByText(testCase.name);
+        expect(cell).toBeInTheDocument();
 
-      // helmrelease
-      const hrcell = getByText(testCases[1].name);
-      expect(hrcell).toBeInTheDocument();
-      const hrtr = hrcell.closest('tr');
-      expect(hrtr).toBeInTheDocument();
-      expect(hrtr).toHaveTextContent(testCases[1].version as string);
-      expect(hrtr).toHaveTextContent(testCases[1].type as string);
-      expect(hrtr).toHaveTextContent(testCases[1].repo as string);
+        const tr = cell.closest('tr');
+        expect(tr).toBeInTheDocument();
+        expect(tr).toHaveTextContent(testCase.repo);
+        expect(tr).toHaveTextContent(testCase.reference);
+      }
     });
   });
 });
