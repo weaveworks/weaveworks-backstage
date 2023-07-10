@@ -224,6 +224,10 @@ export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
         ? findVerificationCondition(resource)?.status || 'unknown'
         : '',
     ),
+    ...sortAndFilterOptions(resource => {
+      const condition = findVerificationCondition(resource);
+      return condition?.message || '';
+    }),
     width: '90px',
   } as TableColumn<T>;
 };
@@ -241,12 +245,16 @@ export const artifactColumn = <T extends Source>() => {
     title: 'Artifact',
     render: resource => (
       <Tooltip
+        // This is the sha of the commit that the artifact was built from
         title={resource.artifact?.revision.split('@')[1] || 'unknown tag'}
       >
         <span>{resource.artifact?.revision.split('@')[0]}</span>
       </Tooltip>
     ),
     ...sortAndFilterOptions(resource => resource.artifact?.revision),
+    ...sortAndFilterOptions(
+      resource => resource.artifact?.revision.split('@')[1],
+    ),
   } as TableColumn<T>;
 };
 
@@ -296,6 +304,7 @@ export const repoColumn = <T extends Deployment>() => {
         </div>
       </Tooltip>
     ),
+    ...sortAndFilterOptions(resource => resource?.type as string | undefined),
   } as TableColumn<T>;
 };
 
@@ -342,7 +351,12 @@ export const updatedColumn = <T extends FluxObject>() => {
       DateTime.fromISO(automationLastUpdated(resource)).toRelative({
         locale: 'en',
       }),
-    ...sortAndFilterOptions(resource => automationLastUpdated(resource)),
+    ...sortAndFilterOptions(
+      resource =>
+        DateTime.fromISO(automationLastUpdated(resource)).toRelative({
+          locale: 'en',
+        }) as string,
+    ),
     minWidth: '130px',
   } as TableColumn<T>;
 };
