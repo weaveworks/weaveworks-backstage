@@ -287,7 +287,7 @@ class StubKubernetesClient implements KubernetesApi {
               type: 'customresources',
               resources: [
                 makeTestKustomization('flux-system', './clusters/my-cluster'),
-                makeTestHelmRelease('redis', 'redis', '1.2.3'),
+                makeTestHelmRelease('normal', 'kube-prometheus-stack', '6.3.5'),
               ],
             },
           ],
@@ -372,7 +372,7 @@ describe('<FluxEntityDeploymentsCard />', () => {
           reference: './clusters/my-cluster',
         },
         {
-          name: 'normal',
+          name: 'default/normal',
           repo: 'prometheus-community',
           reference: 'kube-prometheus-stack/6.3.5',
         },
