@@ -1,25 +1,15 @@
 import React from 'react';
 import { TableColumn } from '@backstage/core-components';
 import {
+  chartColumn,
   idColumn,
   nameAndClusterNameColumn,
-  sortAndFilterOptions,
   statusColumn,
   syncColumn,
   updatedColumn,
 } from '../helpers';
 import { HelmRelease } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
-
-function chartColumn() {
-  const formatContent = (hr: HelmRelease) =>
-    `${hr.helmChart.chart}/${hr.lastAppliedRevision}`;
-  return {
-    title: 'Chart',
-    render: (hr: HelmRelease) => formatContent(hr),
-    ...sortAndFilterOptions(hr => formatContent(hr)),
-  } as TableColumn<HelmRelease>;
-}
 
 export const defaultColumns: TableColumn<HelmRelease>[] = [
   idColumn(),
