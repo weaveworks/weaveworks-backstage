@@ -11,6 +11,7 @@ import { colors } from '../typedefs/styled';
 import Flex from './Flex';
 import { Condition } from '../objects';
 import reconcile from '../images/reconcile.svg';
+import { Tooltip } from '@material-ui/core';
 
 type Props = {
   className?: string;
@@ -241,10 +242,16 @@ function KubeStatusIndicator({
   let text = computeMessage(conditions);
   if (short || suspended) text = type;
 
+  const ready = _.find(conditions, c => c.type === ReadyType.Ready);
+
   return (
-    <Flex start className={className} align>
-      {getBackstageIcon(color)} {text}
-    </Flex>
+    <Tooltip title={ready?.message || ''}>
+      <div>
+        <Flex start className={className} align>
+          {getBackstageIcon(color)} {text}
+        </Flex>
+      </div>
+    </Tooltip>
   );
 }
 
