@@ -41,9 +41,8 @@ export const FluxDeploymentsTable = ({
   const getTitle = () => {
     if (kinds.length === 1) {
       return `${kinds[0]}s`;
-    } else {
-      return 'Deployments';
     }
+    return 'Deployments';
   };
 
   let helmChart = {} as HelmChart;
