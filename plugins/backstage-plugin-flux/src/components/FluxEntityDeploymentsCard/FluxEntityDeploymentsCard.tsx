@@ -23,6 +23,7 @@ const DeploymentsPanel = () => {
 
   return (
     <FluxDeploymentsTable
+      kinds={['Kustomization', 'HelmRelease']}
       deployments={data || []}
       isLoading={loading && !data}
       columns={defaultColumns}
@@ -31,7 +32,7 @@ const DeploymentsPanel = () => {
 };
 
 /**
- * Render the Kustomizations associated with the current Entity.
+ * Render the Deployments associated with the current Entity.
  *
  * @public
  */

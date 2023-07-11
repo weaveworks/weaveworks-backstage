@@ -9,12 +9,14 @@ import {
   Deployment,
   repoColumn,
   referenceColumn,
+  typeColumn,
 } from '../helpers';
 import { HelmChart, HelmRelease, Kustomization } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<Deployment>[] = [
   idColumn(),
+  typeColumn(),
   nameAndClusterNameColumn(),
   repoColumn(),
   referenceColumn(),
@@ -27,13 +29,22 @@ type Props = {
   deployments: Deployment[];
   isLoading: boolean;
   columns: TableColumn<Deployment>[];
+  kinds: string[];
 };
 
 export const FluxDeploymentsTable = ({
+  kinds,
   deployments,
   isLoading,
   columns,
 }: Props) => {
+  const getTitle = () => {
+    if (kinds.length === 1) {
+      return `${kinds[0]}s`;
+    }
+    return 'Deployments';
+  };
+
   let helmChart = {} as HelmChart;
   let path = '';
 
@@ -83,7 +94,7 @@ export const FluxDeploymentsTable = ({
   return (
     <FluxEntityTable
       columns={columns}
-      title="Deployments"
+      title={getTitle()}
       data={
         data as (
           | (HelmRelease & { id: string })
