@@ -1,8 +1,11 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useHelmReleases } from '../../hooks/query';
-import { FluxHelmReleasesTable, defaultColumns } from './FluxHelmReleasesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import {
+  FluxDeploymentsTable,
+  defaultColumns,
+} from '../FluxEntityDeploymentsCard/FluxDeploymentsTable';
 
 const HelmReleasePanel = () => {
   const { entity } = useEntity();
@@ -23,8 +26,9 @@ const HelmReleasePanel = () => {
   }
 
   return (
-    <FluxHelmReleasesTable
-      helmReleases={data || []}
+    <FluxDeploymentsTable
+      kinds={['HelmRelease']}
+      deployments={data || []}
       isLoading={loading && !data}
       columns={defaultColumns}
     />
