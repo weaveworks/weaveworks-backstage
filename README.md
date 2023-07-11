@@ -4,6 +4,8 @@
 
 For local dev we'll need to set up a Github OAuth app and a local kubernetes cluster.
 
+Please ensure you're running a recent version of Flux supported versions are > 2.0.0
+
 ### Configure Github OAuth
 
 Follow the [Backstage instructions to create a Github OAuth app](https://backstage.io/docs/auth/github/provider#create-an-oauth-app-on-github), relevant bit here:
