@@ -254,6 +254,7 @@ export const repoColumn = <T extends Deployment>() => {
     title: 'Repo',
     field: 'repo',
     render: resource => <span>{resource?.sourceRef?.name}</span>,
+    ...sortAndFilterOptions(resource => resource?.sourceRef?.name),
   } as TableColumn<T>;
 };
 
