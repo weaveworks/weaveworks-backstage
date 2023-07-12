@@ -155,6 +155,7 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
       resource =>
         `${resource.namespace}/${resource.name}/${resource.clusterName}`,
     ),
+    minWidth: '200px',
   } as TableColumn<T>;
 };
 
