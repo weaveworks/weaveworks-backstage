@@ -236,11 +236,12 @@ export const sourceColumn = <T extends Deployment>() => {
 };
 
 export const typeColumn = <
-  T extends Deployment | OCIRepository | GitRepository,
+  T extends Deployment | OCIRepository | GitRepository | HelmRepository,
 >() => {
   const getIconType = (type: string) => {
     switch (type) {
       case 'HelmRelease':
+      case 'HelmRepository':
         return helm;
       case 'Kustomization':
         return kubernetes;
