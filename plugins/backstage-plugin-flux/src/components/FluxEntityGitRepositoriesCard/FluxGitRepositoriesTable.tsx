@@ -9,12 +9,14 @@ import {
   statusColumn,
   updatedColumn,
   syncColumn,
+  typeColumn,
 } from '../helpers';
 import { GitRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
   idColumn(),
+  typeColumn(),
   nameAndClusterNameColumn(),
   verifiedColumn(),
   urlColumn(),

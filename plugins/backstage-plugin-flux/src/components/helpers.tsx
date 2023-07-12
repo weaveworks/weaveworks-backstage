@@ -22,7 +22,7 @@ import {
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
-import { helm, kubernetes } from '../images/icons';
+import { helm, kubernetes, oci, git } from '../images/icons';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -205,7 +205,7 @@ export const artifactColumn = <T extends Source>() => {
   } as TableColumn<T>;
 };
 
-export const referenceColumn = <T extends Deployment>() => {
+export const sourceColumn = <T extends Deployment>() => {
   const formatContent = (resource: Deployment) => {
     if (resource.type === 'HelmRelease') {
       return `${(resource as HelmRelease)?.helmChart?.chart}/${
@@ -216,7 +216,7 @@ export const referenceColumn = <T extends Deployment>() => {
   };
 
   return {
-    title: 'Reference',
+    title: 'Source',
     render: (resource: Deployment) =>
       resource.type === 'HelmRelease' ? (
         formatContent(resource)
@@ -235,13 +235,29 @@ export const referenceColumn = <T extends Deployment>() => {
   } as TableColumn<T>;
 };
 
-export const typeColumn = <T extends Deployment>() => {
+export const typeColumn = <
+  T extends Deployment | OCIRepository | GitRepository,
+>() => {
+  const getIconType = (type: string) => {
+    switch (type) {
+      case 'HelmRelease':
+        return helm;
+      case 'Kustomization':
+        return kubernetes;
+      case 'GitRepository':
+        return git;
+      case 'OCIRepository':
+        return oci;
+      default:
+        return null;
+    }
+  };
   return {
     title: '',
     field: 'type',
     render: resource => (
       <Tooltip title={resource.type || 'Unknown'}>
-        <div>{resource.type === 'HelmRelease' ? helm : kubernetes}</div>
+        <div>{getIconType(resource.type as string)}</div>
       </Tooltip>
     ),
     ...sortAndFilterOptions(resource => resource?.type as string | undefined),
