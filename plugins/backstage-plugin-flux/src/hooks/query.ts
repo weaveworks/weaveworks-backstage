@@ -14,10 +14,11 @@ import {
   gitRepositoriesGVK,
   helmReleaseGVK,
   ociRepositoriesGVK,
-  kustomizationsGVK,
+  kustomizationGVK,
   helmRepositoryGVK,
   HelmRepository,
 } from '../objects';
+import { Deployment } from '../components/helpers';
 
 function toErrors(
   cluster: ClusterAttributes,
@@ -166,7 +167,7 @@ export function useOCIRepositories(entity: Entity): Response<OCIRepository> {
  */
 export function useKustomizations(entity: Entity): Response<Kustomization> {
   const { kubernetesObjects, loading, error } = useCustomResources(entity, [
-    kustomizationsGVK,
+    kustomizationGVK,
   ]);
 
   const { data, kubernetesErrors } = toResponse<Kustomization>(
@@ -196,6 +197,33 @@ export function useHelmRepositories(entity: Entity): Response<HelmRepository> {
     item => new HelmRepository(item),
     kubernetesObjects,
   );
+
+  return {
+    data,
+    loading,
+    errors: error
+      ? [new Error(error), ...(kubernetesErrors || [])]
+      : kubernetesErrors,
+  };
+}
+
+/**
+ * Query for the Flux Deployments - Kustomizations and Helm Releases - associated with this Entity.
+ * @public
+ */
+
+export function useFluxDeployments(entity: Entity): Response<Deployment> {
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    helmReleaseGVK,
+    kustomizationGVK,
+  ]);
+
+  const { data, kubernetesErrors } = toResponse<Deployment>(item => {
+    const { kind } = JSON.parse(item.payload as string);
+    return kind === 'Kustomization'
+      ? new Kustomization(item)
+      : new HelmRelease(item);
+  }, kubernetesObjects);
 
   return {
     data,

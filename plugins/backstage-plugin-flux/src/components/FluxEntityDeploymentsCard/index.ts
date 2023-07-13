@@ -1,0 +1,1 @@
+export { FluxEntityDeploymentsCard } from './FluxEntityDeploymentsCard';

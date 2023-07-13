@@ -1,16 +1,12 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useHelmReleases } from '../../hooks/query';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
-import {
-  FluxDeploymentsTable,
-  defaultColumns,
-} from '../FluxEntityDeploymentsCard/FluxDeploymentsTable';
+import { useFluxDeployments } from '../../hooks';
+import { FluxDeploymentsTable, defaultColumns } from './FluxDeploymentsTable';
 
-const HelmReleasePanel = () => {
+const DeploymentsPanel = () => {
   const { entity } = useEntity();
-
-  const { data, loading, errors } = useHelmReleases(entity);
+  const { data, loading, errors } = useFluxDeployments(entity);
 
   if (errors) {
     return (
@@ -27,7 +23,7 @@ const HelmReleasePanel = () => {
 
   return (
     <FluxDeploymentsTable
-      kinds={['HelmRelease']}
+      kinds={['Kustomization', 'HelmRelease']}
       deployments={data || []}
       isLoading={loading && !data}
       columns={defaultColumns}
@@ -36,12 +32,12 @@ const HelmReleasePanel = () => {
 };
 
 /**
- * Render the HelmReleases associated with the current Entity.
+ * Render the Deployments associated with the current Entity.
  *
  * @public
  */
-export const FluxEntityHelmReleasesCard = () => (
+export const FluxEntityDeploymentsCard = () => (
   <WeaveGitOpsContext>
-    <HelmReleasePanel />
+    <DeploymentsPanel />
   </WeaveGitOpsContext>
 );

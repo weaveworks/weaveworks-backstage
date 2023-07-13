@@ -25,6 +25,7 @@ import {
   FluxEntityOCIRepositoriesCard,
   FluxEntityHelmRepositoriesCard,
   FluxEntityKustomizationsCard,
+  FluxEntityDeploymentsCard,
 } from '../src/plugin';
 import {
   newTestHelmRelease,
@@ -392,6 +393,45 @@ createDevApp()
         <EntityProvider entity={fakeEntity}>
           <Content>
             <FluxEntityHelmRepositoriesCard />
+          </Content>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
+  .addPage({
+    title: 'Deployments',
+    path: '/deployments',
+    element: (
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego' },
+            }),
+          ],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestKustomization(
+                'flux-system',
+                './clusters/my-cluster',
+                true,
+              ),
+              newTestHelmRelease(
+                'prometheus1',
+                'kube-prometheus-stack',
+                '6.3.5',
+              ),
+            ]),
+          ],
+
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <Content>
+            <FluxEntityDeploymentsCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>

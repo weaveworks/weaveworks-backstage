@@ -3,9 +3,9 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { useKustomizations } from '../../hooks';
 import {
-  FluxKustomizationsTable,
+  FluxDeploymentsTable,
   defaultColumns,
-} from './FluxKustomizationsTable';
+} from '../FluxEntityDeploymentsCard/FluxDeploymentsTable';
 
 const KustomizationPanel = () => {
   const { entity } = useEntity();
@@ -25,8 +25,9 @@ const KustomizationPanel = () => {
   }
 
   return (
-    <FluxKustomizationsTable
-      kustomizations={data || []}
+    <FluxDeploymentsTable
+      kinds={['Kustomization']}
+      deployments={data || []}
       isLoading={loading && !data}
       columns={defaultColumns}
     />
