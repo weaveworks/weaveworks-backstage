@@ -1,5 +1,12 @@
 # Dev tips
 
+## `./dev` mode
+
+You can start up the plugin UI with mock data to easily test UI variations:
+
+`cd plugins/backstage-plugin-flux`
+`yarn start`
+
 ## Add a new card
 
 - Under `Components`, create a new folder following the structure of the other cards:
