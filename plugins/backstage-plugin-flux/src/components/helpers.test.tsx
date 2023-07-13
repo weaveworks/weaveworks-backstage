@@ -64,6 +64,7 @@ describe('getIconType', () => {
       { type: 'Kustomization', icon: 'kubernetes' },
       { type: 'GitRepository', icon: 'git' },
       { type: 'OCIRepository', icon: 'oci' },
+      { type: 'Unknown', icon: null },
     ];
 
     for (const testCase of testCases) {
