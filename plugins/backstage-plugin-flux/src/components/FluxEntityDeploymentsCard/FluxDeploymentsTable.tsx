@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableColumn, TableFilter } from '@backstage/core-components';
+import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
