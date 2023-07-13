@@ -194,14 +194,14 @@ export const artifactColumn = <T extends Source>() => {
     render: resource => (
       <Tooltip
         // This is the sha of the commit that the artifact was built from
-        title={resource.artifact?.revision.split('@')[1] || 'unknown tag'}
+        title={resource.artifact?.revision?.split('@')[1] || 'unknown tag'}
       >
-        <span>{resource.artifact?.revision.split('@')[0]}</span>
+        <span>{resource.artifact?.revision?.split('@')[0]}</span>
       </Tooltip>
     ),
     ...sortAndFilterOptions(resource => resource.artifact?.revision),
     ...sortAndFilterOptions(
-      resource => resource.artifact?.revision.split('@')[1],
+      resource => resource.artifact?.revision?.split('@')[1],
     ),
   } as TableColumn<T>;
 };
@@ -236,24 +236,25 @@ export const sourceColumn = <T extends Deployment>() => {
   } as TableColumn<T>;
 };
 
+export const getIconType = (type: string) => {
+  switch (type) {
+    case 'HelmRelease':
+    case 'HelmRepository':
+      return helm;
+    case 'Kustomization':
+      return kubernetes;
+    case 'GitRepository':
+      return git;
+    case 'OCIRepository':
+      return oci;
+    default:
+      return null;
+  }
+};
+
 export const typeColumn = <
   T extends Deployment | OCIRepository | GitRepository | HelmRepository,
 >() => {
-  const getIconType = (type: string) => {
-    switch (type) {
-      case 'HelmRelease':
-      case 'HelmRepository':
-        return helm;
-      case 'Kustomization':
-        return kubernetes;
-      case 'GitRepository':
-        return git;
-      case 'OCIRepository':
-        return oci;
-      default:
-        return null;
-    }
-  };
   return {
     title: '',
     field: 'type',
