@@ -18,7 +18,7 @@ import {
   helmRepositoryGVK,
   HelmRepository,
 } from '../objects';
-import { Deployment } from '../components/helpers';
+import { Deployment, Source } from '../components/helpers';
 
 function toErrors(
   cluster: ClusterAttributes,
@@ -223,6 +223,39 @@ export function useFluxDeployments(entity: Entity): Response<Deployment> {
     return kind === 'Kustomization'
       ? new Kustomization(item)
       : new HelmRelease(item);
+  }, kubernetesObjects);
+
+  return {
+    data,
+    loading,
+    errors: error
+      ? [new Error(error), ...(kubernetesErrors || [])]
+      : kubernetesErrors,
+  };
+}
+
+/**
+ * Query for the Flux Deployments - Kustomizations and Helm Releases - associated with this Entity.
+ * @public
+ */
+
+export function useFluxSources(entity: Entity): Response<Source> {
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    helmRepositoryGVK,
+    ociRepositoriesGVK,
+    gitRepositoriesGVK,
+  ]);
+
+  const { data, kubernetesErrors } = toResponse<Source>(item => {
+    const { kind } = JSON.parse(item.payload as string);
+
+    if (kind === 'OCIRepository') {
+      return new OCIRepository(item);
+    }
+    if (kind === 'HelmRepository') {
+      return new HelmRepository(item);
+    }
+    return new GitRepository(item);
   }, kubernetesObjects);
 
   return {
