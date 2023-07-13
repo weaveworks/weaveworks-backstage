@@ -1,4 +1,5 @@
 import { stringCompareFilter, stringCompareSort, getIconType } from './helpers';
+import { helm, kubernetes, oci, git } from '../images/icons';
 
 describe('stringCompareSort', () => {
   it('should return a comparator function that sorts by the result of the given function', () => {
@@ -59,11 +60,11 @@ describe('stringCompareFilter', () => {
 describe('getIconType', () => {
   it('should return the icon corresponding to the resource type', () => {
     const testCases = [
-      { type: 'HelmRelease', icon: 'helm' },
-      { type: 'HelmRepository', icon: 'helm' },
-      { type: 'Kustomization', icon: 'kubernetes' },
-      { type: 'GitRepository', icon: 'git' },
-      { type: 'OCIRepository', icon: 'oci' },
+      { type: 'HelmRelease', icon: helm },
+      { type: 'HelmRepository', icon: helm },
+      { type: 'Kustomization', icon: kubernetes },
+      { type: 'GitRepository', icon: git },
+      { type: 'OCIRepository', icon: oci },
       { type: 'Unknown', icon: null },
     ];
 
