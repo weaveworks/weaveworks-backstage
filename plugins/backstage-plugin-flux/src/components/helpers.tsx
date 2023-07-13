@@ -22,6 +22,7 @@ import {
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
+import { helm, kubernetes } from '../images/icons';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -196,19 +197,54 @@ export const artifactColumn = <T extends Source>() => {
   } as TableColumn<T>;
 };
 
-export const repoColumn = <T extends Kustomization>() => {
+export const referenceColumn = <T extends Deployment>() => {
+  const formatContent = (resource: Deployment) => {
+    if (resource.type === 'HelmRelease') {
+      return `${(resource as HelmRelease)?.helmChart?.chart}/${
+        resource?.lastAppliedRevision
+      }`;
+    }
+    return '';
+  };
+
+  return {
+    title: 'Reference',
+    render: (resource: Deployment) =>
+      resource.type === 'HelmRelease' ? (
+        formatContent(resource)
+      ) : (
+        <span>
+          {resource.type === 'Kustomization'
+            ? (resource as Kustomization)?.path
+            : ''}
+        </span>
+      ),
+    ...sortAndFilterOptions(resource =>
+      resource.type === 'HelmRelease'
+        ? formatContent(resource)
+        : (resource as Kustomization)?.path,
+    ),
+  } as TableColumn<T>;
+};
+
+export const typeColumn = <T extends Deployment>() => {
+  return {
+    title: '',
+    field: 'type',
+    render: resource => (
+      <Tooltip title={resource.type || 'Unknown'}>
+        <div>{resource.type === 'HelmRelease' ? helm : kubernetes}</div>
+      </Tooltip>
+    ),
+    width: '20px',
+  } as TableColumn<T>;
+};
+
+export const repoColumn = <T extends Deployment>() => {
   return {
     title: 'Repo',
     field: 'repo',
     render: resource => <span>{resource?.sourceRef?.name}</span>,
-  } as TableColumn<T>;
-};
-
-export const pathColumn = <T extends Kustomization>() => {
-  return {
-    title: 'Path',
-    field: 'path',
-    render: resource => <span>{resource?.path}</span>,
   } as TableColumn<T>;
 };
 

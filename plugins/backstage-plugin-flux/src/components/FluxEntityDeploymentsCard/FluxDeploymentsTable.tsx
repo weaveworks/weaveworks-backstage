@@ -3,68 +3,104 @@ import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
-  pathColumn,
-  repoColumn,
   statusColumn,
   updatedColumn,
   syncColumn,
+  Deployment,
+  repoColumn,
+  referenceColumn,
+  typeColumn,
 } from '../helpers';
-import { HelmRelease, Kustomization } from '../../objects';
+import { HelmChart, HelmRelease, Kustomization } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
-import { T } from '../../hooks/query';
 
-export const defaultColumns: TableColumn<Kustomization>[] = [
+export const defaultColumns: TableColumn<Deployment>[] = [
   idColumn(),
+  typeColumn(),
   nameAndClusterNameColumn(),
-  pathColumn(),
   repoColumn(),
+  referenceColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
 ];
 
 type Props = {
-  deployments: T[];
+  deployments: Deployment[];
   isLoading: boolean;
-  columns: TableColumn<Kustomization>[];
+  columns: TableColumn<Deployment>[];
+  kinds: string[];
 };
 
 export const FluxDeploymentsTable = ({
+  kinds,
   deployments,
   isLoading,
   columns,
 }: Props) => {
-  console.log(deployments);
-  // const data = kustomizations.map(k => {
-  //   const {
-  //     clusterName,
-  //     namespace,
-  //     name,
-  //     sourceRef,
-  //     path,
-  //     conditions,
-  //     suspended,
-  //     type,
-  //   } = k;
-  //   return {
-  //     id: `${clusterName}/${namespace}/${name}`,
-  //     conditions,
-  //     suspended,
-  //     name,
-  //     namespace,
-  //     clusterName,
-  //     sourceRef,
-  //     path,
-  //     type,
-  //   } as Kustomization & { id: string };
-  // });
+  const getTitle = () => {
+    if (kinds.length === 1) {
+      return `${kinds[0]}s`;
+    }
+    return 'Deployments';
+  };
+
+  let helmChart = {} as HelmChart;
+  let path = '';
+
+  const data = deployments.map(d => {
+    const {
+      clusterName,
+      namespace,
+      name,
+      conditions,
+      suspended,
+      sourceRef,
+      type,
+      lastAppliedRevision,
+    } = d;
+    if (d instanceof Kustomization) {
+      path = d.path;
+      return {
+        id: `${clusterName}/${namespace}/${name}`,
+        conditions,
+        suspended,
+        name,
+        namespace,
+        lastAppliedRevision,
+        clusterName,
+        sourceRef,
+        type,
+        path,
+      } as Kustomization & { id: string };
+    } else if (d instanceof HelmRelease) {
+      helmChart = d.helmChart;
+      return {
+        id: `${clusterName}/${namespace}/${name}`,
+        conditions,
+        suspended,
+        name,
+        namespace,
+        lastAppliedRevision,
+        clusterName,
+        sourceRef,
+        type,
+        helmChart,
+      } as HelmRelease & { id: string };
+    }
+    return null;
+  });
 
   return (
     <FluxEntityTable
       columns={columns}
-      title="Deployments"
-      // data={data}
-      data={[]}
+      title={getTitle()}
+      data={
+        data as (
+          | (HelmRelease & { id: string })
+          | (Kustomization & { id: string })
+        )[]
+      }
       isLoading={isLoading}
     />
   );
