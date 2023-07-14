@@ -97,6 +97,19 @@ class StubKubernetesClient implements KubernetesApi {
             },
           ],
         },
+        {
+          cluster: {
+            name: 'test-cluster',
+          },
+          podMetrics: [],
+          errors: [],
+          resources: [
+            {
+              type: 'customresources',
+              resources: this.resources,
+            },
+          ],
+        },
       ],
     };
   }

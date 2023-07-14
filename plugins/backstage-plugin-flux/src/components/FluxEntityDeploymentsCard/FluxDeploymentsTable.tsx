@@ -23,18 +23,15 @@ export const defaultColumns: TableColumn<Deployment>[] = [
   statusColumn(),
   updatedColumn(),
   syncColumn(),
+  // Added hidden field to allow checkbox filtering by cluster name
+  { title: 'Cluster name', hidden: true, field: 'clusterName' },
 ];
 
 const filters: TableFilter[] = [
   {
-    column: 'id',
+    column: 'Cluster name',
     type: 'multiple-select',
   },
-  // This breaks the filtering -  extractValueByField
-  // {
-  //   column: 'Name',
-  //   type: 'multiple-select',
-  // },
 ];
 
 type Props = {
