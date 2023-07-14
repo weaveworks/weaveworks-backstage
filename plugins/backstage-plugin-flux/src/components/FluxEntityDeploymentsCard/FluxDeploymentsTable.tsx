@@ -1,6 +1,7 @@
 import React from 'react';
 import { TableColumn, TableFilter } from '@backstage/core-components';
 import {
+  clusterNameFilteringColumn,
   idColumn,
   nameAndClusterNameColumn,
   statusColumn,
@@ -15,6 +16,7 @@ import { HelmChart, HelmRelease, Kustomization } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<Deployment>[] = [
+  clusterNameFilteringColumn(),
   idColumn(),
   typeColumn(),
   nameAndClusterNameColumn(),
@@ -23,8 +25,6 @@ export const defaultColumns: TableColumn<Deployment>[] = [
   statusColumn(),
   updatedColumn(),
   syncColumn(),
-  // Added hidden field to allow checkbox filtering by cluster name
-  { title: 'Cluster name', hidden: true, field: 'clusterName' },
 ];
 
 const filters: TableFilter[] = [
@@ -38,22 +38,13 @@ type Props = {
   deployments: Deployment[];
   isLoading: boolean;
   columns: TableColumn<Deployment>[];
-  kinds: string[];
 };
 
 export const FluxDeploymentsTable = ({
-  kinds,
   deployments,
   isLoading,
   columns,
 }: Props) => {
-  const getTitle = () => {
-    if (kinds.length === 1) {
-      return `${kinds[0]}s`;
-    }
-    return 'Deployments';
-  };
-
   let helmChart = {} as HelmChart;
   let path = '';
 
@@ -103,7 +94,6 @@ export const FluxDeploymentsTable = ({
   return (
     <FluxEntityTable
       columns={columns}
-      title={getTitle()}
       data={
         data as (
           | (HelmRelease & { id: string })

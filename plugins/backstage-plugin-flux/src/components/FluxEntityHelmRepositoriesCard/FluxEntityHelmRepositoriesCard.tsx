@@ -25,11 +25,14 @@ const HelmRepositoriesPanel = () => {
   }
 
   return (
-    <FluxHelmRepositoriesTable
-      helmRepositories={data || []}
-      isLoading={loading && !data}
-      columns={defaultColumns}
-    />
+    <>
+      <h1>Helm Repositories</h1>
+      <FluxHelmRepositoriesTable
+        helmRepositories={data || []}
+        isLoading={loading && !data}
+        columns={defaultColumns}
+      />
+    </>
   );
 };
 

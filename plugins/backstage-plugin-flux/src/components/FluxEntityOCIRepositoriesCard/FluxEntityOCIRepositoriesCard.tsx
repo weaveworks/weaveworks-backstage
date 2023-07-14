@@ -25,11 +25,14 @@ const OCIRepositoryPanel = () => {
   }
 
   return (
-    <FluxOCIRepositoriesTable
-      ociRepositories={data || []}
-      isLoading={loading && !data}
-      columns={defaultColumns}
-    />
+    <>
+      <h1>OCI Repositories</h1>
+      <FluxOCIRepositoriesTable
+        ociRepositories={data || []}
+        isLoading={loading && !data}
+        columns={defaultColumns}
+      />
+    </>
   );
 };
 

@@ -1,17 +1,20 @@
 import React from 'react';
 import { TableColumn } from '@backstage/core-components';
 import {
+  clusterNameFilteringColumn,
   idColumn,
   nameAndClusterNameColumn,
   urlColumn,
   statusColumn,
   updatedColumn,
   syncColumn,
+  filters,
 } from '../helpers';
 import { HelmRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<HelmRepository>[] = [
+  clusterNameFilteringColumn(),
   idColumn(),
   nameAndClusterNameColumn(),
   urlColumn(),
@@ -68,9 +71,9 @@ export const FluxHelmRepositoriesTable = ({
   return (
     <FluxEntityTable
       columns={columns}
-      title="Helm Repositories"
       data={data}
       isLoading={isLoading}
+      filters={filters}
     />
   );
 };

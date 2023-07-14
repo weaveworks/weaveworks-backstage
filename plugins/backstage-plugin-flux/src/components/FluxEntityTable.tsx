@@ -30,8 +30,8 @@ export function FluxEntityTable<T extends object = {}>({
           // Don't revert to "unsorted" on the 3rd click, just toggle between asc/desc
           thirdSortClick: false,
           emptyRowsWhenPaging: false,
+          columnsButton: true,
         }}
-        title={title}
         data={data}
         isLoading={isLoading}
         emptyContent={

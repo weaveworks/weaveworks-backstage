@@ -25,12 +25,14 @@ const KustomizationPanel = () => {
   }
 
   return (
-    <FluxDeploymentsTable
-      kinds={['Kustomization']}
-      deployments={data || []}
-      isLoading={loading && !data}
-      columns={defaultColumns}
-    />
+    <>
+      <h1>Kustomizations</h1>
+      <FluxDeploymentsTable
+        deployments={data || []}
+        isLoading={loading && !data}
+        columns={defaultColumns}
+      />
+    </>
   );
 };
 

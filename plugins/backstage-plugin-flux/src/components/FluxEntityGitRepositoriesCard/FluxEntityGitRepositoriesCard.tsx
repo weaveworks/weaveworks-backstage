@@ -25,11 +25,14 @@ const GitRepositoriesPanel = () => {
   }
 
   return (
-    <FluxGitRepositoriesTable
-      gitRepositories={data || []}
-      isLoading={loading && !data}
-      columns={defaultColumns}
-    />
+    <>
+      <h1>Git Repositories</h1>
+      <FluxGitRepositoriesTable
+        gitRepositories={data || []}
+        isLoading={loading && !data}
+        columns={defaultColumns}
+      />
+    </>
   );
 };
 

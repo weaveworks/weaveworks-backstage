@@ -1,6 +1,7 @@
 import React from 'react';
 import { TableColumn } from '@backstage/core-components';
 import {
+  clusterNameFilteringColumn,
   idColumn,
   nameAndClusterNameColumn,
   verifiedColumn,
@@ -9,11 +10,13 @@ import {
   statusColumn,
   updatedColumn,
   syncColumn,
+  filters,
 } from '../helpers';
 import { GitRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<GitRepository>[] = [
+  clusterNameFilteringColumn(),
   idColumn(),
   nameAndClusterNameColumn(),
   verifiedColumn(),
@@ -66,9 +69,9 @@ export const FluxGitRepositoriesTable = ({
   return (
     <FluxEntityTable
       columns={columns}
-      title="Git Repositories"
       data={data}
       isLoading={isLoading}
+      filters={filters}
     />
   );
 };

@@ -26,12 +26,14 @@ const HelmReleasePanel = () => {
   }
 
   return (
-    <FluxDeploymentsTable
-      kinds={['HelmRelease']}
-      deployments={data || []}
-      isLoading={loading && !data}
-      columns={defaultColumns}
-    />
+    <>
+      <h1>Helm Releases</h1>
+      <FluxDeploymentsTable
+        deployments={data || []}
+        isLoading={loading && !data}
+        columns={defaultColumns}
+      />
+    </>
   );
 };
 
