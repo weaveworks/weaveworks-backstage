@@ -9,6 +9,7 @@ export function FluxEntityTable<T extends object = {}>({
   data,
   isLoading,
   columns,
+  filters,
 }: TableProps<T>) {
   const classes = useStyles();
 
@@ -40,6 +41,7 @@ export function FluxEntityTable<T extends object = {}>({
             </Typography>
           </div>
         }
+        filters={filters}
       />
     );
   }, [data, title, isLoading, classes.empty, columns]);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableColumn } from '@backstage/core-components';
+import { TableColumn, TableFilter } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
@@ -23,6 +23,18 @@ export const defaultColumns: TableColumn<Deployment>[] = [
   statusColumn(),
   updatedColumn(),
   syncColumn(),
+];
+
+const filters: TableFilter[] = [
+  {
+    column: 'id',
+    type: 'multiple-select',
+  },
+  // This breaks the filtering -  extractValueByField
+  // {
+  //   column: 'Name',
+  //   type: 'multiple-select',
+  // },
 ];
 
 type Props = {
@@ -102,6 +114,7 @@ export const FluxDeploymentsTable = ({
         )[]
       }
       isLoading={isLoading}
+      filters={filters}
     />
   );
 };
