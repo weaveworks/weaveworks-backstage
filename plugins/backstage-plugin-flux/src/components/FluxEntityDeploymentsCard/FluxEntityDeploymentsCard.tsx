@@ -7,14 +7,6 @@ import { FluxDeploymentsTable, defaultColumns } from './FluxDeploymentsTable';
 const DeploymentsPanel = () => {
   const { entity } = useEntity();
   const { data, loading, errors } = useFluxDeployments(entity);
-  const kinds = ['Kustomization', 'HelmRelease'];
-
-  const getTitle = () => {
-    if (kinds.length === 1) {
-      return `${kinds[0]}s`;
-    }
-    return 'Deployments';
-  };
 
   if (errors) {
     return (
@@ -31,7 +23,7 @@ const DeploymentsPanel = () => {
 
   return (
     <>
-      <h1>{getTitle()}</h1>
+      <h1>Deployments</h1>
       <FluxDeploymentsTable
         deployments={data || []}
         isLoading={loading && !data}
