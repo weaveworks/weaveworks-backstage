@@ -2,6 +2,7 @@ import React from 'react';
 import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
+  typeColumn,
   nameAndClusterNameColumn,
   urlColumn,
   statusColumn,
@@ -13,6 +14,7 @@ import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<HelmRepository>[] = [
   idColumn(),
+  typeColumn(),
   nameAndClusterNameColumn(),
   urlColumn(),
   {
