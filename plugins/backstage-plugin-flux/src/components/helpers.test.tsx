@@ -1,4 +1,5 @@
-import { stringCompareFilter, stringCompareSort } from './helpers';
+import { stringCompareFilter, stringCompareSort, getIconType } from './helpers';
+import { helm, kubernetes, oci, git } from '../images/icons';
 
 describe('stringCompareSort', () => {
   it('should return a comparator function that sorts by the result of the given function', () => {
@@ -53,5 +54,22 @@ describe('stringCompareFilter', () => {
     const filter = stringCompareFilter((d: any) => d.name);
 
     expect(data.filter(item => filter('BAR', item))).toEqual([{ name: 'bar' }]);
+  });
+});
+
+describe('getIconType', () => {
+  it('should return the icon corresponding to the resource type', () => {
+    const testCases = [
+      { type: 'HelmRelease', icon: helm },
+      { type: 'HelmRepository', icon: helm },
+      { type: 'Kustomization', icon: kubernetes },
+      { type: 'GitRepository', icon: git },
+      { type: 'OCIRepository', icon: oci },
+      { type: 'Unknown', icon: null },
+    ];
+
+    for (const testCase of testCases) {
+      expect(getIconType(testCase.type)).toEqual(testCase.icon);
+    }
   });
 });

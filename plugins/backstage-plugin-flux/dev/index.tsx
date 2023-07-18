@@ -361,7 +361,7 @@ createDevApp()
               ),
               newTestKustomization(
                 'test-kustomization',
-                './clusters/my-cluster',
+                './clusters/my-test-cluster',
                 true,
               ),
             ]),
