@@ -8,6 +8,7 @@ import {
   updatedColumn,
   syncColumn,
   Source,
+  artifactColumn,
 } from '../helpers';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
@@ -18,6 +19,7 @@ export const defaultColumns: TableColumn<
   idColumn(),
   nameAndClusterNameColumn(),
   urlColumn(),
+  artifactColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
@@ -31,25 +33,67 @@ type Props = {
 
 export const FluxSourcesTable = ({ Sources, isLoading, columns }: Props) => {
   const data = Sources.map(repo => {
-    const { clusterName, namespace, name, conditions, suspended, url, type } =
-      repo;
-    return {
-      id: `${clusterName}/${namespace}/${name}`,
+    const {
+      clusterName,
+      namespace,
+      name,
       conditions,
       suspended,
-      name,
-      namespace,
       url,
-      clusterName,
       type,
-    } as Source & { id: string };
+      artifact,
+    } = repo;
+    if (repo instanceof GitRepository) {
+      return {
+        id: `${clusterName}/${namespace}/${name}`,
+        conditions,
+        suspended,
+        name,
+        namespace,
+        url,
+        clusterName,
+        type,
+        artifact,
+      } as GitRepository & { id: string };
+    } else if (repo instanceof HelmRepository) {
+      return {
+        id: `${clusterName}/${namespace}/${name}`,
+        conditions,
+        suspended,
+        name,
+        namespace,
+        url,
+        clusterName,
+        type,
+        artifact,
+      } as HelmRepository & { id: string };
+    } else if (repo instanceof OCIRepository) {
+      return {
+        id: `${clusterName}/${namespace}/${name}`,
+        conditions,
+        suspended,
+        name,
+        namespace,
+        url,
+        clusterName,
+        type,
+        artifact,
+      } as OCIRepository & { id: string };
+    }
+    return null;
   });
 
   return (
     <FluxEntityTable
       columns={columns}
       title="Sources"
-      data={data}
+      data={
+        data as (
+          | (OCIRepository & { id: string })
+          | (HelmRepository & { id: string })
+          | (GitRepository & { id: string })
+        )[]
+      }
       isLoading={isLoading}
     />
   );
