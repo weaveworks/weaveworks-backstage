@@ -9,6 +9,7 @@ import {
   syncColumn,
   Source,
   artifactColumn,
+  typeColumn,
 } from '../helpers';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
@@ -17,6 +18,7 @@ export const defaultColumns: TableColumn<
   HelmRepository | GitRepository | OCIRepository
 >[] = [
   idColumn(),
+  typeColumn(),
   nameAndClusterNameColumn(),
   urlColumn(),
   artifactColumn(),
