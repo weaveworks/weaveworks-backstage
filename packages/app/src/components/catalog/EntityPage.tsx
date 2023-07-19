@@ -63,8 +63,8 @@ import {
   FluxEntityKustomizationsCard,
   FluxEntityHelmRepositoriesCard,
   FluxEntityDeploymentsCard,
+  FluxEntitySourcesCard,
 } from '@weaveworksoss/backstage-plugin-flux';
-import { FluxEntitySourcesCard } from '@weaveworksoss/backstage-plugin-flux/src/components/FluxEntitySourcesCard';
 
 const techdocsContent = (
   <EntityTechdocsContent>
