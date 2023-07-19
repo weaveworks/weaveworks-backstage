@@ -319,9 +319,61 @@ describe('<FluxEntitySourcesCard />', () => {
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
         expect(tr).toHaveTextContent(testCase.url);
-        if (testCase.branch) {
-          expect(tr).toHaveTextContent(testCase.branch);
-        }
+        expect(tr).toHaveTextContent(testCase.cluster);
+      }
+    });
+  });
+  describe('Test listing Sources with branch', () => {
+    it('shows the details of a Source', async () => {
+      const result = await renderInTestApp(
+        <Wrapper>
+          <TestApiProvider
+            apis={[
+              [
+                configApiRef,
+                new ConfigReader({
+                  gitops: { baseUrl: 'https://example.com/wego' },
+                }),
+              ],
+              [kubernetesApiRef, new StubKubernetesClient()],
+              [
+                kubernetesAuthProvidersApiRef,
+                new StubKubernetesAuthProvidersApi(),
+              ],
+            ]}
+          >
+            <EntityProvider entity={entity}>
+              <FluxEntitySourcesCard />
+            </EntityProvider>
+          </TestApiProvider>
+        </Wrapper>,
+      );
+
+      const { getByText } = result;
+
+      const testCases = [
+        {
+          name: 'sockshop',
+          url: 'https://github.com/weaveworks/backstage-sockshop',
+          branch: 'main',
+          cluster: 'demo-cluster',
+        },
+        {
+          name: 'backstage',
+          url: 'https://github.com/weaveworks/weaveworks-backstage',
+          branch: 'main',
+          cluster: 'demo-cluster',
+        },
+      ];
+
+      for (const testCase of testCases) {
+        const cell = getByText(`default/${testCase.name}`);
+        expect(cell).toBeInTheDocument();
+
+        const tr = cell.closest('tr');
+        expect(tr).toBeInTheDocument();
+        expect(tr).toHaveTextContent(testCase.url);
+        expect(tr).toHaveTextContent(testCase.branch);
         expect(tr).toHaveTextContent(testCase.cluster);
       }
     });
