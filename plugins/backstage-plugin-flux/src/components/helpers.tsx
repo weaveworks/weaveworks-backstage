@@ -22,7 +22,7 @@ import {
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
-import { helm, kubernetes } from '../images/icons';
+import { helm, kubernetes, oci, git } from '../images/icons';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -155,6 +155,7 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
       resource =>
         `${resource.namespace}/${resource.name}/${resource.clusterName}`,
     ),
+    minWidth: '200px',
   } as TableColumn<T>;
 };
 
@@ -171,6 +172,10 @@ export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
         ? findVerificationCondition(resource)?.status || 'unknown'
         : '',
     ),
+    ...sortAndFilterOptions(resource => {
+      const condition = findVerificationCondition(resource);
+      return condition?.message || '';
+    }),
     width: '90px',
   } as TableColumn<T>;
 };
@@ -188,16 +193,20 @@ export const artifactColumn = <T extends Source>() => {
     title: 'Artifact',
     render: resource => (
       <Tooltip
-        title={resource.artifact?.revision.split('@')[1] || 'unknown tag'}
+        // This is the sha of the commit that the artifact was built from
+        title={resource.artifact?.revision?.split('@')[1] || 'unknown tag'}
       >
-        <span>{resource.artifact?.revision.split('@')[0]}</span>
+        <span>{resource.artifact?.revision?.split('@')[0]}</span>
       </Tooltip>
     ),
     ...sortAndFilterOptions(resource => resource.artifact?.revision),
+    ...sortAndFilterOptions(
+      resource => resource.artifact?.revision?.split('@')[1],
+    ),
   } as TableColumn<T>;
 };
 
-export const referenceColumn = <T extends Deployment>() => {
+export const sourceColumn = <T extends Deployment>() => {
   const formatContent = (resource: Deployment) => {
     if (resource.type === 'HelmRelease') {
       return `${(resource as HelmRelease)?.helmChart?.chart}/${
@@ -208,7 +217,7 @@ export const referenceColumn = <T extends Deployment>() => {
   };
 
   return {
-    title: 'Reference',
+    title: 'Source',
     render: (resource: Deployment) =>
       resource.type === 'HelmRelease' ? (
         formatContent(resource)
@@ -227,15 +236,34 @@ export const referenceColumn = <T extends Deployment>() => {
   } as TableColumn<T>;
 };
 
-export const typeColumn = <T extends Deployment>() => {
+export const getIconType = (type: string) => {
+  switch (type) {
+    case 'HelmRelease':
+    case 'HelmRepository':
+      return helm;
+    case 'Kustomization':
+      return kubernetes;
+    case 'GitRepository':
+      return git;
+    case 'OCIRepository':
+      return oci;
+    default:
+      return null;
+  }
+};
+
+export const typeColumn = <
+  T extends Deployment | OCIRepository | GitRepository | HelmRepository,
+>() => {
   return {
     title: '',
     field: 'type',
     render: resource => (
       <Tooltip title={resource.type || 'Unknown'}>
-        <div>{resource.type === 'HelmRelease' ? helm : kubernetes}</div>
+        <div>{getIconType(resource.type as string)}</div>
       </Tooltip>
     ),
+    ...sortAndFilterOptions(resource => resource?.type as string | undefined),
     width: '20px',
   } as TableColumn<T>;
 };
@@ -245,6 +273,7 @@ export const repoColumn = <T extends Deployment>() => {
     title: 'Repo',
     field: 'repo',
     render: resource => <span>{resource?.sourceRef?.name}</span>,
+    ...sortAndFilterOptions(resource => resource?.sourceRef?.name),
   } as TableColumn<T>;
 };
 
@@ -273,7 +302,12 @@ export const updatedColumn = <T extends FluxObject>() => {
       DateTime.fromISO(automationLastUpdated(resource)).toRelative({
         locale: 'en',
       }),
-    ...sortAndFilterOptions(resource => automationLastUpdated(resource)),
+    ...sortAndFilterOptions(
+      resource =>
+        DateTime.fromISO(automationLastUpdated(resource)).toRelative({
+          locale: 'en',
+        }) as string,
+    ),
     minWidth: '130px',
   } as TableColumn<T>;
 };

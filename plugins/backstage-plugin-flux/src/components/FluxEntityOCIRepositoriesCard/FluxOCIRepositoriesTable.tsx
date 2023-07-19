@@ -9,12 +9,14 @@ import {
   statusColumn,
   updatedColumn,
   syncColumn,
+  typeColumn,
 } from '../helpers';
 import { OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<OCIRepository>[] = [
   idColumn(),
+  typeColumn(),
   nameAndClusterNameColumn(),
   verifiedColumn(),
   urlColumn(),
