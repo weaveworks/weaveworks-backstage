@@ -31,7 +31,7 @@ const SourcesPanel = () => {
 };
 
 /**
- * Render the HelmRepositories associated with the current Entity.
+ * Render the Repositories associated with the current Entity.
  *
  * @public
  */
