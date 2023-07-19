@@ -235,7 +235,7 @@ export function useFluxDeployments(entity: Entity): Response<Deployment> {
 }
 
 /**
- * Query for the Flux Deployments - Kustomizations and Helm Releases - associated with this Entity.
+ * Query for the Flux Sources - HelmReposiotry, GitRepository And OCI Repository - associated with this Entity.
  * @public
  */
 
