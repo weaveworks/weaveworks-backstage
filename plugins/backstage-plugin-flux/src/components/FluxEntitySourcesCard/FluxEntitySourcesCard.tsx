@@ -31,7 +31,7 @@ const SourcesPanel = () => {
 };
 
 /**
- * Render the Repositories associated with the current Entity.
+ * Render the Source associated with the current Entity.
  *
  * @public
  */
