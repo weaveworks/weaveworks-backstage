@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { InfoCard } from '@backstage/core-components';
 import { useGitRepositories } from '../../hooks/query';
 import {
   FluxGitRepositoriesTable,
@@ -25,14 +26,13 @@ const GitRepositoriesPanel = () => {
   }
 
   return (
-    <>
-      <h1>Git Repositories</h1>
+    <InfoCard title="Git Repositories">
       <FluxGitRepositoriesTable
         gitRepositories={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
       />
-    </>
+    </InfoCard>
   );
 };
 

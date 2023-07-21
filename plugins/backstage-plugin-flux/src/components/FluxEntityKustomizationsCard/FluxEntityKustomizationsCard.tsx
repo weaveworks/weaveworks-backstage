@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { InfoCard } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { useKustomizations } from '../../hooks';
 import {
@@ -25,14 +26,13 @@ const KustomizationPanel = () => {
   }
 
   return (
-    <>
-      <h1>Kustomizations</h1>
+    <InfoCard title="Kustomizations">
       <FluxDeploymentsTable
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
       />
-    </>
+    </InfoCard>
   );
 };
 

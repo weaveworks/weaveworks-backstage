@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { InfoCard } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { useFluxDeployments } from '../../hooks';
 import { FluxDeploymentsTable, defaultColumns } from './FluxDeploymentsTable';
@@ -22,14 +23,13 @@ const DeploymentsPanel = () => {
   }
 
   return (
-    <>
-      <h1>Deployments</h1>
+    <InfoCard title="Deployments">
       <FluxDeploymentsTable
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
       />
-    </>
+    </InfoCard>
   );
 };
 
