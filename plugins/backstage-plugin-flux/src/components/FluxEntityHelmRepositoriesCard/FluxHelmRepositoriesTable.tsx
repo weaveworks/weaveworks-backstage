@@ -3,6 +3,7 @@ import { TableColumn } from '@backstage/core-components';
 import {
   clusterNameFilteringColumn,
   idColumn,
+  typeColumn,
   nameAndClusterNameColumn,
   urlColumn,
   statusColumn,
@@ -16,6 +17,7 @@ import { FluxEntityTable } from '../FluxEntityTable';
 export const defaultColumns: TableColumn<HelmRepository>[] = [
   clusterNameFilteringColumn(),
   idColumn(),
+  typeColumn(),
   nameAndClusterNameColumn(),
   urlColumn(),
   {

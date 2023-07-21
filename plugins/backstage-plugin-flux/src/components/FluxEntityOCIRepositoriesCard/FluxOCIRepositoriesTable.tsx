@@ -11,6 +11,7 @@ import {
   updatedColumn,
   syncColumn,
   filters,
+  typeColumn,
 } from '../helpers';
 import { OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
@@ -18,6 +19,7 @@ import { FluxEntityTable } from '../FluxEntityTable';
 export const defaultColumns: TableColumn<OCIRepository>[] = [
   clusterNameFilteringColumn(),
   idColumn(),
+  typeColumn(),
   nameAndClusterNameColumn(),
   verifiedColumn(),
   urlColumn(),
