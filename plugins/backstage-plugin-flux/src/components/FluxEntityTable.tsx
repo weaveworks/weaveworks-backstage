@@ -11,6 +11,8 @@ export function FluxEntityTable<T extends object = {}>({
   columns,
 }: TableProps<T>) {
   const classes = useStyles();
+  const numberOfRows = data.length;
+  const many = numberOfRows > 2;
 
   // We use this memo not really for performance, but to avoid
   // re-rendering the table when the data changes. Makes it much easier to style etc.
@@ -19,12 +21,12 @@ export function FluxEntityTable<T extends object = {}>({
   return useDeepCompareMemo(() => {
     return (
       <Table
-        key={data.length}
+        key={numberOfRows}
         columns={columns}
         options={{
           padding: 'dense',
-          paging: true,
-          search: true,
+          paging: Boolean(many),
+          search: Boolean(many),
           pageSize: 5,
           // Don't revert to "unsorted" on the 3rd click, just toggle between asc/desc
           thirdSortClick: false,
