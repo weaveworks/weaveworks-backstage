@@ -9,6 +9,7 @@ export function FluxEntityTable<T extends object = {}>({
   data,
   isLoading,
   columns,
+  filters,
 }: TableProps<T>) {
   const classes = useStyles();
   const numberOfRows = data.length;
@@ -31,8 +32,8 @@ export function FluxEntityTable<T extends object = {}>({
           // Don't revert to "unsorted" on the 3rd click, just toggle between asc/desc
           thirdSortClick: false,
           emptyRowsWhenPaging: false,
+          columnsButton: true,
         }}
-        title={title}
         data={data}
         isLoading={isLoading}
         emptyContent={
@@ -42,6 +43,7 @@ export function FluxEntityTable<T extends object = {}>({
             </Typography>
           </div>
         }
+        filters={filters}
       />
     );
   }, [data, title, isLoading, classes.empty, columns]);
