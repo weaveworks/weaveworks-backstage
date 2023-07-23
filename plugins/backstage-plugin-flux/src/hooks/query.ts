@@ -84,15 +84,6 @@ export interface Response<T> {
 }
 
 /**
- * @public
- */
-export interface KustomizationsResponse {
-  data?: Kustomization[];
-  loading: boolean;
-  errors?: Error[];
-}
-
-/**
  * Query for the HelmReleases associated with this Entity.
  * @public
  */
