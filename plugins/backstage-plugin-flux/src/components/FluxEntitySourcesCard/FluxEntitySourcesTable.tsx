@@ -20,12 +20,22 @@ export const defaultColumns: TableColumn<Source>[] = [
   typeColumn(),
   nameAndClusterNameColumn(),
   urlColumn(),
+  artifactColumn(),
+  verifiedColumn(),
+  statusColumn(),
+  updatedColumn(),
+  syncColumn(),
+];
+export const helmDefaultColumns: TableColumn<Source>[] = [
+  idColumn(),
+  typeColumn(),
+  nameAndClusterNameColumn(),
+  urlColumn(),
   {
     title: 'Provider',
     field: 'provider',
   },
   artifactColumn(),
-  verifiedColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
@@ -35,9 +45,15 @@ type Props = {
   Sources: Source[];
   isLoading: boolean;
   columns: TableColumn<Source>[];
+  title: string;
 };
 
-export const FluxSourcesTable = ({ Sources, isLoading, columns }: Props) => {
+export const FluxSourcesTable = ({
+  Sources,
+  isLoading,
+  columns,
+  title,
+}: Props) => {
   let provider = '';
   let isVerifiable = false;
 
@@ -81,7 +97,7 @@ export const FluxSourcesTable = ({ Sources, isLoading, columns }: Props) => {
   return (
     <FluxEntityTable
       columns={columns}
-      title="Sources"
+      title={title}
       data={
         data as (
           | (OCIRepository & { id: string })

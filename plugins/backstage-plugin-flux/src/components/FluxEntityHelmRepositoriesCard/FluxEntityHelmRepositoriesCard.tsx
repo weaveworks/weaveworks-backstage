@@ -4,7 +4,7 @@ import { InfoCard } from '@backstage/core-components';
 import { useHelmRepositories } from '../../hooks';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import {
-  defaultColumns,
+  helmDefaultColumns,
   FluxSourcesTable,
 } from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
 
@@ -30,7 +30,8 @@ const HelmRepositoriesPanel = () => {
       <FluxSourcesTable
         Sources={data || []}
         isLoading={loading && !data}
-        columns={defaultColumns}
+        columns={helmDefaultColumns}
+        title="Helm Repositories"
       />
     </InfoCard>
   );
