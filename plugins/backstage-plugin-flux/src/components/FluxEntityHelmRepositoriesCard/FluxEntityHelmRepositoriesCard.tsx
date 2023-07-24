@@ -2,11 +2,11 @@ import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard } from '@backstage/core-components';
 import { useHelmRepositories } from '../../hooks';
-import {
-  FluxHelmRepositoriesTable,
-  defaultColumns,
-} from './FluxHelmRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import {
+  helmDefaultColumns,
+  FluxSourcesTable,
+} from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
 
 const HelmRepositoriesPanel = () => {
   const { entity } = useEntity();
@@ -27,10 +27,11 @@ const HelmRepositoriesPanel = () => {
 
   return (
     <InfoCard title="Helm Repositories">
-      <FluxHelmRepositoriesTable
-        helmRepositories={data || []}
+      <FluxSourcesTable
+        Sources={data || []}
         isLoading={loading && !data}
-        columns={defaultColumns}
+        columns={helmDefaultColumns}
+        title="Helm Repositories"
       />
     </InfoCard>
   );

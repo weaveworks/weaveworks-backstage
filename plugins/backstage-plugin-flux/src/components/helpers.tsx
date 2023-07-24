@@ -208,7 +208,11 @@ export const artifactColumn = <T extends Source>() => {
     render: resource => (
       <Tooltip
         // This is the sha of the commit that the artifact was built from
-        title={resource.artifact?.revision?.split('@')[1] || 'unknown tag'}
+        title={
+          resource.artifact?.revision?.split('@')[1] ||
+          resource.artifact?.revision?.split('@')[0] ||
+          'unknown tag'
+        }
       >
         <span>{resource.artifact?.revision?.split('@')[0]}</span>
       </Tooltip>
@@ -270,7 +274,7 @@ export const typeColumn = <
   T extends Deployment | OCIRepository | GitRepository | HelmRepository,
 >() => {
   const paddingLeft = 0;
-    return {
+  return {
     title: 'Kind',
     align: 'right',
     cellStyle: { paddingLeft, paddingRight: 6 },

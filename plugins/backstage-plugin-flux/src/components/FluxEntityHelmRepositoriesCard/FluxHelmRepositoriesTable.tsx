@@ -9,6 +9,7 @@ import {
   statusColumn,
   updatedColumn,
   syncColumn,
+  artifactColumn,
   filters,
 } from '../helpers';
 import { HelmRepository } from '../../objects';
@@ -24,10 +25,7 @@ export const defaultColumns: TableColumn<HelmRepository>[] = [
     title: 'Provider',
     field: 'provider',
   },
-  {
-    title: 'revision',
-    field: 'artifact.revision',
-  },
+  artifactColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),

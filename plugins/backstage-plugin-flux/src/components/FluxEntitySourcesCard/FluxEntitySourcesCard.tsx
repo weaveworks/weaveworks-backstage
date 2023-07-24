@@ -1,0 +1,49 @@
+import React from 'react';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { useFluxSources } from '../../hooks';
+import {
+  FluxSourcesTable,
+  SourceDefaultColumns,
+} from './FluxEntitySourcesTable';
+import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import { InfoCard } from '@backstage/core-components';
+
+const SourcesPanel = () => {
+  const { entity } = useEntity();
+  const { data, loading, errors } = useFluxSources(entity);
+
+  if (errors) {
+    return (
+      <div>
+        Errors:
+        <ul>
+          {errors.map(err => (
+            <li>{err.message}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  return (
+    <InfoCard title="Sources">
+      <FluxSourcesTable
+        Sources={data || []}
+        isLoading={loading && !data}
+        columns={SourceDefaultColumns}
+        title="Sources"
+      />
+    </InfoCard>
+  );
+};
+
+/**
+ * Render the Source associated with the current Entity.
+ *
+ * @public
+ */
+export const FluxEntitySourcesCard = () => (
+  <WeaveGitOpsContext>
+    <SourcesPanel />
+  </WeaveGitOpsContext>
+);

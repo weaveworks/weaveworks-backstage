@@ -4,9 +4,9 @@ import { InfoCard } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { useOCIRepositories } from '../../hooks';
 import {
-  FluxOCIRepositoriesTable,
   defaultColumns,
-} from './FluxOCIRepositoriesTable';
+  FluxSourcesTable,
+} from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
 
 const OCIRepositoryPanel = () => {
   const { entity } = useEntity();
@@ -27,10 +27,11 @@ const OCIRepositoryPanel = () => {
 
   return (
     <InfoCard title="OCI Repositories">
-      <FluxOCIRepositoriesTable
-        ociRepositories={data || []}
+      <FluxSourcesTable
+        Sources={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
+        title="OCI Repositories"
       />
     </InfoCard>
   );
