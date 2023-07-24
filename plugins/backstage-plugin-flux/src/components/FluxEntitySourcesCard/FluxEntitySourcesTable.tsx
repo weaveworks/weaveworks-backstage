@@ -10,18 +10,22 @@ import {
   Source,
   artifactColumn,
   typeColumn,
+  verifiedColumn,
 } from '../helpers';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
-export const defaultColumns: TableColumn<
-  HelmRepository | GitRepository | OCIRepository
->[] = [
+export const defaultColumns: TableColumn<Source>[] = [
   idColumn(),
   typeColumn(),
   nameAndClusterNameColumn(),
   urlColumn(),
+  {
+    title: 'Provider',
+    field: 'provider',
+  },
   artifactColumn(),
+  verifiedColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
@@ -34,6 +38,9 @@ type Props = {
 };
 
 export const FluxSourcesTable = ({ Sources, isLoading, columns }: Props) => {
+  let provider = '';
+  let isVerifiable = false;
+
   const data = Sources.map(repo => {
     const {
       clusterName,
@@ -45,8 +52,7 @@ export const FluxSourcesTable = ({ Sources, isLoading, columns }: Props) => {
       type,
       artifact,
     } = repo;
-
-    return {
+    let columns = {
       id: `${clusterName}/${namespace}/${name}`,
       conditions,
       suspended,
@@ -56,7 +62,20 @@ export const FluxSourcesTable = ({ Sources, isLoading, columns }: Props) => {
       clusterName,
       type,
       artifact,
-    } as Source & { id: string };
+    };
+    if (repo instanceof HelmRepository) {
+      provider = repo.provider;
+      return {
+        ...columns,
+        provider,
+      } as HelmRepository & { id: string };
+    } else {
+      isVerifiable = repo.isVerifiable;
+      return {
+        ...columns,
+        isVerifiable,
+      } as Source & { id: string };
+    }
   });
 
   return (
