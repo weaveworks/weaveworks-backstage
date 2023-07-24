@@ -45,44 +45,18 @@ export const FluxSourcesTable = ({ Sources, isLoading, columns }: Props) => {
       type,
       artifact,
     } = repo;
-    if (repo instanceof GitRepository) {
-      return {
-        id: `${clusterName}/${namespace}/${name}`,
-        conditions,
-        suspended,
-        name,
-        namespace,
-        url,
-        clusterName,
-        type,
-        artifact,
-      } as GitRepository & { id: string };
-    } else if (repo instanceof HelmRepository) {
-      return {
-        id: `${clusterName}/${namespace}/${name}`,
-        conditions,
-        suspended,
-        name,
-        namespace,
-        url,
-        clusterName,
-        type,
-        artifact,
-      } as HelmRepository & { id: string };
-    } else if (repo instanceof OCIRepository) {
-      return {
-        id: `${clusterName}/${namespace}/${name}`,
-        conditions,
-        suspended,
-        name,
-        namespace,
-        url,
-        clusterName,
-        type,
-        artifact,
-      } as OCIRepository & { id: string };
-    }
-    return null;
+
+    return {
+      id: `${clusterName}/${namespace}/${name}`,
+      conditions,
+      suspended,
+      name,
+      namespace,
+      url,
+      clusterName,
+      type,
+      artifact,
+    } as Source & { id: string };
   });
 
   return (

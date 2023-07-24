@@ -8,6 +8,7 @@ import {
   statusColumn,
   updatedColumn,
   syncColumn,
+  artifactColumn,
 } from '../helpers';
 import { HelmRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
@@ -21,10 +22,7 @@ export const defaultColumns: TableColumn<HelmRepository>[] = [
     title: 'Provider',
     field: 'provider',
   },
-  {
-    title: 'revision',
-    field: 'artifact.revision',
-  },
+  artifactColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
