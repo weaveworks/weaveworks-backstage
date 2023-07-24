@@ -173,7 +173,7 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
   } as TableColumn<T>;
 };
 
-export const verifiedColumn = <T extends Source>() => {
+export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
     title: (
       <Tooltip title="Verification status">
