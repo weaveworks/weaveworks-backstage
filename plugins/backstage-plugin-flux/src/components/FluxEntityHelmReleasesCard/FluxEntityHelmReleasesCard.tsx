@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { InfoCard } from '@backstage/core-components';
 import { useHelmReleases } from '../../hooks/query';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import {
@@ -26,12 +27,13 @@ const HelmReleasePanel = () => {
   }
 
   return (
-    <FluxDeploymentsTable
-      kinds={['HelmRelease']}
-      deployments={data || []}
-      isLoading={loading && !data}
-      columns={defaultColumns}
-    />
+    <InfoCard title="Helm Releases">
+      <FluxDeploymentsTable
+        deployments={data || []}
+        isLoading={loading && !data}
+        columns={defaultColumns}
+      />
+    </InfoCard>
   );
 };
 

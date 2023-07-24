@@ -1,11 +1,12 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { InfoCard } from '@backstage/core-components';
 import { useGitRepositories } from '../../hooks/query';
-import {
-  FluxGitRepositoriesTable,
-  defaultColumns,
-} from './FluxGitRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import {
+  defaultColumns,
+  FluxSourcesTable,
+} from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
 
 const GitRepositoriesPanel = () => {
   const { entity } = useEntity();
@@ -25,11 +26,13 @@ const GitRepositoriesPanel = () => {
   }
 
   return (
-    <FluxGitRepositoriesTable
-      gitRepositories={data || []}
-      isLoading={loading && !data}
-      columns={defaultColumns}
-    />
+    <InfoCard title="Git Repositories">
+      <FluxSourcesTable
+        Sources={data || []}
+        isLoading={loading && !data}
+        columns={defaultColumns}
+      />
+    </InfoCard>
   );
 };
 

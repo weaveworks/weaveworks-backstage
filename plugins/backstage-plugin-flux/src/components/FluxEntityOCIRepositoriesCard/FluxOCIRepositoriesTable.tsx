@@ -1,6 +1,7 @@
 import React from 'react';
 import { TableColumn } from '@backstage/core-components';
 import {
+  clusterNameFilteringColumn,
   idColumn,
   nameAndClusterNameColumn,
   verifiedColumn,
@@ -9,12 +10,14 @@ import {
   statusColumn,
   updatedColumn,
   syncColumn,
+  filters,
   typeColumn,
 } from '../helpers';
 import { OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<OCIRepository>[] = [
+  clusterNameFilteringColumn(),
   idColumn(),
   typeColumn(),
   nameAndClusterNameColumn(),
@@ -69,9 +72,9 @@ export const FluxOCIRepositoriesTable = ({
   return (
     <FluxEntityTable
       columns={columns}
-      title="OCI Repositories"
       data={data}
       isLoading={isLoading}
+      filters={filters}
     />
   );
 };

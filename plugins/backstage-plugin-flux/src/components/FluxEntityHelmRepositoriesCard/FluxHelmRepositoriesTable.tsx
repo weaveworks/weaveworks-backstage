@@ -1,6 +1,7 @@
 import React from 'react';
 import { TableColumn } from '@backstage/core-components';
 import {
+  clusterNameFilteringColumn,
   idColumn,
   typeColumn,
   nameAndClusterNameColumn,
@@ -8,11 +9,14 @@ import {
   statusColumn,
   updatedColumn,
   syncColumn,
+  artifactColumn,
+  filters,
 } from '../helpers';
 import { HelmRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<HelmRepository>[] = [
+  clusterNameFilteringColumn(),
   idColumn(),
   typeColumn(),
   nameAndClusterNameColumn(),
@@ -21,10 +25,7 @@ export const defaultColumns: TableColumn<HelmRepository>[] = [
     title: 'Provider',
     field: 'provider',
   },
-  {
-    title: 'revision',
-    field: 'artifact.revision',
-  },
+  artifactColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
@@ -70,9 +71,9 @@ export const FluxHelmRepositoriesTable = ({
   return (
     <FluxEntityTable
       columns={columns}
-      title="Helm Repositories"
       data={data}
       isLoading={isLoading}
+      filters={filters}
     />
   );
 };

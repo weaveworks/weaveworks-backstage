@@ -43,7 +43,10 @@ kubectl apply -f ./demo
 yarn install
 
 # (Optional) Provide the base URL to the weave-gitops app to link through from resources displayed in Backstage.
-WEAVE_GITOPS_URL=http://localhost:9001 ./startup.sh
+export WEAVE_GITOPS_URL=http://localhost:9001
+
+# start the app
+./startup.sh
 ```
 
 ## _(optional)_ Install `weave-gitops` to demonstrate linking through to resources details

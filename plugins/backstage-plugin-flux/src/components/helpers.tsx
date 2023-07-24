@@ -1,7 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 import { DateTime } from 'luxon';
-import { Link, Progress, TableColumn } from '@backstage/core-components';
+import {
+  Link,
+  Progress,
+  TableColumn,
+  TableFilter,
+} from '@backstage/core-components';
 import { Box, IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
@@ -141,9 +146,18 @@ export const nameAndClusterName = ({
 
 export const idColumn = <T extends FluxObject>() => {
   return {
-    title: 'id',
+    title: 'Id',
     field: 'id',
     hidden: true,
+  } as TableColumn<T>;
+};
+
+// Added hidden column to allow checkbox filtering by clusterName
+export const clusterNameFilteringColumn = <T extends FluxObject>() => {
+  return {
+    title: 'Cluster name',
+    hidden: true,
+    field: 'clusterName',
   } as TableColumn<T>;
 };
 
@@ -159,7 +173,7 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
   } as TableColumn<T>;
 };
 
-export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
+export const verifiedColumn = <T extends Source>() => {
   return {
     title: (
       <Tooltip title="Verification status">
@@ -255,8 +269,13 @@ export const getIconType = (type: string) => {
 export const typeColumn = <
   T extends Deployment | OCIRepository | GitRepository | HelmRepository,
 >() => {
+  const paddingLeft = 0;
   return {
-    title: '',
+    title: 'Kind',
+    align: 'right',
+    cellStyle: { paddingLeft, paddingRight: 6 },
+    headerStyle: { paddingLeft, paddingRight: 0 },
+
     field: 'type',
     render: resource => (
       <Tooltip title={resource.type || 'Unknown'}>
@@ -338,3 +357,11 @@ export function stringCompareFilter<T>(fn: (item: T) => string | undefined) {
       .includes((filter as string).toLocaleLowerCase());
   };
 }
+
+// checkbox filters
+export const filters: TableFilter[] = [
+  {
+    column: 'Cluster name',
+    type: 'multiple-select',
+  },
+];
