@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableColumn } from '@backstage/core-components';
+import { TableColumn, TableFilter } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
@@ -11,17 +11,19 @@ import {
   artifactColumn,
   typeColumn,
   verifiedColumn,
+  clusterNameFilteringColumn,
 } from '../helpers';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
 export const defaultColumns: TableColumn<Source>[] = [
+  clusterNameFilteringColumn(),
   idColumn(),
   typeColumn(),
   nameAndClusterNameColumn(),
+  verifiedColumn(),
   urlColumn(),
   artifactColumn(),
-  verifiedColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
@@ -30,11 +32,11 @@ export const helmDefaultColumns: TableColumn<Source>[] = [
   idColumn(),
   typeColumn(),
   nameAndClusterNameColumn(),
-  urlColumn(),
   {
     title: 'Provider',
     field: 'provider',
   },
+  urlColumn(),
   artifactColumn(),
   statusColumn(),
   updatedColumn(),
@@ -47,6 +49,17 @@ type Props = {
   columns: TableColumn<Source>[];
   title: string;
 };
+
+const filters: TableFilter[] = [
+  {
+    column: 'Kind',
+    type: 'multiple-select',
+  },
+  {
+    column: 'Cluster name',
+    type: 'multiple-select',
+  },
+];
 
 export const FluxSourcesTable = ({
   Sources,
@@ -68,7 +81,7 @@ export const FluxSourcesTable = ({
       type,
       artifact,
     } = repo;
-    let columns = {
+    const cols = {
       id: `${clusterName}/${namespace}/${name}`,
       conditions,
       suspended,
@@ -82,16 +95,15 @@ export const FluxSourcesTable = ({
     if (repo instanceof HelmRepository) {
       provider = repo.provider;
       return {
-        ...columns,
+        ...cols,
         provider,
       } as HelmRepository & { id: string };
-    } else {
-      isVerifiable = repo.isVerifiable;
-      return {
-        ...columns,
-        isVerifiable,
-      } as Source & { id: string };
     }
+    isVerifiable = repo.isVerifiable;
+    return {
+      ...cols,
+      isVerifiable,
+    } as Source & { id: string };
   });
 
   return (
@@ -106,6 +118,7 @@ export const FluxSourcesTable = ({
         )[]
       }
       isLoading={isLoading}
+      filters={filters}
     />
   );
 };
