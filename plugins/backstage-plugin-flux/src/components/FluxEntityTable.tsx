@@ -43,7 +43,7 @@ export function FluxEntityTable<T extends object = {}>({
             </Typography>
           </div>
         }
-        filters={filters}
+        filters={Boolean(many) ? filters : []}
       />
     );
   }, [data, title, isLoading, classes.empty, columns]);
