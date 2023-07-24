@@ -16,7 +16,7 @@ import {
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
-export const SourceDefaultColumns: TableColumn<Source>[] = [
+export const sourceDefaultColumns: TableColumn<Source>[] = [
   clusterNameFilteringColumn(),
   idColumn(),
   typeColumn(),

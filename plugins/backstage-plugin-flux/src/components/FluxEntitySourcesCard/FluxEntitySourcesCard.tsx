@@ -3,7 +3,7 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 import { useFluxSources } from '../../hooks';
 import {
   FluxSourcesTable,
-  SourceDefaultColumns,
+  sourceDefaultColumns,
 } from './FluxEntitySourcesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { InfoCard } from '@backstage/core-components';
@@ -30,7 +30,7 @@ const SourcesPanel = () => {
       <FluxSourcesTable
         Sources={data || []}
         isLoading={loading && !data}
-        columns={SourceDefaultColumns}
+        columns={sourceDefaultColumns}
         title="Sources"
       />
     </InfoCard>
