@@ -18,6 +18,7 @@ export function FluxEntityTable<T extends object = {}>({
   // Review this decision if we run into hard to debug issues.
 
   return useDeepCompareMemo(() => {
+    console.log(data);
     return (
       <Table
         key={data.length}

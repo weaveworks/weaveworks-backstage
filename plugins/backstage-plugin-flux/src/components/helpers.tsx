@@ -133,6 +133,30 @@ export const VerifiedStatus = ({
   );
 };
 
+export const VerifiedStatus2 = ({
+  resource,
+}: {
+  resource: Deployment;
+}): JSX.Element | null => {
+  console.log(resource.sourceRef);
+  // const condition = findVerificationCondition(resource);
+
+  // let color;
+  // if (condition?.status === 'True') {
+  //   color = '#27AE60';
+  // } else if (condition?.status === 'False') {
+  //   color = '#BC3B1D';
+  // } else if (!condition?.status) {
+  //   color = '#FEF071';
+  // }
+
+  // return (
+  //   <Tooltip title={condition?.message || 'pending verification'}>
+  //     <VerifiedUserIcon style={{ color, height: '16px' }} />
+  //   </Tooltip>
+  // );
+};
+
 export const nameAndClusterName = ({
   resource,
 }: {
@@ -174,6 +198,27 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
 };
 
 export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
+  return {
+    title: (
+      <Tooltip title="Verification status">
+        <VerifiedUserIcon style={{ height: '16px' }} />
+      </Tooltip>
+    ),
+    render: resource => <VerifiedStatus resource={resource} />,
+    ...sortAndFilterOptions(resource =>
+      resource.isVerifiable
+        ? findVerificationCondition(resource)?.status || 'unknown'
+        : '',
+    ),
+    ...sortAndFilterOptions(resource => {
+      const condition = findVerificationCondition(resource);
+      return condition?.message || '';
+    }),
+    width: '90px',
+  } as TableColumn<T>;
+};
+
+export const verifiedColumn2 = <T extends Deployment>() => {
   return {
     title: (
       <Tooltip title="Verification status">
