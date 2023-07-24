@@ -21,6 +21,7 @@ import {
   makeTestHelmRepository,
   makeTestOCIRepository,
 } from '../utils';
+
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
 
