@@ -26,6 +26,7 @@ const SourcesPanel = () => {
       Sources={data || []}
       isLoading={loading && !data}
       columns={defaultColumns}
+      title="Sources"
     />
   );
 };

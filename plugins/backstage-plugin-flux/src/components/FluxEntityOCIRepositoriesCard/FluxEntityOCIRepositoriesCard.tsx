@@ -31,6 +31,7 @@ const OCIRepositoryPanel = () => {
         Sources={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
+        title="OCI Repositories"
       />
     </InfoCard>
   );
