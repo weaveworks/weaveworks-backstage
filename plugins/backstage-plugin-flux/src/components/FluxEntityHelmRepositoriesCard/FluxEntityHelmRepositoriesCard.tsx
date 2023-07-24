@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { InfoCard } from '@backstage/core-components';
 import { useHelmRepositories } from '../../hooks';
 import {
   FluxHelmRepositoriesTable,
@@ -25,11 +26,13 @@ const HelmRepositoriesPanel = () => {
   }
 
   return (
-    <FluxHelmRepositoriesTable
-      helmRepositories={data || []}
-      isLoading={loading && !data}
-      columns={defaultColumns}
-    />
+    <InfoCard title="Helm Repositories">
+      <FluxHelmRepositoriesTable
+        helmRepositories={data || []}
+        isLoading={loading && !data}
+        columns={defaultColumns}
+      />
+    </InfoCard>
   );
 };
 
