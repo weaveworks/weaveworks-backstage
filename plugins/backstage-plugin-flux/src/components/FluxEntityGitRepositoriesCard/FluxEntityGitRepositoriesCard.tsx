@@ -4,7 +4,7 @@ import { InfoCard, TableColumn } from '@backstage/core-components';
 import { useGitRepositories } from '../../hooks/query';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import {
-  defaultColumns,
+  gitOciDefaultColumns,
   FluxSourcesTable,
 } from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
 import { Source } from '../helpers';
@@ -29,10 +29,9 @@ const GitRepositoriesPanel = () => {
   return (
     <InfoCard title="Git Repositories">
       <FluxSourcesTable
-        Sources={data || []}
+        sources={data || []}
         isLoading={loading && !data}
-        columns={defaultColumns as TableColumn<Source>[]}
-        title="Git Repositories"
+        columns={gitOciDefaultColumns as TableColumn<Source>[]}
       />
     </InfoCard>
   );

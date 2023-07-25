@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableColumn, TableFilter } from '@backstage/core-components';
+import { TableColumn } from '@backstage/core-components';
 import {
   idColumn,
   nameAndClusterNameColumn,
@@ -12,76 +12,56 @@ import {
   typeColumn,
   verifiedColumn,
   clusterNameFilteringColumn,
+  filters,
 } from '../helpers';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
 
+const commonInitialColumns: TableColumn<
+  GitRepository | OCIRepository | HelmRepository
+>[] = [
+  clusterNameFilteringColumn(),
+  idColumn(),
+  typeColumn(),
+  nameAndClusterNameColumn(),
+];
+
+const commonEndColumns: TableColumn<Source>[] = [
+  urlColumn(),
+  artifactColumn(),
+  statusColumn(),
+  updatedColumn(),
+  syncColumn(),
+];
+
 export const sourceDefaultColumns: TableColumn<Source>[] = [
-  clusterNameFilteringColumn(),
-  idColumn(),
-  typeColumn(),
-  nameAndClusterNameColumn(),
-  urlColumn(),
-  artifactColumn(),
-  statusColumn(),
-  updatedColumn(),
-  syncColumn(),
+  ...commonInitialColumns,
+  ...commonEndColumns,
 ];
-export const defaultColumns: TableColumn<GitRepository | OCIRepository>[] = [
-  clusterNameFilteringColumn(),
-  idColumn(),
-  typeColumn(),
-  nameAndClusterNameColumn(),
+
+export const gitOciDefaultColumns = [
+  ...commonInitialColumns,
   verifiedColumn(),
-  urlColumn(),
-  artifactColumn(),
-  statusColumn(),
-  updatedColumn(),
-  syncColumn(),
-];
-export const helmDefaultColumns: TableColumn<Source>[] = [
-  idColumn(),
-  typeColumn(),
-  nameAndClusterNameColumn(),
-  {
-    title: 'Provider',
-    field: 'provider',
-  },
-  urlColumn(),
-  artifactColumn(),
-  statusColumn(),
-  updatedColumn(),
-  syncColumn(),
-];
+  ...commonEndColumns,
+] as TableColumn<GitRepository | OCIRepository>[];
+
+export const helmDefaultColumns = [
+  ...commonInitialColumns,
+  { title: 'Provider', field: 'provider' },
+  ...commonEndColumns,
+] as TableColumn<HelmRepository>[];
 
 type Props = {
-  Sources: Source[];
+  sources: Source[];
   isLoading: boolean;
   columns: TableColumn<Source>[];
-  title: string;
 };
 
-const filters: TableFilter[] = [
-  {
-    column: 'Kind',
-    type: 'multiple-select',
-  },
-  {
-    column: 'Cluster name',
-    type: 'multiple-select',
-  },
-];
-
-export const FluxSourcesTable = ({
-  Sources,
-  isLoading,
-  columns,
-  title,
-}: Props) => {
+export const FluxSourcesTable = ({ sources, isLoading, columns }: Props) => {
   let provider = '';
   let isVerifiable = false;
 
-  const data = Sources.map(repo => {
+  const data = sources.map(repo => {
     const {
       clusterName,
       namespace,
@@ -120,7 +100,6 @@ export const FluxSourcesTable = ({
   return (
     <FluxEntityTable
       columns={columns}
-      title={title}
       data={
         data as (
           | (OCIRepository & { id: string })
