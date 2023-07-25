@@ -34,7 +34,7 @@ const SourcesPanel = () => {
       <FluxSourcesTable
         sources={data || []}
         isLoading={loading && !data}
-        columns={sourceDefaultColumns}
+        columns={sourceDefaultColumns as TableColumn<GH | OH>[]}
       />
     </InfoCard>
   );
