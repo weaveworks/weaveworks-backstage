@@ -1,12 +1,13 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard } from '@backstage/core-components';
+import { InfoCard, TableColumn } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { useOCIRepositories } from '../../hooks';
 import {
-  FluxOCIRepositoriesTable,
-  defaultColumns,
-} from './FluxOCIRepositoriesTable';
+  gitOciDefaultColumns,
+  FluxSourcesTable,
+} from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
+import { Source } from '../helpers';
 
 const OCIRepositoryPanel = () => {
   const { entity } = useEntity();
@@ -27,10 +28,10 @@ const OCIRepositoryPanel = () => {
 
   return (
     <InfoCard title="OCI Repositories">
-      <FluxOCIRepositoriesTable
-        ociRepositories={data || []}
+      <FluxSourcesTable
+        sources={data || []}
         isLoading={loading && !data}
-        columns={defaultColumns}
+        columns={gitOciDefaultColumns as TableColumn<Source>[]}
         many
       />
     </InfoCard>

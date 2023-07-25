@@ -111,3 +111,19 @@ export const FluxEntityDeploymentsCard = weaveworksFluxPlugin.provide(
     },
   }),
 );
+
+/**
+ * Card used to show the state of Flux Sources for an Entity.
+ * @public
+ */
+export const FluxEntitySourcesCard = weaveworksFluxPlugin.provide(
+  createComponentExtension({
+    name: 'FluxEntitySourcesCard',
+    component: {
+      lazy: () =>
+        import('./components/FluxEntitySourcesCard').then(
+          m => m.FluxEntitySourcesCard,
+        ),
+    },
+  }),
+);
