@@ -31,6 +31,7 @@ const HelmRepositoriesPanel = () => {
         helmRepositories={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
+        many={true}
       />
     </InfoCard>
   );

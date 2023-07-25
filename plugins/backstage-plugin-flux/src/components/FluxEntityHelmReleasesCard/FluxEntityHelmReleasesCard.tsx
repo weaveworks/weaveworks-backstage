@@ -10,7 +10,6 @@ import {
 
 const HelmReleasePanel = () => {
   const { entity } = useEntity();
-
   const { data, loading, errors } = useHelmReleases(entity);
 
   if (errors) {
@@ -32,6 +31,7 @@ const HelmReleasePanel = () => {
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
+        many={true}
       />
     </InfoCard>
   );

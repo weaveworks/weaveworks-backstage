@@ -33,12 +33,14 @@ type Props = {
   gitRepositories: GitRepository[];
   isLoading: boolean;
   columns: TableColumn<GitRepository>[];
+  many?: boolean;
 };
 
 export const FluxGitRepositoriesTable = ({
   gitRepositories,
   isLoading,
   columns,
+  many,
 }: Props) => {
   const data = gitRepositories.map(repo => {
     const {
@@ -74,6 +76,7 @@ export const FluxGitRepositoriesTable = ({
       data={data}
       isLoading={isLoading}
       filters={filters}
+      many={many}
     />
   );
 };

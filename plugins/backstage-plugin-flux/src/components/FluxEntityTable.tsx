@@ -4,16 +4,20 @@ import React from 'react';
 import { useStyles } from './utils';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
-export function FluxEntityTable<T extends object = {}>({
+interface EntityTableProps extends TableProps {
+  //If many is false, pagination, filtering and search will be disabled
+  many?: boolean;
+}
+
+export function FluxEntityTable({
   title,
   data,
   isLoading,
   columns,
   filters,
-}: TableProps<T>) {
+  many,
+}: EntityTableProps) {
   const classes = useStyles();
-  const numberOfRows = data.length;
-  const many = numberOfRows > 2;
 
   // We use this memo not really for performance, but to avoid
   // re-rendering the table when the data changes. Makes it much easier to style etc.
@@ -22,7 +26,7 @@ export function FluxEntityTable<T extends object = {}>({
   return useDeepCompareMemo(() => {
     return (
       <Table
-        key={numberOfRows}
+        key={data.length}
         columns={columns}
         options={{
           padding: 'dense',

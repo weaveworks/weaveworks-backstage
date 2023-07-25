@@ -33,12 +33,14 @@ type Props = {
   ociRepositories: OCIRepository[];
   isLoading: boolean;
   columns: TableColumn<OCIRepository>[];
+  many?: boolean;
 };
 
 export const FluxOCIRepositoriesTable = ({
   ociRepositories,
   isLoading,
   columns,
+  many,
 }: Props) => {
   // TODO: Simplify this to store the ID and OCIRepository
   const data = ociRepositories.map(or => {
@@ -75,6 +77,7 @@ export const FluxOCIRepositoriesTable = ({
       data={data}
       isLoading={isLoading}
       filters={filters}
+      many={many}
     />
   );
 };

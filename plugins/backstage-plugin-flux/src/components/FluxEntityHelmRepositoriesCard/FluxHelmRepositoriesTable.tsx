@@ -37,12 +37,14 @@ type Props = {
   helmRepositories: HelmRepository[];
   isLoading: boolean;
   columns: TableColumn<HelmRepository>[];
+  many?: boolean;
 };
 
 export const FluxHelmRepositoriesTable = ({
   helmRepositories,
   isLoading,
   columns,
+  many,
 }: Props) => {
   const data = helmRepositories.map(repo => {
     const {
@@ -76,6 +78,7 @@ export const FluxHelmRepositoriesTable = ({
       data={data}
       isLoading={isLoading}
       filters={filters}
+      many={many}
     />
   );
 };

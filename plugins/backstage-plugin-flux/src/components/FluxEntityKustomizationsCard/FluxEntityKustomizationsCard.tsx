@@ -31,6 +31,7 @@ const KustomizationPanel = () => {
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
+        many={true}
       />
     </InfoCard>
   );

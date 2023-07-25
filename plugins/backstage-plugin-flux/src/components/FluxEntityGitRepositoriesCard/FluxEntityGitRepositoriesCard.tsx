@@ -31,6 +31,7 @@ const GitRepositoriesPanel = () => {
         gitRepositories={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
+        many={true}
       />
     </InfoCard>
   );
