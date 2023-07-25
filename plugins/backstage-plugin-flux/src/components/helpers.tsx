@@ -173,7 +173,7 @@ export const nameAndClusterNameColumn = <T extends FluxObject>() => {
   } as TableColumn<T>;
 };
 
-export const verifiedColumn = <T extends Source>() => {
+export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   return {
     title: (
       <Tooltip title="Verification status">
@@ -208,7 +208,11 @@ export const artifactColumn = <T extends Source>() => {
     render: resource => (
       <Tooltip
         // This is the sha of the commit that the artifact was built from
-        title={resource.artifact?.revision?.split('@')[1] || 'unknown tag'}
+        title={
+          resource.artifact?.revision?.split('@')[1] ||
+          resource.artifact?.revision?.split('@')[0] ||
+          'unknown tag'
+        }
       >
         <span>{resource.artifact?.revision?.split('@')[0]}</span>
       </Tooltip>
