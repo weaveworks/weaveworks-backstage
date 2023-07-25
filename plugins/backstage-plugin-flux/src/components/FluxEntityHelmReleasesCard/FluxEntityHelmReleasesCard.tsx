@@ -31,7 +31,7 @@ const HelmReleasePanel = () => {
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
-        many={true}
+        many
       />
     </InfoCard>
   );

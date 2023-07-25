@@ -5,7 +5,7 @@ import { useStyles } from './utils';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
 interface EntityTableProps extends TableProps {
-  //If many is false, pagination, filtering and search will be disabled
+  // If many is false, pagination, filtering and search will be disabled
   many?: boolean;
 }
 
