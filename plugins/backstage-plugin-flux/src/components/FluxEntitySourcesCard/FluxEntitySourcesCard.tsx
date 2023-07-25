@@ -6,7 +6,11 @@ import {
   sourceDefaultColumns,
 } from './FluxEntitySourcesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
-import { InfoCard } from '@backstage/core-components';
+import { InfoCard, TableColumn } from '@backstage/core-components';
+import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
+
+export type GH = GitRepository & HelmRepository;
+export type OH = OCIRepository & HelmRepository;
 
 const SourcesPanel = () => {
   const { entity } = useEntity();

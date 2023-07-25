@@ -16,10 +16,9 @@ import {
 } from '../helpers';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
+import { GH, OH } from './FluxEntitySourcesCard';
 
-const commonInitialColumns: TableColumn<
-  GitRepository | OCIRepository | HelmRepository
->[] = [
+const commonInitialColumns: TableColumn<Source>[] = [
   clusterNameFilteringColumn(),
   idColumn(),
   typeColumn(),
@@ -34,10 +33,12 @@ const commonEndColumns: TableColumn<Source>[] = [
   syncColumn(),
 ];
 
-export const sourceDefaultColumns: TableColumn<Source>[] = [
+export const sourceDefaultColumns = [
   ...commonInitialColumns,
+  verifiedColumn(),
+  { title: 'Provider', field: 'provider' },
   ...commonEndColumns,
-];
+] as TableColumn<GH | OH>[];
 
 export const gitOciDefaultColumns = [
   ...commonInitialColumns,
@@ -54,7 +55,7 @@ export const helmDefaultColumns = [
 type Props = {
   sources: Source[];
   isLoading: boolean;
-  columns: TableColumn<Source>[];
+  columns: TableColumn<any>[];
 };
 
 export const FluxSourcesTable = ({ sources, isLoading, columns }: Props) => {
