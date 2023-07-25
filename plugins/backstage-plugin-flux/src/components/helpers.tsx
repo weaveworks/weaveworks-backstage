@@ -10,7 +10,11 @@ import {
 import { Box, IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
-import { useSyncResource, useWeaveFluxDeepLink } from '../hooks';
+import {
+  useFluxSources,
+  useSyncResource,
+  useWeaveFluxDeepLink,
+} from '../hooks';
 import {
   VerifiableSource,
   automationLastUpdated,
@@ -28,9 +32,23 @@ import {
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 import { helm, kubernetes, oci, git } from '../images/icons';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
+
+const getVerifiedStatusColor = (status?: string) => {
+  let color;
+  if (status === 'True') {
+    color = '#27AE60';
+  } else if (status === 'False') {
+    color = '#BC3B1D';
+  } else if (!status) {
+    color = '#FEF071';
+  }
+  return color;
+};
+
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
  * this in Weave GitOps if possible.
@@ -116,15 +134,7 @@ export const VerifiedStatus = ({
   if (!resource.isVerifiable) return null;
 
   const condition = findVerificationCondition(resource);
-
-  let color;
-  if (condition?.status === 'True') {
-    color = '#27AE60';
-  } else if (condition?.status === 'False') {
-    color = '#BC3B1D';
-  } else if (!condition?.status) {
-    color = '#FEF071';
-  }
+  const color = getVerifiedStatusColor(condition?.status);
 
   return (
     <Tooltip title={condition?.message || 'pending verification'}>
@@ -133,28 +143,30 @@ export const VerifiedStatus = ({
   );
 };
 
-export const VerifiedStatus2 = ({
+export const SourceIsVerifiedStatus: React.FC<{ resource: Deployment }> = ({
   resource,
-}: {
-  resource: Deployment;
 }): JSX.Element | null => {
-  console.log(resource.sourceRef);
-  // const condition = findVerificationCondition(resource);
+  const { entity } = useEntity();
+  const { data } = useFluxSources(entity);
+  const verifiableSources = data?.filter(
+    (source: Source) =>
+      source.type === 'OCIRepository' || source.type === 'GitRepository',
+  ) as (OCIRepository | GitRepository)[];
+  const resourceSource =
+    verifiableSources?.find(
+      source => resource.sourceRef?.name === source.name,
+    ) || ({} as OCIRepository | GitRepository);
 
-  // let color;
-  // if (condition?.status === 'True') {
-  //   color = '#27AE60';
-  // } else if (condition?.status === 'False') {
-  //   color = '#BC3B1D';
-  // } else if (!condition?.status) {
-  //   color = '#FEF071';
-  // }
+  const condition = findVerificationCondition(resourceSource);
+  const color = getVerifiedStatusColor(condition?.status);
 
-  // return (
-  //   <Tooltip title={condition?.message || 'pending verification'}>
-  //     <VerifiedUserIcon style={{ color, height: '16px' }} />
-  //   </Tooltip>
-  // );
+  console.log(resource.sourceRef, color);
+
+  return (
+    <Tooltip title={condition?.message || 'pending verification'}>
+      <VerifiedUserIcon style={{ color, height: '16px' }} />
+    </Tooltip>
+  );
 };
 
 export const nameAndClusterName = ({
@@ -218,23 +230,14 @@ export const verifiedColumn = <T extends GitRepository | OCIRepository>() => {
   } as TableColumn<T>;
 };
 
-export const verifiedColumn2 = <T extends Deployment>() => {
+export const sourceIsVerifiedColumn = <T extends Deployment>() => {
   return {
     title: (
       <Tooltip title="Verification status">
         <VerifiedUserIcon style={{ height: '16px' }} />
       </Tooltip>
     ),
-    render: resource => <VerifiedStatus resource={resource} />,
-    ...sortAndFilterOptions(resource =>
-      resource.isVerifiable
-        ? findVerificationCondition(resource)?.status || 'unknown'
-        : '',
-    ),
-    ...sortAndFilterOptions(resource => {
-      const condition = findVerificationCondition(resource);
-      return condition?.message || '';
-    }),
+    render: resource => <SourceIsVerifiedStatus resource={resource} />,
     width: '90px',
   } as TableColumn<T>;
 };

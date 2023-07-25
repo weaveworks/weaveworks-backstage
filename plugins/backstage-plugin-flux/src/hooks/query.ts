@@ -246,6 +246,8 @@ export function useFluxSources(entity: Entity): Response<Source> {
     gitRepositoriesGVK,
   ]);
 
+  console.log(kubernetesObjects);
+
   const { data, kubernetesErrors } = toResponse<Source>(item => {
     const { kind } = JSON.parse(item.payload as string);
 
@@ -257,6 +259,8 @@ export function useFluxSources(entity: Entity): Response<Source> {
     }
     return new GitRepository(item);
   }, kubernetesObjects);
+
+  console.log(data);
 
   return {
     data,

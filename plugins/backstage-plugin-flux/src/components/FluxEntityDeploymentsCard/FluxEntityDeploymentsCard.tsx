@@ -2,12 +2,13 @@ import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
-import { useFluxDeployments } from '../../hooks';
+import { useFluxDeployments, useFluxSources } from '../../hooks';
 import { FluxDeploymentsTable, defaultColumns } from './FluxDeploymentsTable';
 
 const DeploymentsPanel = () => {
   const { entity } = useEntity();
   const { data, loading, errors } = useFluxDeployments(entity);
+  const { data: Sources } = useFluxSources(entity);
 
   if (errors) {
     return (

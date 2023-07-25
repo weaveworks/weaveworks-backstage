@@ -10,6 +10,7 @@ import {
   Deployment,
   repoColumn,
   sourceColumn,
+  sourceIsVerifiedColumn,
   typeColumn,
 } from '../helpers';
 import { HelmChart, HelmRelease, Kustomization } from '../../objects';
@@ -22,6 +23,7 @@ export const defaultColumns: TableColumn<Deployment>[] = [
   nameAndClusterNameColumn(),
   repoColumn(),
   sourceColumn(),
+  sourceIsVerifiedColumn(),
   statusColumn(),
   updatedColumn(),
   syncColumn(),
