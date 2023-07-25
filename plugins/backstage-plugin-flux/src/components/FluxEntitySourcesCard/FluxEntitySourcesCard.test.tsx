@@ -20,7 +20,7 @@ import {
   makeTestGitRepository,
   makeTestHelmRepository,
   makeTestOCIRepository,
-} from '../utils';
+} from '../utils-test';
 
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
@@ -155,25 +155,28 @@ describe('<FluxEntitySourcesCard />', () => {
         {
           name: 'backstage',
           url: 'https://github.com/weaveworks/weaveworks-backstage',
-          artiface: 'main',
+          artifact: 'main',
           cluster: 'demo-cluster',
         },
         {
           name: 'podinfoOCI',
           url: 'oci://ghcr.io/stefanprodan/manifests/podinfo',
           cluster: 'demo-cluster',
-          artifact:
-            'latest@sha256:2982c337af6ba98c0e9224a5d7149a19baa9cbedea09b16ae44253682050b6a4',
+          artifact: 'latest',
         },
         {
           name: 'podinfoHelm',
           url: 'https://stefanprodan.github.io/podinfo',
           cluster: 'demo-cluster',
+          artifact:
+            'sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e',
         },
         {
           name: 'bitnami',
           url: 'https://repo.vmware.com/bitnami-files/index.yaml',
           cluster: 'demo-cluster',
+          artifact:
+            'sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e ',
         },
       ];
 
@@ -184,61 +187,7 @@ describe('<FluxEntitySourcesCard />', () => {
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
         expect(tr).toHaveTextContent(testCase.url);
-        expect(tr).toHaveTextContent(testCase.cluster);
-      }
-    });
-  });
-  describe('Test listing Sources with branch', () => {
-    it('shows the details of a Source', async () => {
-      const result = await renderInTestApp(
-        <Wrapper>
-          <TestApiProvider
-            apis={[
-              [
-                configApiRef,
-                new ConfigReader({
-                  gitops: { baseUrl: 'https://example.com/wego' },
-                }),
-              ],
-              [kubernetesApiRef, new StubKubernetesClient()],
-              [
-                kubernetesAuthProvidersApiRef,
-                new StubKubernetesAuthProvidersApi(),
-              ],
-            ]}
-          >
-            <EntityProvider entity={entity}>
-              <FluxEntitySourcesCard />
-            </EntityProvider>
-          </TestApiProvider>
-        </Wrapper>,
-      );
-
-      const { getByText } = result;
-
-      const testCases = [
-        {
-          name: 'sockshop',
-          url: 'https://github.com/weaveworks/backstage-sockshop',
-          artifacts: 'main',
-          cluster: 'demo-cluster',
-        },
-        {
-          name: 'backstage',
-          url: 'https://github.com/weaveworks/weaveworks-backstage',
-          artifacts: 'main',
-          cluster: 'demo-cluster',
-        },
-      ];
-
-      for (const testCase of testCases) {
-        const cell = getByText(`default/${testCase.name}`);
-        expect(cell).toBeInTheDocument();
-
-        const tr = cell.closest('tr');
-        expect(tr).toBeInTheDocument();
-        expect(tr).toHaveTextContent(testCase.url);
-        expect(tr).toHaveTextContent(testCase.artifacts);
+        expect(tr).toHaveTextContent(testCase.artifact);
         expect(tr).toHaveTextContent(testCase.cluster);
       }
     });

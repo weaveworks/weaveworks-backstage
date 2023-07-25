@@ -28,10 +28,9 @@ const SourcesPanel = () => {
   return (
     <InfoCard title="Sources">
       <FluxSourcesTable
-        Sources={data || []}
+        sources={data || []}
         isLoading={loading && !data}
         columns={sourceDefaultColumns}
-        title="Sources"
       />
     </InfoCard>
   );
