@@ -35,6 +35,7 @@ import {
   newTestHelmRepository,
 } from './helpers';
 import { ReconcileRequestAnnotation } from '../src/hooks';
+import { FluxEntitySourcesCard } from '../src/components/FluxEntitySourcesCard';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -445,6 +446,86 @@ createDevApp()
         <EntityProvider entity={fakeEntity}>
           <Content>
             <FluxEntityDeploymentsCard />
+          </Content>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
+  .addPage({
+    title: 'Sources',
+    path: '/sources',
+    element: (
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego' },
+            }),
+          ],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestHelmRepository(
+                'podinfo',
+                'https://stefanprodan.github.io/podinfo',
+              ),
+              newTestOCIRepository(
+                'podinfo',
+                'oci://ghcr.io/stefanprodan/manifests/podinfo',
+                { verify: true, verified: true },
+              ),
+              newTestOCIRepository(
+                'redis',
+                'oci://registry-1.docker.io/bitnamicharts/redis',
+              ),
+              newTestOCIRepository(
+                'postgresql',
+                'oci://registry-1.docker.io/bitnamicharts/postgresql',
+                { verify: true, verified: false },
+              ),
+              newTestOCIRepository(
+                'apache',
+                'oci://registry-1.docker.io/bitnamicharts/apache',
+                { ready: false },
+              ),
+              newTestOCIRepository(
+                'supabase',
+                'oci://registry-1.docker.io/bitnamicharts/supabase',
+                { verify: true, pending: true },
+              ),
+              newTestOCIRepository(
+                'mariadb',
+                'oci://registry-1.docker.io/bitnamicharts/mariadb',
+                { verify: true, verified: false },
+              ),
+              newTestGitRepository(
+                'podinfo',
+                'https://github.com/stefanprodan/podinfo',
+                { verify: true, verified: true },
+              ),
+              newTestGitRepository(
+                'weave-gitops',
+                'https://github.com/weaveworks/weave-gitops',
+              ),
+              newTestGitRepository(
+                'weaveworks-backstage',
+                'https://github.com/weaveworks/weaveworks-backstage',
+                { verify: true, verified: false },
+              ),
+              newTestGitRepository(
+                'weave-gitops-enterprise',
+                'https://github.com/weaveworks/weave-gitops-enterprise',
+              ),
+            ]),
+          ],
+
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <Content>
+            <FluxEntitySourcesCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>

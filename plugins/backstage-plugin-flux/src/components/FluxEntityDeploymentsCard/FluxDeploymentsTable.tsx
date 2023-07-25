@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableColumn, TableFilter } from '@backstage/core-components';
+import { TableColumn } from '@backstage/core-components';
 import {
   clusterNameFilteringColumn,
   idColumn,
@@ -11,6 +11,7 @@ import {
   repoColumn,
   sourceColumn,
   typeColumn,
+  filters,
 } from '../helpers';
 import { HelmChart, HelmRelease, Kustomization } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
@@ -25,13 +26,6 @@ export const defaultColumns: TableColumn<Deployment>[] = [
   statusColumn(),
   updatedColumn(),
   syncColumn(),
-];
-
-const filters: TableFilter[] = [
-  {
-    column: 'Cluster name',
-    type: 'multiple-select',
-  },
 ];
 
 type Props = {
