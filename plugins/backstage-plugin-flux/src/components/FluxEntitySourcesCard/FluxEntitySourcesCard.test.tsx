@@ -21,6 +21,7 @@ import {
   makeTestHelmRepository,
   makeTestOCIRepository,
 } from '../utils-test';
+import { shortenSha } from '../helpers';
 
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
@@ -187,7 +188,8 @@ describe('<FluxEntitySourcesCard />', () => {
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
         expect(tr).toHaveTextContent(testCase.url);
-        expect(tr).toHaveTextContent(testCase.artifact);
+        const sha = shortenSha(testCase.artifact) as string;
+        expect(tr).toHaveTextContent(sha);
         expect(tr).toHaveTextContent(testCase.cluster);
       }
     });

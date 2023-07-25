@@ -249,13 +249,14 @@ export function useFluxSources(entity: Entity): Response<Source> {
   const { data, kubernetesErrors } = toResponse<Source>(item => {
     const { kind } = JSON.parse(item.payload as string);
 
-    if (kind === 'OCIRepository') {
-      return new OCIRepository(item);
+    switch (kind) {
+      case 'OCIRepository':
+        return new OCIRepository(item);
+      case 'HelmRepository':
+        return new HelmRepository(item);
+      default:
+        return new GitRepository(item);
     }
-    if (kind === 'HelmRepository') {
-      return new HelmRepository(item);
-    }
-    return new GitRepository(item);
   }, kubernetesObjects);
 
   return {

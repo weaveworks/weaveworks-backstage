@@ -202,6 +202,12 @@ export const urlColumn = <T extends Source>() => {
   } as TableColumn<T>;
 };
 
+export function shortenSha(sha: string | undefined) {
+  const shaPattern = sha?.split(':')[0];
+  if (!sha || shaPattern !== 'sha256') return sha;
+  return sha.slice(0, 14);
+}
+
 export const artifactColumn = <T extends Source>() => {
   return {
     title: 'Artifact',
@@ -214,7 +220,7 @@ export const artifactColumn = <T extends Source>() => {
           'unknown tag'
         }
       >
-        <span>{resource.artifact?.revision?.split('@')[0]}</span>
+        <span>{shortenSha(resource.artifact?.revision?.split('@')[0])}</span>
       </Tooltip>
     ),
     ...sortAndFilterOptions(resource => resource.artifact?.revision),
