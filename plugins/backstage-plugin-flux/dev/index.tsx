@@ -230,7 +230,8 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntityHelmReleasesCard />
+            {/* Setting many to false to remove filtering, pagination and search options in card table */}
+            <FluxEntityHelmReleasesCard many={false} />
           </Content>
         </EntityProvider>
       </TestApiProvider>
@@ -406,7 +407,7 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntityHelmRepositoriesCard many={false} />
+            <FluxEntityHelmRepositoriesCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>
