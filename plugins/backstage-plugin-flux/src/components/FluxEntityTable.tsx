@@ -4,19 +4,14 @@ import React from 'react';
 import { useStyles } from './utils';
 import { useDeepCompareMemo } from 'use-deep-compare';
 
-interface EntityTableProps extends TableProps {
-  // If many is false, pagination, filtering and search will be disabled
-  many?: boolean;
-}
-
-export function FluxEntityTable({
+export function FluxEntityTable<T extends object = {}>({
   title,
   data,
   isLoading,
   columns,
   filters,
   many,
-}: EntityTableProps) {
+}: TableProps<T> & { many?: boolean }) {
   const classes = useStyles();
 
   // We use this memo not really for performance, but to avoid

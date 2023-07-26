@@ -31,7 +31,7 @@ export const defaultColumns: TableColumn<Deployment>[] = [
 type Props = {
   deployments: Deployment[];
   isLoading: boolean;
-  columns: TableColumn<Deployment | {}>[];
+  columns: TableColumn<Deployment>[];
   many?: boolean;
 };
 
