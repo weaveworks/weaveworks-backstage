@@ -12,7 +12,7 @@ import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 export type GH = GitRepository & HelmRepository;
 export type OH = OCIRepository & HelmRepository;
 
-const SourcesPanel = () => {
+const SourcesPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useFluxSources(entity);
 
@@ -35,6 +35,7 @@ const SourcesPanel = () => {
         sources={data || []}
         isLoading={loading && !data}
         columns={sourceDefaultColumns as TableColumn<GH | OH>[]}
+        many={many}
       />
     </InfoCard>
   );
@@ -45,8 +46,8 @@ const SourcesPanel = () => {
  *
  * @public
  */
-export const FluxEntitySourcesCard = () => (
+export const FluxEntitySourcesCard = ({ many = true }: { many?: boolean }) => (
   <WeaveGitOpsContext>
-    <SourcesPanel />
+    <SourcesPanel many={many} />
   </WeaveGitOpsContext>
 );

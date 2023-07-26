@@ -9,7 +9,7 @@ import {
 } from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
 import { Source } from '../helpers';
 
-const OCIRepositoryPanel = () => {
+const OCIRepositoryPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useOCIRepositories(entity);
 
@@ -32,7 +32,7 @@ const OCIRepositoryPanel = () => {
         sources={data || []}
         isLoading={loading && !data}
         columns={gitOciDefaultColumns as TableColumn<Source>[]}
-        many
+        many={many}
       />
     </InfoCard>
   );
@@ -43,8 +43,12 @@ const OCIRepositoryPanel = () => {
  *
  * @public
  */
-export const FluxEntityOCIRepositoriesCard = () => (
+export const FluxEntityOCIRepositoriesCard = ({
+  many = true,
+}: {
+  many?: boolean;
+}) => (
   <WeaveGitOpsContext>
-    <OCIRepositoryPanel />
+    <OCIRepositoryPanel many={many} />
   </WeaveGitOpsContext>
 );

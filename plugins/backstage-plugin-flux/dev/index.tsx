@@ -406,7 +406,7 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntityHelmRepositoriesCard />
+            <FluxEntityHelmRepositoriesCard many={false} />
           </Content>
         </EntityProvider>
       </TestApiProvider>

@@ -5,7 +5,7 @@ import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { useFluxDeployments } from '../../hooks';
 import { FluxDeploymentsTable, defaultColumns } from './FluxDeploymentsTable';
 
-const DeploymentsPanel = () => {
+const DeploymentsPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useFluxDeployments(entity);
 
@@ -28,7 +28,7 @@ const DeploymentsPanel = () => {
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
-        many
+        many={many}
       />
     </InfoCard>
   );
@@ -39,8 +39,12 @@ const DeploymentsPanel = () => {
  *
  * @public
  */
-export const FluxEntityDeploymentsCard = () => (
+export const FluxEntityDeploymentsCard = ({
+  many = true,
+}: {
+  many?: boolean;
+}) => (
   <WeaveGitOpsContext>
-    <DeploymentsPanel />
+    <DeploymentsPanel many={many} />
   </WeaveGitOpsContext>
 );

@@ -68,6 +68,14 @@ const overviewContent = (
 );
 ```
 
+The card has a `many` property which is `true` by default. If your card table is likely to have just a few items, you can switch this to `false` to hide the filtering, searching and pagination options in the card table.
+
+```tsx
+<Grid item md={4} xs={12}>
+  <FluxEntityHelmReleasesCard many={false} />
+</Grid>
+```
+
 2. Add a page to your app EntityPage.tsx
 
 ```tsx

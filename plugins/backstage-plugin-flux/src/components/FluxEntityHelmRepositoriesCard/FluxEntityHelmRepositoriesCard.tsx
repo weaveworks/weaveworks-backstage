@@ -9,7 +9,7 @@ import {
 } from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
 import { Source } from '../helpers';
 
-const HelmRepositoriesPanel = () => {
+const HelmRepositoriesPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useHelmRepositories(entity);
 
@@ -32,7 +32,7 @@ const HelmRepositoriesPanel = () => {
         sources={data || []}
         isLoading={loading && !data}
         columns={helmDefaultColumns as TableColumn<Source>[]}
-        many
+        many={many}
       />
     </InfoCard>
   );
@@ -43,8 +43,12 @@ const HelmRepositoriesPanel = () => {
  *
  * @public
  */
-export const FluxEntityHelmRepositoriesCard = () => (
+export const FluxEntityHelmRepositoriesCard = ({
+  many = true,
+}: {
+  many?: boolean;
+}) => (
   <WeaveGitOpsContext>
-    <HelmRepositoriesPanel />
+    <HelmRepositoriesPanel many={many} />
   </WeaveGitOpsContext>
 );
