@@ -2,16 +2,28 @@
 
 The Flux plugin for Backstage provides views of [Flux](https://fluxcd.io/) resources available in Kubernetes clusters.
 
-![FluxEntityHelmReleasesCard](helm_releases_card.png)
+![FluxEntityHelmReleasesCard](sources_card.png)
 
 ## Content
 
+All cards use the Backstage ["common label"](https://backstage.io/docs/features/kubernetes/configuration#common-backstageiokubernetes-id-label)
+
 All these cards display the relevant resources for the currently displayed entity.
 
+These cards provide unified views of their resources.
+
+- FluxEntityDeploymentsCard - Displays associated Kustomizations and HelmReleases
+- FluxEntitySourcesCard - Displays associated GitRepositories, OCIRepositories and HelmRepositories
+
+You can also add specific views for resources with the following Cards.
+
 - FluxEntityHelmReleasesCard
+- FluxEntityKustomizationsCard
 - FluxEntityGitRepositoriesCard
 - FluxEntityOCIRepositoriesCard
 - FluxEntityHelmRepositoriesCard
+
+As with other Backstage plugins, you can compose the UI you need.
 
 ## Prerequisite
 
@@ -19,7 +31,7 @@ The Kubernetes plugins including `@backstage/plugin-kubernetes` and `@backstage/
 
 The Kubernetes plugin is configured and connects to the cluster using a ServiceAccount.
 
-You will need to bind the ServiceAccount to the `helmrelease-viewer-role` that [comes](https://github.com/fluxcd/helm-controller/blob/main/config/rbac/helmrelease_viewer_role.yaml) with Flux.
+You will need to bind the ServiceAccount to the `ClusterRole` `flux-view-flux-system` that is created with these [permissions](https://github.com/fluxcd/flux2/blob/44d69d6fc0c353e79c1bad021a4aca135033bce8/manifests/rbac/view.yaml) by Flux.
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -29,7 +41,52 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: helmrelease-viewer-role
+  name: flux-view-flux-system
+subjects:
+  - kind: ServiceAccount
+    name: backstage # replace with the name of the SA that your Backstage runs as
+    namespace: flux-system
+```
+
+The "sync" button requires additional permissions, it implements same functionality as [flux reconcile](https://fluxcd.io/flux/cmd/flux_reconcile/) for resources.
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sync-flux-resources
+rules:
+  - apiGroups:
+      - source.toolkit.fluxcd.io
+    resources:
+      - buckets
+      - helmcharts
+      - gitrepositories
+      - helmrepositories
+      - ocirepositories
+    verbs:
+      - patch
+  - apiGroups: 
+      - kustomize.toolkit.fluxcd.io
+    resources: 
+      - kustomizations
+    verbs:
+      - patch
+  - apiGroups:
+      - helm.toolkit.fluxcd.io
+    resources:
+      - helmreleases
+    verbs:
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: backstage-sync-flux-resources-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: sync-flux-resources
 subjects:
   - kind: ServiceAccount
     name: backstage # replace with the name of the SA that your Backstage runs as
