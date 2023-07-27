@@ -32,12 +32,14 @@ type Props = {
   deployments: Deployment[];
   isLoading: boolean;
   columns: TableColumn<Deployment>[];
+  many?: boolean;
 };
 
 export const FluxDeploymentsTable = ({
   deployments,
   isLoading,
   columns,
+  many,
 }: Props) => {
   let helmChart = {} as HelmChart;
   let path = '';
@@ -96,6 +98,7 @@ export const FluxDeploymentsTable = ({
       }
       isLoading={isLoading}
       filters={filters}
+      many={many}
     />
   );
 };

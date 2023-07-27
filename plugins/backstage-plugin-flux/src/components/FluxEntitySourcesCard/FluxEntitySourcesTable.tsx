@@ -56,9 +56,15 @@ type Props = {
   sources: Source[];
   isLoading: boolean;
   columns: TableColumn<any>[];
+  many?: boolean;
 };
 
-export const FluxSourcesTable = ({ sources, isLoading, columns }: Props) => {
+export const FluxSourcesTable = ({
+  sources,
+  isLoading,
+  columns,
+  many,
+}: Props) => {
   let provider = '';
   let isVerifiable = false;
 
@@ -110,6 +116,7 @@ export const FluxSourcesTable = ({ sources, isLoading, columns }: Props) => {
       }
       isLoading={isLoading}
       filters={filters}
+      many={many}
     />
   );
 };
