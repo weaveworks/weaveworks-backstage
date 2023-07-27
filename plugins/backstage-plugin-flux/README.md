@@ -2,7 +2,7 @@
 
 The Flux plugin for Backstage provides views of [Flux](https://fluxcd.io/) resources available in Kubernetes clusters.
 
-![FluxEntityHelmReleasesCard](sources_card.png)
+![FluxEntitySourcesCard](sources_card.png)
 
 ## Content
 
@@ -235,3 +235,15 @@ gitops:
   #
   baseUrl: https://wego.example.com
 ```
+
+## Verification
+
+For the resources where we display a Verification status, if the Flux resource
+has no verification configured, the column will be blank.
+
+![Verification status for resources](verification.png)
+
+You can configure verification for the following resources:
+
+ * [Git Repositories](https://fluxcd.io/flux/components/source/gitrepositories/#verification)
+ * [OCI Repositories](https://fluxcd.io/flux/components/source/ocirepositories/#verification)
