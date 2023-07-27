@@ -27,7 +27,23 @@ As with other Backstage plugins, you can compose the UI you need.
 
 ## Prerequisite
 
-The Kubernetes plugins including `@backstage/plugin-kubernetes` and `@backstage/plugin-kubernetes-backend` are installed and configured by following the installation and configuration guides.
+The Kubernetes plugins including `@backstage/plugin-kubernetes` and `@backstage/plugin-kubernetes-backend` are to be installed and configured by following the installation and configuration [guides](https://backstage.io/docs/features/kubernetes/installation/#adding-the-kubernetes-frontend-plugin).
+
+After they are installed, make sure to import the frontend plugin by adding the "Kubernetes" tab wherever needed.
+```tsx
+// In packages/app/src/components/catalog/EntityPage.tsx
+import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
+
+// You can add the tab to any number of pages, the service page is shown as an example here
+const serviceEntityPage = (
+  <EntityLayout>
+    {/* other tabs... */}
+    <EntityLayout.Route path="/kubernetes" title="Kubernetes">
+      <EntityKubernetesContent refreshIntervalMs={30000} />
+    </EntityLayout.Route>
+  </EntityLayout>
+);
+```
 
 The Kubernetes plugin is configured and connects to the cluster using a ServiceAccount.
 
