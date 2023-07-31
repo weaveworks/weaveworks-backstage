@@ -6,16 +6,16 @@ The Flux plugin for Backstage provides views of [Flux](https://fluxcd.io/) resou
 
 ## Content
 
-All cards use the Backstage ["common label"](https://backstage.io/docs/features/kubernetes/configuration#common-backstageiokubernetes-id-label)
+The plugin provides several [`Cards`](https://backstage.io/docs/plugins/composability#naming-patterns) for composing your Portal.
 
-All these cards display the relevant resources for the currently displayed entity.
+All cards use the Backstage Kubernetes ["common label"](https://backstage.io/docs/features/kubernetes/configuration#common-backstageiokubernetes-id-label) to identify Flux resources for the current entity.
 
-These cards provide unified views of their resources.
+These Cards provide unified views of their resources.
 
 - FluxEntityDeploymentsCard - Displays associated Kustomizations and HelmReleases
 - FluxEntitySourcesCard - Displays associated GitRepositories, OCIRepositories and HelmRepositories
 
-You can also add specific views for resources with the following Cards.
+You can also add cards for resources with the following components, each of these shows specific resources associated to the Entity.
 
 - FluxEntityHelmReleasesCard
 - FluxEntityKustomizationsCard
@@ -44,10 +44,7 @@ const serviceEntityPage = (
   </EntityLayout>
 );
 ```
-
-The Kubernetes plugin is configured and connects to the cluster using a ServiceAccount.
-
-You will need to bind the ServiceAccount to the `ClusterRole` `flux-view-flux-system` that is created with these [permissions](https://github.com/fluxcd/flux2/blob/44d69d6fc0c353e79c1bad021a4aca135033bce8/manifests/rbac/view.yaml) by Flux.
+If you are using the [`config`](https://backstage.io/docs/features/kubernetes/configuration#config) method for configuring your clusters, and connecting using a `ServiceAccount`, you will need to bind the `ServiceAccount` to the `ClusterRole` `flux-view-flux-system` that is created with these [permissions](https://github.com/fluxcd/flux2/blob/44d69d6fc0c353e79c1bad021a4aca135033bce8/manifests/rbac/view.yaml) by Flux.
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
