@@ -1,8 +1,8 @@
-This repo contains the [Backstage](https://backstage.io) plugins created and maintained by [weaveworks](https://www.weave.works/).
+This repo contains the [Backstage](https://backstage.io) plugins created and maintained by [Weaveworks](https://www.weave.works/).
 
 The following plugins can be found within this repo:
 
-- [Flux](https://github.com/weaveworks/weaveworks-backstage/blob/main/plugins/backstage-plugin-flux/)
+- [FluxPlugin](https://github.com/weaveworks/weaveworks-backstage/blob/main/plugins/backstage-plugin-flux/)
 
 Installation instructions for the plugins can be found in their individual README files.
 
