@@ -1,6 +1,4 @@
-# [Backstage](https://backstage.io)
-
-This repo contains the Backstage plugins created and maintained by [Weaveworks](https://www.weave.works/).
+This repo contains the [Backstage](https://backstage.io) plugins created and maintained by [weaveworks](https://www.weave.works/).
 
 The following plugins can be found within this repo:
 
@@ -84,7 +82,6 @@ In short:
 
 Login to http://localhost:9001 with the username `admin` and the password you provided when creating the dashboard.
 
-## Contributing
+## Community
 
-Start here if you want to contribute:
-[Contributing](https://github.com/weaveworks/weaveworks-backstage/blob/main/CONTRIBUTING.md) -
+[Contributing](https://github.com/weaveworks/weaveworks-backstage/blob/main/CONTRIBUTING.md) - Start here if you want to contribute
