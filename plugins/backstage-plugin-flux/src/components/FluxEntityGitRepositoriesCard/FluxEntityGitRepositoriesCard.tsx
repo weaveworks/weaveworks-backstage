@@ -1,14 +1,15 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard } from '@backstage/core-components';
+import { InfoCard, TableColumn } from '@backstage/core-components';
 import { useGitRepositories } from '../../hooks/query';
-import {
-  FluxGitRepositoriesTable,
-  defaultColumns,
-} from './FluxGitRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import {
+  gitOciDefaultColumns,
+  FluxSourcesTable,
+} from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
+import { Source } from '../helpers';
 
-const GitRepositoriesPanel = () => {
+const GitRepositoriesPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useGitRepositories(entity);
 
@@ -27,10 +28,11 @@ const GitRepositoriesPanel = () => {
 
   return (
     <InfoCard title="Git Repositories">
-      <FluxGitRepositoriesTable
-        gitRepositories={data || []}
+      <FluxSourcesTable
+        sources={data || []}
         isLoading={loading && !data}
-        columns={defaultColumns}
+        columns={gitOciDefaultColumns as TableColumn<Source>[]}
+        many={many}
       />
     </InfoCard>
   );
@@ -41,8 +43,12 @@ const GitRepositoriesPanel = () => {
  *
  * @public
  */
-export const FluxEntityGitRepositoriesCard = () => (
+export const FluxEntityGitRepositoriesCard = ({
+  many = true,
+}: {
+  many?: boolean;
+}) => (
   <WeaveGitOpsContext>
-    <GitRepositoriesPanel />
+    <GitRepositoriesPanel many={many} />
   </WeaveGitOpsContext>
 );

@@ -62,6 +62,8 @@ import {
   FluxEntityOCIRepositoriesCard,
   FluxEntityKustomizationsCard,
   FluxEntityHelmRepositoriesCard,
+  FluxEntityDeploymentsCard,
+  FluxEntitySourcesCard,
 } from '@weaveworksoss/backstage-plugin-flux';
 
 const techdocsContent = (
@@ -167,6 +169,12 @@ const serviceEntityPage = (
         </Grid>
         <Grid item md={12}>
           <FluxEntityOCIRepositoriesCard />
+        </Grid>
+        <Grid item md={12}>
+          <FluxEntityDeploymentsCard />
+        </Grid>
+        <Grid item md={12}>
+          <FluxEntitySourcesCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>

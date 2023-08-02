@@ -10,7 +10,8 @@ export function FluxEntityTable<T extends object = {}>({
   isLoading,
   columns,
   filters,
-}: TableProps<T>) {
+  many,
+}: TableProps<T> & { many?: boolean }) {
   const classes = useStyles();
 
   // We use this memo not really for performance, but to avoid
@@ -24,8 +25,8 @@ export function FluxEntityTable<T extends object = {}>({
         columns={columns}
         options={{
           padding: 'dense',
-          paging: true,
-          search: true,
+          paging: Boolean(many),
+          search: Boolean(many),
           pageSize: 5,
           // Don't revert to "unsorted" on the 3rd click, just toggle between asc/desc
           thirdSortClick: false,
@@ -41,7 +42,7 @@ export function FluxEntityTable<T extends object = {}>({
             </Typography>
           </div>
         }
-        filters={filters}
+        filters={Boolean(many) ? filters : []}
       />
     );
   }, [data, title, isLoading, classes.empty, columns]);

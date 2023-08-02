@@ -1,14 +1,15 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { InfoCard } from '@backstage/core-components';
+import { InfoCard, TableColumn } from '@backstage/core-components';
 import { useHelmRepositories } from '../../hooks';
-import {
-  FluxHelmRepositoriesTable,
-  defaultColumns,
-} from './FluxHelmRepositoriesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
+import {
+  helmDefaultColumns,
+  FluxSourcesTable,
+} from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
+import { Source } from '../helpers';
 
-const HelmRepositoriesPanel = () => {
+const HelmRepositoriesPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useHelmRepositories(entity);
 
@@ -27,10 +28,11 @@ const HelmRepositoriesPanel = () => {
 
   return (
     <InfoCard title="Helm Repositories">
-      <FluxHelmRepositoriesTable
-        helmRepositories={data || []}
+      <FluxSourcesTable
+        sources={data || []}
         isLoading={loading && !data}
-        columns={defaultColumns}
+        columns={helmDefaultColumns as TableColumn<Source>[]}
+        many={many}
       />
     </InfoCard>
   );
@@ -41,8 +43,12 @@ const HelmRepositoriesPanel = () => {
  *
  * @public
  */
-export const FluxEntityHelmRepositoriesCard = () => (
+export const FluxEntityHelmRepositoriesCard = ({
+  many = true,
+}: {
+  many?: boolean;
+}) => (
   <WeaveGitOpsContext>
-    <HelmRepositoriesPanel />
+    <HelmRepositoriesPanel many={many} />
   </WeaveGitOpsContext>
 );

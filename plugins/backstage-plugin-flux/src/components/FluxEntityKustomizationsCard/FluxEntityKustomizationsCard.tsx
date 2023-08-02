@@ -8,7 +8,7 @@ import {
   defaultColumns,
 } from '../FluxEntityDeploymentsCard/FluxDeploymentsTable';
 
-const KustomizationPanel = () => {
+const KustomizationPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useKustomizations(entity);
 
@@ -31,6 +31,7 @@ const KustomizationPanel = () => {
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
+        many={many}
       />
     </InfoCard>
   );
@@ -41,8 +42,12 @@ const KustomizationPanel = () => {
  *
  * @public
  */
-export const FluxEntityKustomizationsCard = () => (
+export const FluxEntityKustomizationsCard = ({
+  many = true,
+}: {
+  many?: boolean;
+}) => (
   <WeaveGitOpsContext>
-    <KustomizationPanel />
+    <KustomizationPanel many={many} />
   </WeaveGitOpsContext>
 );

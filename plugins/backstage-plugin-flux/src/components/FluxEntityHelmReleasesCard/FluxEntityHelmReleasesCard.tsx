@@ -8,9 +8,8 @@ import {
   defaultColumns,
 } from '../FluxEntityDeploymentsCard/FluxDeploymentsTable';
 
-const HelmReleasePanel = () => {
+const HelmReleasePanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
-
   const { data, loading, errors } = useHelmReleases(entity);
 
   if (errors) {
@@ -32,6 +31,7 @@ const HelmReleasePanel = () => {
         deployments={data || []}
         isLoading={loading && !data}
         columns={defaultColumns}
+        many={many}
       />
     </InfoCard>
   );
@@ -42,8 +42,12 @@ const HelmReleasePanel = () => {
  *
  * @public
  */
-export const FluxEntityHelmReleasesCard = () => (
+export const FluxEntityHelmReleasesCard = ({
+  many = true,
+}: {
+  many?: boolean;
+}) => (
   <WeaveGitOpsContext>
-    <HelmReleasePanel />
+    <HelmReleasePanel many={many} />
   </WeaveGitOpsContext>
 );

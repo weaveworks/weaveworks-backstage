@@ -202,15 +202,25 @@ export const urlColumn = <T extends Source>() => {
   } as TableColumn<T>;
 };
 
+export function shortenSha(sha: string | undefined) {
+  const shaPattern = sha?.split(':')[0];
+  if (!sha || shaPattern !== 'sha256') return sha;
+  return sha.slice(0, 14);
+}
+
 export const artifactColumn = <T extends Source>() => {
   return {
     title: 'Artifact',
     render: resource => (
       <Tooltip
         // This is the sha of the commit that the artifact was built from
-        title={resource.artifact?.revision?.split('@')[1] || 'unknown tag'}
+        title={
+          resource.artifact?.revision?.split('@')[1] ||
+          resource.artifact?.revision?.split('@')[0] ||
+          'unknown tag'
+        }
       >
-        <span>{resource.artifact?.revision?.split('@')[0]}</span>
+        <span>{shortenSha(resource.artifact?.revision?.split('@')[0])}</span>
       </Tooltip>
     ),
     ...sortAndFilterOptions(resource => resource.artifact?.revision),
@@ -270,7 +280,7 @@ export const typeColumn = <
   T extends Deployment | OCIRepository | GitRepository | HelmRepository,
 >() => {
   const paddingLeft = 0;
-    return {
+  return {
     title: 'Kind',
     align: 'right',
     cellStyle: { paddingLeft, paddingRight: 6 },
