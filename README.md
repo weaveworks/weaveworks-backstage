@@ -12,7 +12,7 @@ Installation instructions for the plugins can be found in their individual READM
 
 To get up and running with this repository, you will need to:
 
-- clone it off of GitHub
+- _(only if you wish to contribute)_ clone it off of GitHub
 
 ```bash
 git clone git@github.com:weaveworks/weaveworks-backstage.git
