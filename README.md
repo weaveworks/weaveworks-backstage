@@ -10,17 +10,10 @@ Installation instructions for the plugins can be found in their individual READM
 
 ## Getting Started
 
-To get up and running with this repository, you will need to:
+To get up and running with this repository, you will need to set up:
 
-- _(only if you wish to contribute)_ clone it off of GitHub
-
-```bash
-git clone git@github.com:weaveworks/weaveworks-backstage.git
-cd weaveworks-backstage
-```
-
-- set up a Github OAuth app and
-- set up a local kubernetes cluster.
+- a Github OAuth app and
+- a local kubernetes cluster.
 
 ### Configure Github OAuth
 
@@ -84,4 +77,4 @@ Login to http://localhost:9001 with the username `admin` and the password you pr
 
 ## Community
 
-[Contributing](https://github.com/weaveworks/weaveworks-backstage/blob/main/CONTRIBUTING.md) - Start here if you want to contribute
+For more details on how to contribute to the plugins, have a look at [Contributing](https://github.com/weaveworks/weaveworks-backstage/blob/main/CONTRIBUTING.md).
