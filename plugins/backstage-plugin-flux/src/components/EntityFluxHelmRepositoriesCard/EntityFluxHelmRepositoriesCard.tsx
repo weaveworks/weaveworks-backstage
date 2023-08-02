@@ -6,7 +6,7 @@ import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import {
   helmDefaultColumns,
   FluxSourcesTable,
-} from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
+} from '../EntityFluxSourcesCard/FluxSourcesTable';
 import { Source } from '../helpers';
 
 const HelmRepositoriesPanel = ({ many }: { many?: boolean }) => {
@@ -43,7 +43,7 @@ const HelmRepositoriesPanel = ({ many }: { many?: boolean }) => {
  *
  * @public
  */
-export const FluxEntityHelmRepositoriesCard = ({
+export const EntityFluxHelmRepositoriesCard = ({
   many = true,
 }: {
   many?: boolean;

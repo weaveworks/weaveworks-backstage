@@ -1,1 +1,0 @@
-export { FluxEntityHelmReleasesCard } from './FluxEntityHelmReleasesCard';

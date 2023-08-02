@@ -16,7 +16,7 @@ import {
 } from '../helpers';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
-import { GH, OH } from './FluxEntitySourcesCard';
+import { GH, OH } from './EntityFluxSourcesCard';
 
 const commonInitialColumns: TableColumn<Source>[] = [
   clusterNameFilteringColumn(),

@@ -37,7 +37,7 @@ kind create cluster
 flux install
 
 # setup cluster auth and create an example podinfo helmrelease
-kubectl apply -f ./demo
+kubectl apply -k ./demo
 
 # install deps (node version 14 || >=16.14 required)
 yarn install
