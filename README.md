@@ -1,10 +1,28 @@
 # [Backstage](https://backstage.io)
 
-## Local dev
+This repo contains the Backstage plugins created and maintained by [Weaveworks](https://www.weave.works/).
 
-For local dev we'll need to set up a Github OAuth app and a local kubernetes cluster.
+The following plugins can be found within this repo:
 
-Please ensure you're running a recent version of Flux supported versions are > 2.0.0
+- [Flux](https://github.com/weaveworks/weaveworks-backstage/blob/main/plugins/backstage-plugin-flux/)
+
+Installation instructions for the plugins can be found in their individual README files.
+
+##
+
+## Getting Started
+
+To get up and running with this repository, you will need to:
+
+- clone it off of GitHub
+
+```bash
+git clone git@github.com:weaveworks/weaveworks-backstage.git
+cd weaveworks-backstage
+```
+
+- set up a Github OAuth app and
+- set up a local kubernetes cluster.
 
 ### Configure Github OAuth
 
@@ -66,18 +84,7 @@ In short:
 
 Login to http://localhost:9001 with the username `admin` and the password you provided when creating the dashboard.
 
-## Releasing
+## Contributing
 
-Publishing a **GitHub release** will trigger a GitHub Action to build and push the npm module to the [backstage-plugin-flux npm package](https://www.npmjs.com/package/@weaveworksoss/backstage-plugin-flux).
-
-### Create the release
-
-Create a [new Github release](https://github.com/weaveworks/weaveworks-backstage/releases/new)
-
-1. Click "Choose a tag" and type in the tag that the release should create on publish (e.g. `v0.5.0`)
-2. Click **Generate release notes**
-3. Click **Publish release**
-
-After a few minutes the release should be available on npm.
-
-Follow the [backstage-plugin-flux installation instructions](./plugins/backstage-plugin-flux/README.md) to upgrade the plugin in your Backstage app.
+Start here if you want to contribute:
+[Contributing](https://github.com/weaveworks/weaveworks-backstage/blob/main/CONTRIBUTING.md) -
