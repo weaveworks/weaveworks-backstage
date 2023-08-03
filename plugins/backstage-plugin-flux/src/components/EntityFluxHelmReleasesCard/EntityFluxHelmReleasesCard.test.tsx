@@ -2,7 +2,7 @@ import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { FluxEntityHelmReleasesCard } from './FluxEntityHelmReleasesCard';
+import { EntityFluxHelmReleasesCard } from './EntityFluxHelmReleasesCard';
 import { alertApiRef, configApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
@@ -138,13 +138,13 @@ function renderHelmReleasesCard() {
       ]}
     >
       <EntityProvider entity={entity}>
-        <FluxEntityHelmReleasesCard />
+        <EntityFluxHelmReleasesCard />
       </EntityProvider>
     </TestApiProvider>,
   );
 }
 
-describe('<FluxEntityHelmReleasesCard />', () => {
+describe('<EntityFluxHelmReleasesCard />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -197,7 +197,7 @@ describe('<FluxEntityHelmReleasesCard />', () => {
           ]}
         >
           <EntityProvider entity={entity}>
-            <FluxEntityHelmReleasesCard />
+            <EntityFluxHelmReleasesCard />
           </EntityProvider>
         </TestApiProvider>,
       );
@@ -257,7 +257,7 @@ describe('<FluxEntityHelmReleasesCard />', () => {
           ]}
         >
           <EntityProvider entity={entity}>
-            <FluxEntityHelmReleasesCard />
+            <EntityFluxHelmReleasesCard />
           </EntityProvider>
         </TestApiProvider>,
       );

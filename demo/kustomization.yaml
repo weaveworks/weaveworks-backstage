@@ -1,0 +1,6 @@
+resources:
+- podinfo-git-repository.yaml
+- podinfo-helm-releases.yaml
+- podinfo-helm-repository.yaml
+- podinfo-kustomization.yaml
+- rbac.yaml

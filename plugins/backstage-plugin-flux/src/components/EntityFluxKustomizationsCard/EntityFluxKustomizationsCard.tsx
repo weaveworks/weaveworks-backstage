@@ -6,7 +6,7 @@ import { useKustomizations } from '../../hooks';
 import {
   FluxDeploymentsTable,
   defaultColumns,
-} from '../FluxEntityDeploymentsCard/FluxDeploymentsTable';
+} from '../EntityFluxDeploymentsCard/FluxDeploymentsTable';
 
 const KustomizationPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
@@ -42,7 +42,7 @@ const KustomizationPanel = ({ many }: { many?: boolean }) => {
  *
  * @public
  */
-export const FluxEntityKustomizationsCard = ({
+export const EntityFluxKustomizationsCard = ({
   many = true,
 }: {
   many?: boolean;

@@ -2,7 +2,6 @@ import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { FluxEntityGitRepositoriesCard } from './FluxEntityGitRepositoriesCard';
 import { configApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
@@ -16,62 +15,13 @@ import {
   KubernetesRequestBody,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-
-const makeTestGitRepository = (name: string, url: string, branch: string) => {
-  return {
-    apiVersion: 'source.toolkit.fluxcd.io/v1',
-    kind: 'GitRepository',
-    metadata: {
-      creationTimestamp: '2023-06-22T17:58:23Z',
-      finalizers: ['finalizers.fluxcd.io'],
-      generation: 1,
-      name: name,
-      namespace: 'default',
-      resourceVersion: '132764',
-      uid: '068ec137-b2a0-4b35-90ea-4e9a8a2fe5f6',
-    },
-    spec: {
-      interval: '1m',
-      ref: {
-        branch: branch,
-      },
-      timeout: '60s',
-      url: url,
-    },
-    status: {
-      artifact: {
-        digest:
-          'sha256:f1e2d4a8244772c47d5e10b38768acec57dc404d6409464c15d2eb8c84b28b51',
-        lastUpdateTime: '2023-06-22T17:58:24Z',
-        path: 'gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
-        revision: `${branch}@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a`,
-        size: 80053,
-        url: 'http://source-controller.flux-system.svc.cluster.local./gitrepository/default/podinfo/e06a5517daf5ac8c5ba74a97135499e40624885a.tar.gz',
-      },
-      conditions: [
-        {
-          lastTransitionTime: '2023-06-22T17:58:24Z',
-          message:
-            "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
-          observedGeneration: 1,
-          reason: 'Succeeded',
-          status: 'True',
-          type: 'Ready',
-        },
-        {
-          lastTransitionTime: '2023-06-22T17:58:24Z',
-          message:
-            "stored artifact for revision 'master@sha1:e06a5517daf5ac8c5ba74a97135499e40624885a'",
-          observedGeneration: 1,
-          reason: 'Succeeded',
-          status: 'True',
-          type: 'ArtifactInStorage',
-        },
-      ],
-      observedGeneration: 1,
-    },
-  };
-};
+import { EntityFluxSourcesCard } from './EntityFluxSourcesCard';
+import {
+  makeTestGitRepository,
+  makeTestHelmRepository,
+  makeTestOCIRepository,
+} from '../utils-test';
+import { shortenSha } from '../helpers';
 
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
@@ -98,14 +48,26 @@ class StubKubernetesClient implements KubernetesApi {
               type: 'customresources',
               resources: [
                 makeTestGitRepository(
+                  'sockshop',
+                  'https://github.com/weaveworks/backstage-sockshop',
+                  'main',
+                ),
+                makeTestGitRepository(
                   'backstage',
                   'https://github.com/weaveworks/weaveworks-backstage',
                   'main',
                 ),
-                makeTestGitRepository(
-                  'sockshop',
-                  'https://github.com/weaveworks/backstage-sockshop',
-                  'main',
+                makeTestOCIRepository(
+                  'podinfoOCI',
+                  'oci://ghcr.io/stefanprodan/manifests/podinfo',
+                ),
+                makeTestHelmRepository(
+                  'podinfoHelm',
+                  'https://stefanprodan.github.io/podinfo',
+                ),
+                makeTestHelmRepository(
+                  'bitnami',
+                  'https://repo.vmware.com/bitnami-files/index.yaml',
                 ),
               ],
             },
@@ -143,7 +105,7 @@ const entity: Entity = {
   },
 };
 
-describe('<FluxEntityGitRepositoriesCard />', () => {
+describe('<EntityFluxSourcesCard />', () => {
   let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
   beforeEach(() => {
@@ -156,8 +118,8 @@ describe('<FluxEntityGitRepositoriesCard />', () => {
     jest.resetAllMocks();
   });
 
-  describe('when the config contains a link to Weave GitOps', () => {
-    it('shows the state of a GitRepository', async () => {
+  describe('listing Sources', () => {
+    it('shows the details of a Source', async () => {
       const result = await renderInTestApp(
         <Wrapper>
           <TestApiProvider
@@ -176,7 +138,7 @@ describe('<FluxEntityGitRepositoriesCard />', () => {
             ]}
           >
             <EntityProvider entity={entity}>
-              <FluxEntityGitRepositoriesCard />
+              <EntityFluxSourcesCard />
             </EntityProvider>
           </TestApiProvider>
         </Wrapper>,
@@ -188,14 +150,34 @@ describe('<FluxEntityGitRepositoriesCard />', () => {
         {
           name: 'sockshop',
           url: 'https://github.com/weaveworks/backstage-sockshop',
-          branch: 'main',
+          artifact: 'main',
           cluster: 'demo-cluster',
         },
         {
           name: 'backstage',
           url: 'https://github.com/weaveworks/weaveworks-backstage',
-          branch: 'main',
+          artifact: 'main',
           cluster: 'demo-cluster',
+        },
+        {
+          name: 'podinfoOCI',
+          url: 'oci://ghcr.io/stefanprodan/manifests/podinfo',
+          cluster: 'demo-cluster',
+          artifact: 'latest',
+        },
+        {
+          name: 'podinfoHelm',
+          url: 'https://stefanprodan.github.io/podinfo',
+          cluster: 'demo-cluster',
+          artifact:
+            'sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e',
+        },
+        {
+          name: 'bitnami',
+          url: 'https://repo.vmware.com/bitnami-files/index.yaml',
+          cluster: 'demo-cluster',
+          artifact:
+            'sha256:80b091a3a69b9ecfebde40ce2a5f19e95f8f8ea956bd5635a31701f7fad1616e ',
         },
       ];
 
@@ -206,40 +188,10 @@ describe('<FluxEntityGitRepositoriesCard />', () => {
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
         expect(tr).toHaveTextContent(testCase.url);
-        expect(tr).toHaveTextContent(testCase.branch);
+        const sha = shortenSha(testCase.artifact) as string;
+        expect(tr).toHaveTextContent(sha);
         expect(tr).toHaveTextContent(testCase.cluster);
       }
-    });
-  });
-
-  describe('when the config is not configured with a link to Weave GitOps', () => {
-    it('does not include a link to Weave GitOps', async () => {
-      const rendered = await renderInTestApp(
-        <Wrapper>
-          <TestApiProvider
-            apis={[
-              [configApiRef, new ConfigReader({})],
-              [kubernetesApiRef, new StubKubernetesClient()],
-              [
-                kubernetesAuthProvidersApiRef,
-                new StubKubernetesAuthProvidersApi(),
-              ],
-            ]}
-          >
-            <EntityProvider entity={entity}>
-              <FluxEntityGitRepositoriesCard />
-            </EntityProvider>
-          </TestApiProvider>
-        </Wrapper>,
-      );
-
-      const { getByText } = rendered;
-
-      const cell = getByText('default/backstage');
-      expect(cell).toBeInTheDocument();
-      const td = cell.closest('td');
-      expect(td).toBeInTheDocument();
-      expect(td!.querySelector('a')).toBeNull();
     });
   });
 });

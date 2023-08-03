@@ -20,12 +20,12 @@ import {
 import { TestApiProvider } from '@backstage/test-utils';
 import {
   weaveworksFluxPlugin,
-  FluxEntityHelmReleasesCard,
-  FluxEntityGitRepositoriesCard,
-  FluxEntityOCIRepositoriesCard,
-  FluxEntityHelmRepositoriesCard,
-  FluxEntityKustomizationsCard,
-  FluxEntityDeploymentsCard,
+  EntityFluxHelmReleasesCard,
+  EntityFluxGitRepositoriesCard,
+  EntityFluxOCIRepositoriesCard,
+  EntityFluxHelmRepositoriesCard,
+  EntityFluxKustomizationsCard,
+  EntityFluxDeploymentsCard,
 } from '../src/plugin';
 import {
   newTestHelmRelease,
@@ -35,7 +35,7 @@ import {
   newTestHelmRepository,
 } from './helpers';
 import { ReconcileRequestAnnotation } from '../src/hooks';
-import { FluxEntitySourcesCard } from '../src/components/FluxEntitySourcesCard';
+import { EntityFluxSourcesCard } from '../src/components/EntityFluxSourcesCard';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -231,7 +231,7 @@ createDevApp()
         <EntityProvider entity={fakeEntity}>
           <Content>
             {/* Setting many to false to remove filtering, pagination and search options in card table */}
-            <FluxEntityHelmReleasesCard many={false} />
+            <EntityFluxHelmReleasesCard many={false} />
           </Content>
         </EntityProvider>
       </TestApiProvider>
@@ -277,7 +277,7 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntityGitRepositoriesCard />
+            <EntityFluxGitRepositoriesCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>
@@ -335,7 +335,7 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntityOCIRepositoriesCard />
+            <EntityFluxOCIRepositoriesCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>
@@ -374,7 +374,7 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntityKustomizationsCard />
+            <EntityFluxKustomizationsCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>
@@ -407,7 +407,7 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntityHelmRepositoriesCard />
+            <EntityFluxHelmRepositoriesCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>
@@ -446,7 +446,7 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntityDeploymentsCard />
+            <EntityFluxDeploymentsCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>
@@ -526,7 +526,7 @@ createDevApp()
       >
         <EntityProvider entity={fakeEntity}>
           <Content>
-            <FluxEntitySourcesCard />
+            <EntityFluxSourcesCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>

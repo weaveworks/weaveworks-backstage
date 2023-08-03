@@ -4,7 +4,7 @@ import { useFluxSources } from '../../hooks';
 import {
   FluxSourcesTable,
   sourceDefaultColumns,
-} from './FluxEntitySourcesTable';
+} from './FluxSourcesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { InfoCard, TableColumn } from '@backstage/core-components';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
@@ -46,7 +46,7 @@ const SourcesPanel = ({ many }: { many?: boolean }) => {
  *
  * @public
  */
-export const FluxEntitySourcesCard = ({ many = true }: { many?: boolean }) => (
+export const EntityFluxSourcesCard = ({ many = true }: { many?: boolean }) => (
   <WeaveGitOpsContext>
     <SourcesPanel many={many} />
   </WeaveGitOpsContext>

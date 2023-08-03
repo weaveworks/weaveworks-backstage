@@ -15,7 +15,7 @@ import {
   KubernetesRequestBody,
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
-import { FluxEntityOCIRepositoriesCard } from './FluxEntityOCIRepositoriesCard';
+import { EntityFluxOCIRepositoriesCard } from './EntityFluxOCIRepositoriesCard';
 
 const makeTestOCIRepository = (name: string, url: string) => {
   return {
@@ -189,7 +189,7 @@ describe('<FluxOCIRepositoriesCard />', () => {
             ]}
           >
             <EntityProvider entity={entity}>
-              <FluxEntityOCIRepositoriesCard />
+              <EntityFluxOCIRepositoriesCard />
             </EntityProvider>
           </TestApiProvider>
         </Wrapper>,
