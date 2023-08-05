@@ -233,6 +233,46 @@ gitops:
   baseUrl: https://wego.example.com
 ```
 
+**NOTE:** The URL generated will include the name of the cluster that is configured in Backstage's cluster location mechanism.
+
+```yaml
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: https://192.168.0.1:8000
+          name: Default
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ABC123
+          caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
+```
+
+For example, this would generate a link to the `Default` cluster.
+
+If you want to link to Weave GitOps Enterprise, you will need to provide the
+name and namespace of the cluster you want to query, for example:
+
+```yaml
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: https://192.168.0.1:8000
+          name: test-ns/name
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ABC123
+          caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
+
+```
+
 ## Verification
 
 For the resources where we display a Verification status, if the Flux resource
