@@ -1,4 +1,5 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
+
 import {
   FluxObject,
   GitRepository,
@@ -8,6 +9,7 @@ import {
   OCIRepository,
 } from '../objects';
 
+
 const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
   const queryStringData = {
     clusterName: a.clusterName,
@@ -15,11 +17,9 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
     namespace: a.namespace,
   };
 
-  const queryString = Object.entries(queryStringData)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&');
+  const searchParams = new URLSearchParams(queryStringData);
 
-  return `${baseUrl.replace(/\/$/, '')}/${type}/details?${queryString}`;
+  return `${baseUrl.replace(/\/$/, '')}/${type}/details?${searchParams.toString()}`;
 };
 
 export const useWeaveFluxDeepLink = (
