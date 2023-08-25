@@ -2,7 +2,7 @@
 
 The Flux plugin for Backstage provides views of [Flux](https://fluxcd.io/) resources available in Kubernetes clusters.
 
-![EntityFluxSourcesCard](sources_card.png)
+![EntityFluxSourcesCard](https://raw.githubusercontent.com/weaveworks/weaveworks-backstage/main/plugins/backstage-plugin-flux/sources_card.png)
 
 ## Content
 
@@ -278,7 +278,7 @@ kubernetes:
 For the resources where we display a Verification status, if the Flux resource
 has no verification configured, the column will be blank.
 
-![Verification status for resources](verification.png)
+![Verification status for resources](https://raw.githubusercontent.com/weaveworks/weaveworks-backstage/main/plugins/backstage-plugin-flux/verification.png)
 
 You can configure verification for the following resources:
 
