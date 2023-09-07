@@ -23,7 +23,7 @@ export const pathForResource = (
   return basePath;
 };
 
-export function suspendRequest(
+export function toggleSuspendsuspendRequest(
   name: string,
   namespace: string,
   clusterName: string,
@@ -59,7 +59,7 @@ export function getRequest(
   };
 }
 
-export async function requestSyncResource(
+export async function requestToggleSuspendResource(
   kubernetesApi: KubernetesApi,
   name: string,
   namespace: string,
@@ -68,7 +68,7 @@ export async function requestSyncResource(
   suspend: boolean,
 ) {
   const res = await kubernetesApi.proxy(
-    suspendRequest(name, namespace, clusterName, gvk, suspend),
+    toggleSuspendsuspendRequest(name, namespace, clusterName, gvk, suspend),
   );
   const key = suspend ? 'Suspend' : 'Resume';
   if (!res.ok) {
@@ -78,7 +78,7 @@ export async function requestSyncResource(
   }
 }
 
-export async function syncResource(
+export async function toggleSuspendResource(
   resource: Source | Deployment,
   kubernetesApi: KubernetesApi,
   alertApi: AlertApi,
@@ -99,7 +99,7 @@ export async function syncResource(
         );
       }
       // sync the source
-      await requestSyncResource(
+      await requestToggleSuspendResource(
         kubernetesApi,
         resource.sourceRef.name!,
         resource.sourceRef.namespace || resource.namespace,
@@ -110,7 +110,7 @@ export async function syncResource(
     }
 
     // sync the helm release
-    await requestSyncResource(
+    await requestToggleSuspendResource(
       kubernetesApi,
       resource.name,
       resource.namespace,
@@ -145,7 +145,7 @@ export function useToggleSuspendResource(
   const alertApi = useApi(alertApiRef);
 
   const [{ loading }, toggleSuspend] = useAsyncFn(
-    () => syncResource(resource, kubernetesApi, alertApi, suspend),
+    () => toggleSuspendResource(resource, kubernetesApi, alertApi, suspend),
     [resource, kubernetesApi, alert],
   );
 
