@@ -77,16 +77,16 @@ export const Url = ({ resource }: { resource: Source }): JSX.Element => {
 
 export function SyncButton({
   resource,
-  setLoading,
+  sync,
+  status,
 }: {
   resource: Source | Deployment;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  sync: () => Promise<void>;
+  status: boolean;
 }) {
-  const { sync, isSyncing } = useSyncResource(resource);
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
-  const title = isSyncing ? `Syncing ${label}` : `Sync ${label}`;
-  setLoading(isSyncing);
+  const title = status ? `Syncing ${label}` : `Sync ${label}`;
   return (
     <Tooltip title={title}>
       <div>
@@ -106,19 +106,16 @@ export function SyncButton({
 
 export function SuspendButton({
   resource,
-  setLoading,
+  toggleSuspend,
+  status,
 }: {
   resource: Source | Deployment;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleSuspend: () => Promise<void>;
+  status: boolean;
 }) {
-  const { loading: isSuspending, toggleSuspend } = useToggleSuspendResource(
-    resource,
-    true,
-  );
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
-  const title = isSuspending ? `Suspending ${label}` : `Suspend ${label}`;
-  setLoading(isSuspending);
+  const title = status ? `Suspending ${label}` : `Suspend ${label}`;
 
   return (
     <Tooltip title={title}>
@@ -139,19 +136,16 @@ export function SuspendButton({
 
 export function ResumeButton({
   resource,
-  setLoading,
+  toggleResume,
+  status,
 }: {
   resource: Source | Deployment;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleResume: () => Promise<void>;
+  status: boolean;
 }) {
-  const { loading: isResuming, toggleSuspend } = useToggleSuspendResource(
-    resource,
-    false,
-  );
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
-  const title = isResuming ? `Resuming ${label}` : `Resume ${label}`;
-  setLoading(isResuming);
+  const title = status ? `Resuming ${label}` : `Resume ${label}`;
 
   return (
     <Tooltip title={title}>
@@ -160,7 +154,7 @@ export function ResumeButton({
           data-testid={`resume ${label}`}
           className={classes.actionButton}
           size="small"
-          onClick={toggleSuspend}
+          onClick={toggleResume}
           disabled={!resource.suspended}
         >
           <PlayArrowIcon />
@@ -171,16 +165,32 @@ export function ResumeButton({
 }
 
 export function GroupAction({ resource }: { resource: Source | Deployment }) {
-  const [isLoading, setIsLoading] = useState(false);
+  const { sync, isSyncing } = useSyncResource(resource);
+  const { loading: isSuspending, toggleSuspend } = useToggleSuspendResource(
+    resource,
+    true,
+  );
+  const { loading: isResuming, toggleSuspend: toogleResume } =
+    useToggleSuspendResource(resource, false);
+  const isLoading = isSyncing || isSuspending || isResuming;
+
   return (
     <>
       {isLoading ? (
         <Progress data-testid="loading" />
       ) : (
         <Flex>
-          <SyncButton resource={resource} setLoading={setIsLoading} />
-          <SuspendButton resource={resource} setLoading={setIsLoading} />
-          <ResumeButton resource={resource} setLoading={setIsLoading} />
+          <SyncButton resource={resource} sync={sync} status={isSyncing} />
+          <SuspendButton
+            resource={resource}
+            toggleSuspend={toggleSuspend}
+            status={isSuspending}
+          />
+          <ResumeButton
+            resource={resource}
+            toggleResume={toogleResume}
+            status={isResuming}
+          />
         </Flex>
       )}
     </>
