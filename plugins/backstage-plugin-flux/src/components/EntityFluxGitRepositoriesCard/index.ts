@@ -1,0 +1,1 @@
+export { EntityFluxGitRepositoriesCard } from './EntityFluxGitRepositoriesCard';

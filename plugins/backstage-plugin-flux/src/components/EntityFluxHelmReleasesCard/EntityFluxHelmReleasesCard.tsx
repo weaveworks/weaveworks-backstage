@@ -1,13 +1,16 @@
 import React from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard } from '@backstage/core-components';
+import { useHelmReleases } from '../../hooks/query';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
-import { useFluxDeployments } from '../../hooks';
-import { FluxDeploymentsTable, defaultColumns } from './FluxDeploymentsTable';
+import {
+  FluxDeploymentsTable,
+  defaultColumns,
+} from '../EntityFluxDeploymentsCard/FluxDeploymentsTable';
 
-const DeploymentsPanel = ({ many }: { many?: boolean }) => {
+const HelmReleasePanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
-  const { data, loading, errors } = useFluxDeployments(entity);
+  const { data, loading, errors } = useHelmReleases(entity);
 
   if (errors) {
     return (
@@ -23,7 +26,7 @@ const DeploymentsPanel = ({ many }: { many?: boolean }) => {
   }
 
   return (
-    <InfoCard title="Deployments">
+    <InfoCard title="Helm Releases">
       <FluxDeploymentsTable
         deployments={data || []}
         isLoading={loading && !data}
@@ -35,16 +38,16 @@ const DeploymentsPanel = ({ many }: { many?: boolean }) => {
 };
 
 /**
- * Render the Deployments associated with the current Entity.
+ * Render the HelmReleases associated with the current Entity.
  *
  * @public
  */
-export const FluxEntityDeploymentsCard = ({
+export const EntityFluxHelmReleasesCard = ({
   many = true,
 }: {
   many?: boolean;
 }) => (
   <WeaveGitOpsContext>
-    <DeploymentsPanel many={many} />
+    <HelmReleasePanel many={many} />
   </WeaveGitOpsContext>
 );

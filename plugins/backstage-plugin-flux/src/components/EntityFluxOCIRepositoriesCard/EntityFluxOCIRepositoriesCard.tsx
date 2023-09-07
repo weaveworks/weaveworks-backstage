@@ -6,7 +6,7 @@ import { useOCIRepositories } from '../../hooks';
 import {
   gitOciDefaultColumns,
   FluxSourcesTable,
-} from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
+} from '../EntityFluxSourcesCard/FluxSourcesTable';
 import { Source } from '../helpers';
 
 const OCIRepositoryPanel = ({ many }: { many?: boolean }) => {
@@ -43,7 +43,7 @@ const OCIRepositoryPanel = ({ many }: { many?: boolean }) => {
  *
  * @public
  */
-export const FluxEntityOCIRepositoriesCard = ({
+export const EntityFluxOCIRepositoriesCard = ({
   many = true,
 }: {
   many?: boolean;

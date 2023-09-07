@@ -6,7 +6,7 @@ import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import {
   gitOciDefaultColumns,
   FluxSourcesTable,
-} from '../FluxEntitySourcesCard/FluxEntitySourcesTable';
+} from '../EntityFluxSourcesCard/FluxSourcesTable';
 import { Source } from '../helpers';
 
 const GitRepositoriesPanel = ({ many }: { many?: boolean }) => {
@@ -43,7 +43,7 @@ const GitRepositoriesPanel = ({ many }: { many?: boolean }) => {
  *
  * @public
  */
-export const FluxEntityGitRepositoriesCard = ({
+export const EntityFluxGitRepositoriesCard = ({
   many = true,
 }: {
   many?: boolean;

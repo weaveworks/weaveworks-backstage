@@ -1,10 +1,10 @@
 export {
   weaveworksFluxPlugin,
-  FluxEntityHelmReleasesCard,
-  FluxEntityGitRepositoriesCard,
-  FluxEntityOCIRepositoriesCard,
-  FluxEntityKustomizationsCard,
-  FluxEntityHelmRepositoriesCard,
-  FluxEntityDeploymentsCard,
-  FluxEntitySourcesCard,
+  EntityFluxHelmReleasesCard,
+  EntityFluxGitRepositoriesCard,
+  EntityFluxOCIRepositoriesCard,
+  EntityFluxKustomizationsCard,
+  EntityFluxHelmRepositoriesCard,
+  EntityFluxDeploymentsCard,
+  EntityFluxSourcesCard,
 } from './plugin';

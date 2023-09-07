@@ -1,0 +1,1 @@
+export { EntityFluxOCIRepositoriesCard } from './EntityFluxOCIRepositoriesCard';

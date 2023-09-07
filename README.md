@@ -1,10 +1,19 @@
-# [Backstage](https://backstage.io)
+This repo contains the [Backstage](https://backstage.io) plugins created and maintained by [Weaveworks](https://www.weave.works/).
 
-## Local dev
+The following plugins can be found within this repo:
 
-For local dev we'll need to set up a Github OAuth app and a local kubernetes cluster.
+- [FluxPlugin](https://github.com/weaveworks/weaveworks-backstage/blob/main/plugins/backstage-plugin-flux/)
 
-Please ensure you're running a recent version of Flux supported versions are > 2.0.0
+Installation instructions for the plugins can be found in their individual README files.
+
+##
+
+## Getting Started
+
+To get up and running with this repository, you will need to set up:
+
+- a Github OAuth app and
+- a local kubernetes cluster.
 
 ### Configure Github OAuth
 
@@ -37,7 +46,7 @@ kind create cluster
 flux install
 
 # setup cluster auth and create an example podinfo helmrelease
-kubectl apply -f ./demo
+kubectl apply -k ./demo
 
 # install deps (node version 14 || >=16.14 required)
 yarn install
@@ -66,18 +75,6 @@ In short:
 
 Login to http://localhost:9001 with the username `admin` and the password you provided when creating the dashboard.
 
-## Releasing
+## Community
 
-Publishing a **GitHub release** will trigger a GitHub Action to build and push the npm module to the [backstage-plugin-flux npm package](https://www.npmjs.com/package/@weaveworksoss/backstage-plugin-flux).
-
-### Create the release
-
-Create a [new Github release](https://github.com/weaveworks/weaveworks-backstage/releases/new)
-
-1. Click "Choose a tag" and type in the tag that the release should create on publish (e.g. `v0.5.0`)
-2. Click **Generate release notes**
-3. Click **Publish release**
-
-After a few minutes the release should be available on npm.
-
-Follow the [backstage-plugin-flux installation instructions](./plugins/backstage-plugin-flux/README.md) to upgrade the plugin in your Backstage app.
+For more details on how to contribute to the plugins, have a look at [Contributing](https://github.com/weaveworks/weaveworks-backstage/blob/main/CONTRIBUTING.md).

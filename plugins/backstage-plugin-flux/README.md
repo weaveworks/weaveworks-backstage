@@ -2,7 +2,8 @@
 
 The Flux plugin for Backstage provides views of [Flux](https://fluxcd.io/) resources available in Kubernetes clusters.
 
-![FluxEntitySourcesCard](sources_card.png)
+<!-- This URL is a complete path so that it shows up in the NPM package -->
+![EntityFluxSourcesCard](https://raw.githubusercontent.com/weaveworks/weaveworks-backstage/main/plugins/backstage-plugin-flux/sources_card.png)
 
 ## Content
 
@@ -12,16 +13,16 @@ All cards use the Backstage Kubernetes ["common label"](https://backstage.io/doc
 
 These Cards provide unified views of their resources.
 
-- FluxEntityDeploymentsCard - Displays associated Kustomizations and HelmReleases
-- FluxEntitySourcesCard - Displays associated GitRepositories, OCIRepositories and HelmRepositories
+- EntityFluxDeploymentsCard - Displays associated Kustomizations and HelmReleases
+- EntityFluxSourcesCard - Displays associated GitRepositories, OCIRepositories and HelmRepositories
 
 You can also add cards for resources with the following components, each of these shows specific resources associated to the Entity.
 
-- FluxEntityHelmReleasesCard
-- FluxEntityKustomizationsCard
-- FluxEntityGitRepositoriesCard
-- FluxEntityOCIRepositoriesCard
-- FluxEntityHelmRepositoriesCard
+- EntityFluxHelmReleasesCard
+- EntityFluxKustomizationsCard
+- EntityFluxGitRepositoriesCard
+- EntityFluxOCIRepositoriesCard
+- EntityFluxHelmRepositoriesCard
 
 As with other Backstage plugins, you can compose the UI you need.
 
@@ -123,7 +124,7 @@ The Flux plugins provide several different Cards, which are composable into your
 
 ```tsx
 // In packages/app/src/components/catalog/EntityPage.tsx
-import { FluxEntityHelmReleasesCard } from '@weaveworksoss/backstage-plugin-flux';
+import { EntityFluxHelmReleasesCard } from '@weaveworksoss/backstage-plugin-flux';
 
 // You can add the tab to any number of pages, the service page is shown as an
 // example here
@@ -131,7 +132,7 @@ const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
     // ...
     <Grid item md={4} xs={12}>
-      <FluxEntityHelmReleasesCard />
+      <EntityFluxHelmReleasesCard />
     </Grid>
     // ...
   </Grid>
@@ -142,7 +143,7 @@ The card has a `many` property which is `true` by default. If your card table is
 
 ```tsx
 <Grid item md={4} xs={12}>
-  <FluxEntityHelmReleasesCard many={false} />
+  <EntityFluxHelmReleasesCard many={false} />
 </Grid>
 ```
 
@@ -151,10 +152,10 @@ The card has a `many` property which is `true` by default. If your card table is
 ```tsx
 // In packages/app/src/components/catalog/EntityPage.tsx
 import {
-  FluxEntityHelmReleasesCard,
-  FluxEntityGitRepositoriesCard,
-  FluxEntityOCIRepositoriesCard,
-  FluxEntityHelmRepositoriesCard,
+  EntityFluxHelmReleasesCard,
+  EntityFluxGitRepositoriesCard,
+  EntityFluxOCIRepositoriesCard,
+  EntityFluxHelmRepositoriesCard,
 } from '@weaveworksoss/backstage-plugin-flux';
 
 const serviceEntityPage = (
@@ -162,16 +163,16 @@ const serviceEntityPage = (
     // ...
     <Grid container spacing={3} alignItems="stretch">
       <Grid item md={12}>
-        <FluxEntityHelmReleasesCard />
+        <EntityFluxHelmReleasesCard />
       </Grid>
       <Grid item md={12}>
-        <FluxEntityHelmRepositoriesCard />
+        <EntityFluxHelmRepositoriesCard />
       </Grid>
       <Grid item md={12}>
-        <FluxEntityGitRepositoriesCard />
+        <EntityFluxGitRepositoriesCard />
       </Grid>
       <Grid item md={12}>
-        <FluxEntityOCIRepositoriesCard />
+        <EntityFluxOCIRepositoriesCard />
       </Grid>
     </Grid>
     // ...
@@ -233,12 +234,53 @@ gitops:
   baseUrl: https://wego.example.com
 ```
 
+**NOTE:** The URL generated will include the name of the cluster that is configured in Backstage's cluster location mechanism.
+
+```yaml
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: https://192.168.0.1:8000
+          name: Default
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ABC123
+          caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
+```
+
+For example, this would generate a link to the `Default` cluster.
+
+If you want to link to Weave GitOps Enterprise, you will need to provide the
+name and namespace of the cluster you want to query, for example:
+
+```yaml
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: https://192.168.0.1:8000
+          name: test-ns/name
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ABC123
+          caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
+
+```
+
 ## Verification
 
 For the resources where we display a Verification status, if the Flux resource
 has no verification configured, the column will be blank.
 
-![Verification status for resources](verification.png)
+<!-- This URL is a complete path so that it shows up in the NPM package -->
+![Verification status for resources](https://raw.githubusercontent.com/weaveworks/weaveworks-backstage/main/plugins/backstage-plugin-flux/verification.png)
 
 You can configure verification for the following resources:
 

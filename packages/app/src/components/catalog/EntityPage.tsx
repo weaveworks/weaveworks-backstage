@@ -57,13 +57,13 @@ import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
 import {
-  FluxEntityGitRepositoriesCard,
-  FluxEntityHelmReleasesCard,
-  FluxEntityOCIRepositoriesCard,
-  FluxEntityKustomizationsCard,
-  FluxEntityHelmRepositoriesCard,
-  FluxEntityDeploymentsCard,
-  FluxEntitySourcesCard,
+  EntityFluxGitRepositoriesCard,
+  EntityFluxHelmReleasesCard,
+  EntityFluxOCIRepositoriesCard,
+  EntityFluxKustomizationsCard,
+  EntityFluxHelmRepositoriesCard,
+  EntityFluxDeploymentsCard,
+  EntityFluxSourcesCard,
 } from '@weaveworksoss/backstage-plugin-flux';
 
 const techdocsContent = (
@@ -132,7 +132,7 @@ const overviewContent = (
     </Grid>
 
     <Grid item md={8} xs={12}>
-      <FluxEntityHelmReleasesCard />
+      <EntityFluxHelmReleasesCard />
     </Grid>
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
@@ -156,25 +156,25 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/weaveworks-flux" title="Weave Flux">
       <Grid container spacing={3} alignItems="stretch">
         <Grid item md={12}>
-          <FluxEntityHelmReleasesCard />
+          <EntityFluxHelmReleasesCard />
         </Grid>
         <Grid item md={12}>
-          <FluxEntityKustomizationsCard />
+          <EntityFluxKustomizationsCard />
         </Grid>
         <Grid item md={12}>
-          <FluxEntityHelmRepositoriesCard />
+          <EntityFluxHelmRepositoriesCard />
         </Grid>
         <Grid item md={12}>
-          <FluxEntityGitRepositoriesCard />
+          <EntityFluxGitRepositoriesCard />
         </Grid>
         <Grid item md={12}>
-          <FluxEntityOCIRepositoriesCard />
+          <EntityFluxOCIRepositoriesCard />
         </Grid>
         <Grid item md={12}>
-          <FluxEntityDeploymentsCard />
+          <EntityFluxDeploymentsCard />
         </Grid>
         <Grid item md={12}>
-          <FluxEntitySourcesCard />
+          <EntityFluxSourcesCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>

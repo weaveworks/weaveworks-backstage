@@ -16,7 +16,7 @@ import {
   ObjectsByEntityResponse,
 } from '@backstage/plugin-kubernetes-common';
 import * as helmRepository from '../../__fixtures__/helm_repository.json';
-import { FluxEntityHelmRepositoriesCard } from './FluxEntityHelmRepositoriesCard';
+import { EntityFluxHelmRepositoriesCard } from './EntityFluxHelmRepositoriesCard';
 
 const makeTestHelmRepository = (name: string, url: string) => {
   const repo = JSON.parse(JSON.stringify(helmRepository));
@@ -95,7 +95,7 @@ const entity: Entity = {
   },
 };
 
-describe('<FluxEntityHelmRepositoriesCard />', () => {
+describe('<EntityFluxHelmRepositoriesCard />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -119,7 +119,7 @@ describe('<FluxEntityHelmRepositoriesCard />', () => {
           ]}
         >
           <EntityProvider entity={entity}>
-            <FluxEntityHelmRepositoriesCard />
+            <EntityFluxHelmRepositoriesCard />
           </EntityProvider>
         </TestApiProvider>
       );
@@ -165,7 +165,7 @@ describe('<FluxEntityHelmRepositoriesCard />', () => {
           ]}
         >
           <EntityProvider entity={entity}>
-            <FluxEntityHelmRepositoriesCard />
+            <EntityFluxHelmRepositoriesCard />
           </EntityProvider>
         </TestApiProvider>
       );
