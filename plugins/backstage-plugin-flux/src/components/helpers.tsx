@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { DateTime } from 'luxon';
 import {
@@ -9,6 +9,8 @@ import {
 } from '@backstage/core-components';
 import { Box, IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
+import PauseIcon from '@material-ui/icons/Pause';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { useSyncResource, useWeaveFluxDeepLink } from '../hooks';
 import {
@@ -28,6 +30,7 @@ import {
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 import { helm, kubernetes, oci, git } from '../images/icons';
+import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -72,38 +75,122 @@ export const Url = ({ resource }: { resource: Source }): JSX.Element => {
   );
 };
 
-export function SyncButton({ resource }: { resource: Source | Deployment }) {
+export function SyncButton({
+  resource,
+  setLoading,
+}: {
+  resource: Source | Deployment;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const { sync, isSyncing } = useSyncResource(resource);
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = isSyncing ? `Syncing ${label}` : `Sync ${label}`;
-
+  setLoading(isSyncing);
   return (
     <Tooltip title={title}>
-      {/* <Progress /> can't handle forwardRef (?) so we wrap in a div */}
       <div>
-        {isSyncing ? (
-          <Progress data-testid="syncing" />
-        ) : (
-          <IconButton
-            data-testid={`sync ${label}`}
-            className={classes.syncButton}
-            size="small"
-            onClick={sync}
-            disabled={resource.suspended}
-          >
-            <RetryIcon />
-          </IconButton>
-        )}
+        <IconButton
+          data-testid={`sync ${label}`}
+          className={classes.actionButton}
+          size="small"
+          onClick={sync}
+          disabled={resource.suspended}
+        >
+          <RetryIcon />
+        </IconButton>
       </div>
     </Tooltip>
   );
 }
 
-export function syncColumn<T extends Source | Deployment>() {
+export function SuspendButton({
+  resource,
+  setLoading,
+}: {
+  resource: Source | Deployment;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const { loading: isSuspending, toggleSuspend } = useToggleSuspendResource(
+    resource,
+    true,
+  );
+  const classes = useStyles();
+  const label = `${resource.namespace}/${resource.name}`;
+  const title = isSuspending ? `Suspending ${label}` : `Suspend ${label}`;
+  setLoading(isSuspending);
+
+  return (
+    <Tooltip title={title}>
+      <div>
+        <IconButton
+          data-testid={`suspend ${label}`}
+          className={classes.actionButton}
+          size="small"
+          onClick={toggleSuspend}
+          disabled={resource.suspended}
+        >
+          <PauseIcon />
+        </IconButton>
+      </div>
+    </Tooltip>
+  );
+}
+
+export function ResumeButton({
+  resource,
+  setLoading,
+}: {
+  resource: Source | Deployment;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const { loading: isResuming, toggleSuspend } = useToggleSuspendResource(
+    resource,
+    false,
+  );
+  const classes = useStyles();
+  const label = `${resource.namespace}/${resource.name}`;
+  const title = isResuming ? `Resuming ${label}` : `Resume ${label}`;
+  setLoading(isResuming);
+
+  return (
+    <Tooltip title={title}>
+      <div>
+        <IconButton
+          data-testid={`resume ${label}`}
+          className={classes.actionButton}
+          size="small"
+          onClick={toggleSuspend}
+          disabled={!resource.suspended}
+        >
+          <PlayArrowIcon />
+        </IconButton>
+      </div>
+    </Tooltip>
+  );
+}
+
+export function GroupAction({ resource }: { resource: Source | Deployment }) {
+  const [isLoading, setIsLoading] = useState(false);
+  return (
+    <>
+      {isLoading ? (
+        <Progress data-testid="loading" />
+      ) : (
+        <Flex>
+          <SyncButton resource={resource} setLoading={setIsLoading} />
+          <SuspendButton resource={resource} setLoading={setIsLoading} />
+          <ResumeButton resource={resource} setLoading={setIsLoading} />
+        </Flex>
+      )}
+    </>
+  );
+}
+
+export function actionColumn<T extends Source | Deployment>() {
   return {
-    title: 'Sync',
-    render: row => <SyncButton resource={row} />,
+    title: 'Actions',
+    render: row => <GroupAction resource={row} />,
     width: '24px',
   } as TableColumn<T>;
 }
