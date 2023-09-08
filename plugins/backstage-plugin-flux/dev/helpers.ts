@@ -242,7 +242,9 @@ export const newTestImagePolicy = (
     status: {
       conditions: [
         {
-          lastTransitionTime: '2023-07-03T16:18:04Z',
+          lastTransitionTime: DateTime.now()
+            .minus({ hours: randomInt(22) + 1 })
+            .toISO(),
           message:
             'Applied revision: main@sha1:c933408394a3af8fa7208af8c9abf7fe430f99d4',
           observedGeneration: 1,

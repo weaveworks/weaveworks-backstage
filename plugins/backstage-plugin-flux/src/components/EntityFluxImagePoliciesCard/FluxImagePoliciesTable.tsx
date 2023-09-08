@@ -19,6 +19,7 @@ export const defaultColumns: TableColumn<ImagePolicy>[] = [
   typeColumn(),
   nameAndClusterNameColumn(),
   statusColumn(),
+  // add image policy, order / range and image repository ref
   updatedColumn(),
   syncColumn(),
 ];
