@@ -24,6 +24,7 @@ import {
   Kustomization,
   HelmRepository,
   OCIRepository,
+  ImagePolicy,
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
@@ -72,7 +73,11 @@ export const Url = ({ resource }: { resource: Source }): JSX.Element => {
   );
 };
 
-export function SyncButton({ resource }: { resource: Source | Deployment }) {
+export function SyncButton({
+  resource,
+}: {
+  resource: Source | Deployment | ImagePolicy;
+}) {
   const { sync, isSyncing } = useSyncResource(resource);
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
@@ -100,7 +105,7 @@ export function SyncButton({ resource }: { resource: Source | Deployment }) {
   );
 }
 
-export function syncColumn<T extends Source | Deployment>() {
+export function syncColumn<T extends Source | Deployment | ImagePolicy>() {
   return {
     title: 'Sync',
     render: row => <SyncButton resource={row} />,
@@ -277,7 +282,12 @@ export const getIconType = (type: string) => {
 };
 
 export const typeColumn = <
-  T extends Deployment | OCIRepository | GitRepository | HelmRepository,
+  T extends
+    | Deployment
+    | OCIRepository
+    | GitRepository
+    | HelmRepository
+    | ImagePolicy,
 >() => {
   const paddingLeft = 0;
   return {

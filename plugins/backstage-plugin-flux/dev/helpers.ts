@@ -22,22 +22,33 @@ const copy = (obj: any): any => {
   return JSON.parse(JSON.stringify(obj));
 };
 
-const removeVerifiedCondition = (conditions: Condition[]): Condition[]  => copy(conditions).filter((cond: Condition) => cond.type !== 'SourceVerified');
+const removeVerifiedCondition = (conditions: Condition[]): Condition[] =>
+  copy(conditions).filter((cond: Condition) => cond.type !== 'SourceVerified');
 
-const applyReadyCondition = (status: boolean, conditions: Condition[]): Condition[] => {
+const applyReadyCondition = (
+  status: boolean,
+  conditions: Condition[],
+): Condition[] => {
   const ready = conditions.find(cond => cond.type === 'Ready');
   if (ready === undefined) {
     return conditions;
   }
 
   ready.status = Boolean(status) === true ? 'True' : 'False';
-  const result = conditions.filter((cond: Condition) => cond.type !== 'Ready')
+  const result = conditions.filter((cond: Condition) => cond.type !== 'Ready');
   result.unshift(ready);
 
   return result;
-}
+};
 
-const configureFixture = (name: string, url: string, fixture: any, verifiedFixture: any, unverifiedFixture: any, opts?: RepoOpts) => {
+const configureFixture = (
+  name: string,
+  url: string,
+  fixture: any,
+  verifiedFixture: any,
+  unverifiedFixture: any,
+  opts?: RepoOpts,
+) => {
   let result = copy(fixture);
 
   if (opts?.verify) {
@@ -49,11 +60,16 @@ const configureFixture = (name: string, url: string, fixture: any, verifiedFixtu
   }
 
   if (opts?.verify && opts?.pending) {
-    result.status.conditions = removeVerifiedCondition(result.status.conditions);
+    result.status.conditions = removeVerifiedCondition(
+      result.status.conditions,
+    );
   }
 
   if (opts?.ready !== undefined) {
-    result.status.conditions = applyReadyCondition(opts.ready!, result.status.conditions);
+    result.status.conditions = applyReadyCondition(
+      opts.ready!,
+      result.status.conditions,
+    );
   }
 
   result.spec.url = url;
@@ -63,22 +79,36 @@ const configureFixture = (name: string, url: string, fixture: any, verifiedFixtu
     .toISO()!;
 
   return result;
-}
+};
 
 export const newTestOCIRepository = (
   name: string,
   url: string,
-  opts?: RepoOpts
+  opts?: RepoOpts,
 ) => {
-  return configureFixture(name, url, ociRepository, verifiedOCIRepository, unverifiedOCIRepository, opts);
+  return configureFixture(
+    name,
+    url,
+    ociRepository,
+    verifiedOCIRepository,
+    unverifiedOCIRepository,
+    opts,
+  );
 };
 
 export const newTestGitRepository = (
   name: string,
   url: string,
-  opts?: RepoOpts
+  opts?: RepoOpts,
 ) => {
-  return configureFixture(name, url, gitRepository, verifiedGitRepository, unverifiedGitRepository, opts);
+  return configureFixture(
+    name,
+    url,
+    gitRepository,
+    verifiedGitRepository,
+    unverifiedGitRepository,
+    opts,
+  );
 };
 
 export const newTestKustomization = (
@@ -86,16 +116,19 @@ export const newTestKustomization = (
   path: string,
   ready: boolean,
 ) => {
-    const result = copy(kustomization);
+  const result = copy(kustomization);
 
-    result.metadata.name = name;
-    result.spec.path = path;
+  result.metadata.name = name;
+  result.spec.path = path;
 
-    result.metadata.name = name;
-    result.spec.path = path;
-    result.status.conditions = applyReadyCondition(ready, result.status.conditions);
+  result.metadata.name = name;
+  result.spec.path = path;
+  result.status.conditions = applyReadyCondition(
+    ready,
+    result.status.conditions,
+  );
 
-    return result;
+  return result;
 };
 
 export const newTestHelmRepository = (
@@ -103,13 +136,16 @@ export const newTestHelmRepository = (
   url: string,
   ready: boolean = true,
 ) => {
-    const result = copy(helmRepository);
+  const result = copy(helmRepository);
 
-    result.metadata.name = name;
-    result.spec.url = url;
-    result.status.conditions = applyReadyCondition(ready, result.status.conditions);
+  result.metadata.name = name;
+  result.spec.url = url;
+  result.status.conditions = applyReadyCondition(
+    ready,
+    result.status.conditions,
+  );
 
-    return result;
+  return result;
 };
 
 export const newTestHelmRelease = (
@@ -172,6 +208,51 @@ export const newTestHelmRelease = (
       lastAttemptedValuesChecksum: 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
       lastReleaseRevision: 6,
       observedGeneration: 12,
+    },
+  };
+};
+
+export const newTestImagePolicy = (
+  name: string,
+  policy: { [name: string]: { range: string } },
+  imageRepositoryRef: string,
+) => {
+  return {
+    apiVersion: 'image.toolkit.fluxcd.io/v1beta1',
+    kind: 'ImagePolicy',
+    metadata: {
+      creationTimestamp: '2023-06-29T08:06:59Z',
+      finalizers: ['finalizers.fluxcd.io'],
+      generation: 2,
+      labels: {
+        'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+        'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+      },
+      name,
+      namespace: 'flux-system',
+      resourceVersion: '13621',
+      uid: '5009e51d-0fee-4f8e-9df1-7684c8aac4bd',
+    },
+    spec: {
+      imageRepositoryRef: {
+        name: imageRepositoryRef,
+      },
+      policy,
+    },
+    status: {
+      conditions: [
+        {
+          lastTransitionTime: '2023-07-03T16:18:04Z',
+          message:
+            'Applied revision: main@sha1:c933408394a3af8fa7208af8c9abf7fe430f99d4',
+          observedGeneration: 1,
+          reason: 'ReconciliationSucceeded',
+          status: 'True',
+          type: 'Ready',
+        },
+      ],
+      latestImage: 'ghcr.io/stefanprodan/podinfo:5.0.3',
+      observedGeneration: 2,
     },
   };
 };

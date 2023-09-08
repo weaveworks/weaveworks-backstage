@@ -64,6 +64,7 @@ import {
   EntityFluxHelmRepositoriesCard,
   EntityFluxDeploymentsCard,
   EntityFluxSourcesCard,
+  EntityFluxImagePoliciesCard,
 } from '@weaveworksoss/backstage-plugin-flux';
 
 const techdocsContent = (
@@ -175,6 +176,9 @@ const serviceEntityPage = (
         </Grid>
         <Grid item md={12}>
           <EntityFluxSourcesCard />
+        </Grid>
+        <Grid item md={12}>
+          <EntityFluxImagePoliciesCard />
         </Grid>
       </Grid>
     </EntityLayout.Route>

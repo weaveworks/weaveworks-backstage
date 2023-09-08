@@ -127,3 +127,19 @@ export const EntityFluxSourcesCard = weaveworksFluxPlugin.provide(
     },
   }),
 );
+
+/**
+ * Card used to show the state of Image Policies for an Entity.
+ * @public
+ */
+export const EntityFluxImagePoliciesCard = weaveworksFluxPlugin.provide(
+  createComponentExtension({
+    name: 'EntityFluxImagePoliciesCard',
+    component: {
+      lazy: () =>
+        import('./components/EntityFluxImagePoliciesCard').then(
+          m => m.EntityFluxImagePoliciesCard,
+        ),
+    },
+  }),
+);

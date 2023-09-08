@@ -26,6 +26,7 @@ import {
   EntityFluxHelmRepositoriesCard,
   EntityFluxKustomizationsCard,
   EntityFluxDeploymentsCard,
+  EntityFluxImagePoliciesCard,
 } from '../src/plugin';
 import {
   newTestHelmRelease,
@@ -33,6 +34,7 @@ import {
   newTestGitRepository,
   newTestKustomization,
   newTestHelmRepository,
+  newTestImagePolicy,
 } from './helpers';
 import { ReconcileRequestAnnotation } from '../src/hooks';
 import { EntityFluxSourcesCard } from '../src/components/EntityFluxSourcesCard';
@@ -527,6 +529,45 @@ createDevApp()
         <EntityProvider entity={fakeEntity}>
           <Content>
             <EntityFluxSourcesCard />
+          </Content>
+        </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
+  .addPage({
+    title: 'ImagePolicies',
+    path: '/imagepolicies',
+    element: (
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego' },
+            }),
+          ],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestImagePolicy(
+                'podinfo',
+                { semver: { range: '5.0.x' } },
+                'podinfo',
+              ),
+              newTestImagePolicy(
+                'test',
+                { semver: { range: '5.0.x' } },
+                'test',
+              ),
+            ]),
+          ],
+
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        <EntityProvider entity={fakeEntity}>
+          <Content>
+            <EntityFluxImagePoliciesCard />
           </Content>
         </EntityProvider>
       </TestApiProvider>
