@@ -23,7 +23,7 @@ export const pathForResource = (
   return basePath;
 };
 
-export function toggleSuspendsuspendRequest(
+export function toggleSuspendRequest(
   name: string,
   namespace: string,
   clusterName: string,
@@ -68,7 +68,7 @@ export async function requestToggleSuspendResource(
   suspend: boolean,
 ) {
   const res = await kubernetesApi.proxy(
-    toggleSuspendsuspendRequest(name, namespace, clusterName, gvk, suspend),
+    toggleSuspendRequest(name, namespace, clusterName, gvk, suspend),
   );
   const key = suspend ? 'Suspend' : 'Resume';
   if (!res.ok) {
