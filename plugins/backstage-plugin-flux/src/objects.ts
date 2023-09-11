@@ -397,7 +397,7 @@ export class HelmRelease extends FluxObject {
 export class ImageUpdateAutomation extends FluxObject {
   get sourceRef(): ObjectRef | undefined {
     if (!this.obj.spec?.sourceRef) {
-      return;
+      return undefined;
     }
     const source = {
       ...this.obj.spec.sourceRef,
@@ -407,9 +407,11 @@ export class ImageUpdateAutomation extends FluxObject {
     }
     return source;
   }
+
   get lastAutomationRunTime(): string {
     return this.obj?.status?.lastAutomationRunTime || '';
   }
+
   get type(): Kind | string | undefined {
     return this.obj.kind || this.obj.groupVersionKind?.kind;
   }

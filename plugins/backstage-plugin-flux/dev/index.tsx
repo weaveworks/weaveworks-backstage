@@ -561,7 +561,6 @@ createDevApp()
               ),
             ]),
           ],
-
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
