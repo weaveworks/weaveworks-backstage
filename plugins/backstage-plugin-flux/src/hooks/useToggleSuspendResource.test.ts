@@ -159,7 +159,7 @@ describe('toggleSuspendResource', () => {
     clusterName: 'test-clusterName',
   } as HelmRelease;
 
-  it('should Suspend the source and resource', async () => {
+  it('should Suspend resource', async () => {
     const kubernetesApi = makeMockKubernetesApi();
     const alertApi = makeMockAlertApi();
     kubernetesApi.proxy.mockResolvedValue({
@@ -168,19 +168,6 @@ describe('toggleSuspendResource', () => {
     } as Response);
 
     await toggleSuspendResource(helmRelease, kubernetesApi, alertApi, false);
-
-    // Assert we tried to PATCH the source
-    expect(kubernetesApi.proxy).toHaveBeenCalledWith({
-      clusterName: 'test-clusterName',
-      init: {
-        body: `{"spec":{"suspend":false}}`,
-        headers: {
-          'Content-Type': 'application/merge-patch+json',
-        },
-        method: 'PATCH',
-      },
-      path: '/apis/source.toolkit.fluxcd.io/v1beta2/namespaces/test-namespace/helmrepositories/test-source-name',
-    });
 
     // ASSERT we tried to PATCH the resource
     expect(kubernetesApi.proxy).toHaveBeenCalledWith({

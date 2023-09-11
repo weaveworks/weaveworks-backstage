@@ -91,24 +91,6 @@ export async function toggleSuspendResource(
       throw new Error(`Unknown resource type: ${resource.type}`);
     }
 
-    if ('sourceRef' in resource && resource.sourceRef) {
-      const sourceGVK = gvkFromKind(resource.sourceRef.kind);
-      if (!sourceGVK) {
-        throw new Error(
-          `Unknown resource source type: ${resource.sourceRef.kind}`,
-        );
-      }
-      // sync the source
-      await requestToggleSuspendResource(
-        kubernetesApi,
-        resource.sourceRef.name!,
-        resource.sourceRef.namespace || resource.namespace,
-        resource.clusterName,
-        sourceGVK,
-        suspend,
-      );
-    }
-
     await requestToggleSuspendResource(
       kubernetesApi,
       resource.name,
