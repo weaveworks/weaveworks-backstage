@@ -74,7 +74,6 @@ class StubKubernetesClient implements KubernetesApi {
   getCustomObjectsByEntity(
     _: CustomObjectsByEntityRequest,
   ): Promise<ObjectsByEntityResponse> {
-    const policy = { semver: { range: '5.0.x' } };
     return Promise.resolve({
       items: [
         {
@@ -86,7 +85,18 @@ class StubKubernetesClient implements KubernetesApi {
           resources: [
             {
               type: 'customresources',
-              resources: [makeTestImagePolicy('podinfo', policy, 'podinfo')],
+              resources: [
+                makeTestImagePolicy(
+                  'podinfo',
+                  { semver: { range: '5.0.x' } },
+                  'podinfo',
+                ),
+                makeTestImagePolicy(
+                  'test',
+                  { numerical: { order: 'asc' } },
+                  'test',
+                ),
+              ],
             },
           ],
         },
@@ -166,8 +176,13 @@ describe('<FluxImagePoliciesCard />', () => {
       const testCases = [
         {
           name: 'podinfo',
-          policy: { semver: { range: '5.0.x' } },
+          imagePolicy: 'semver / 5.0.x',
           imageRepositoryRef: 'podinfo',
+        },
+        {
+          name: 'test',
+          imagePolicy: 'numerical / asc',
+          imageRepositoryRef: 'test',
         },
       ];
 
@@ -177,6 +192,7 @@ describe('<FluxImagePoliciesCard />', () => {
 
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
+        expect(tr).toHaveTextContent(testCase.imagePolicy);
         expect(tr).toHaveTextContent(testCase.imageRepositoryRef);
       }
     });

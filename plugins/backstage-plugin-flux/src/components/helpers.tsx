@@ -356,17 +356,15 @@ export const imagePolicy = <T extends ImagePolicy>() => {
   return {
     title: 'Image Policy',
     field: 'imagepolicy',
-    render: resource => <span>{resource?.imagePolicy.type}</span>,
-    ...sortAndFilterOptions(resource => resource?.imagePolicy.type),
-  } as TableColumn<T>;
-};
-
-export const orderRange = <T extends ImagePolicy>() => {
-  return {
-    title: 'Order / Range',
-    field: 'orderrange',
-    render: resource => <span>{resource?.imagePolicy.value}</span>,
-    ...sortAndFilterOptions(resource => resource?.imagePolicy.value),
+    render: resource => (
+      <span>
+        {resource?.imagePolicy.type} / {resource?.imagePolicy.value}
+      </span>
+    ),
+    ...sortAndFilterOptions(
+      resource =>
+        `${resource?.imagePolicy.type} / ${resource?.imagePolicy.value}`,
+    ),
   } as TableColumn<T>;
 };
 

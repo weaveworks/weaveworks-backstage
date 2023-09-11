@@ -7,8 +7,8 @@ import {
   Kustomization,
   HelmRepository,
   OCIRepository,
+  ImagePolicy,
 } from '../objects';
-
 
 const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
   const queryStringData = {
@@ -19,7 +19,10 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
 
   const searchParams = new URLSearchParams(queryStringData);
 
-  return `${baseUrl.replace(/\/$/, '')}/${type}/details?${searchParams.toString()}`;
+  return `${baseUrl.replace(
+    /\/$/,
+    '',
+  )}/${type}/details?${searchParams.toString()}`;
 };
 
 export const useWeaveFluxDeepLink = (
@@ -43,6 +46,8 @@ export const useWeaveFluxDeepLink = (
       return typedUrl(baseUrl, resource as Kustomization, 'kustomization');
     case 'HelmRepository':
       return typedUrl(baseUrl, resource as HelmRepository, 'helm_repo');
+    case 'ImagePolicy':
+      return typedUrl(baseUrl, resource as ImagePolicy, 'image_policy');
     default:
       return undefined;
   }
