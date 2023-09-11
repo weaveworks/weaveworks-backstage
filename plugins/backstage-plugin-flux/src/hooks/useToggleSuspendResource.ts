@@ -109,7 +109,6 @@ export async function toggleSuspendResource(
       );
     }
 
-    // sync the helm release
     await requestToggleSuspendResource(
       kubernetesApi,
       resource.name,
