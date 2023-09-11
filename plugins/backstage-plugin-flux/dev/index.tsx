@@ -115,7 +115,7 @@ class StubKubernetesClient implements KubernetesApi {
     };
   }
 
-  // this is only used by sync right now, so it looks a little bit funny
+  // this is only used by sync and suspend/resume
   async proxy({
     init,
     path,
@@ -124,14 +124,24 @@ class StubKubernetesClient implements KubernetesApi {
     path: string;
     init?: RequestInit | undefined;
   }): Promise<any> {
-    // wait 100ms
+    // wait 100ms so the UI can show a loader or something
     await new Promise(resolve => setTimeout(resolve, 100));
 
     // Assumption: The initial request!
-    // Generates 2 more subsequent requests that can be retrieved in order via GET'ing
+    // In the case of "sync" it generates 2 more subsequent requests that can be
+    // retrieved in order via GET'ing. This simulate the polling the UI will do.
     //
     if (init?.method === 'PATCH') {
       const data = JSON.parse(init.body as string);
+
+      // We're getting a request to suspend/resume the resource
+      // just return 200 all good, no polling here.
+      if (data.spec && 'suspend' in data.spec) {
+        return {
+          ok: true,
+        } as Response;
+      }
+
       const reconiliationRequestedAt =
         data.metadata.annotations[ReconcileRequestAnnotation];
       this.mockResponses[path] = [
@@ -213,6 +223,8 @@ createDevApp()
                 'prometheus2',
                 'kube-prometheus-stack',
                 '6.3.5',
+                'True',
+                true,
               ),
               newTestHelmRelease(
                 'prometheus3',

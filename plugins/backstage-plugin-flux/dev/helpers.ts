@@ -117,6 +117,7 @@ export const newTestHelmRelease = (
   chart: string,
   version: string,
   ready: string = 'True',
+  suspend: boolean,
 ) => {
   return {
     apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
@@ -131,6 +132,7 @@ export const newTestHelmRelease = (
       namespace: 'default',
     },
     spec: {
+      suspend,
       interval: '5m',
       chart: {
         spec: {
