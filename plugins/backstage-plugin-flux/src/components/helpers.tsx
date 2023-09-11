@@ -352,7 +352,7 @@ export const updatedColumn = <T extends FluxObject>() => {
   } as TableColumn<T>;
 };
 
-export const imagePolicy = <T extends ImagePolicy>() => {
+export const policy = <T extends ImagePolicy>() => {
   return {
     title: 'Image Policy',
     field: 'imagepolicy',

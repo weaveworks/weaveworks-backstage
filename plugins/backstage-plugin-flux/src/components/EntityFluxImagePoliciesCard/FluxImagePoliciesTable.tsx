@@ -10,7 +10,7 @@ import {
   typeColumn,
   filters,
   imageRepository,
-  imagePolicy,
+  policy,
 } from '../helpers';
 import { ImagePolicy } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
@@ -21,7 +21,7 @@ export const defaultColumns: TableColumn<ImagePolicy>[] = [
   typeColumn(),
   nameAndClusterNameColumn(),
   statusColumn(),
-  imagePolicy(),
+  policy(),
   imageRepository(),
   updatedColumn(),
   syncColumn(),

@@ -399,13 +399,13 @@ export class ImageUpdateAutomation extends FluxObject {
     if (!this.obj.spec?.sourceRef) {
       return;
     }
-    const sourceRef = {
+    const source = {
       ...this.obj.spec.sourceRef,
     };
-    if (!sourceRef.namespace) {
-      sourceRef.namespace = this.namespace;
+    if (!source.namespace) {
+      source.namespace = this.namespace;
     }
-    return sourceRef;
+    return source;
   }
   get lastAutomationRunTime(): string {
     return this.obj?.status?.lastAutomationRunTime || '';
@@ -416,9 +416,6 @@ export class ImageUpdateAutomation extends FluxObject {
 }
 
 export class ImagePolicy extends ImageUpdateAutomation {
-  constructor(response: ResponseObject) {
-    super(response);
-  }
   get imagePolicy(): ImgPolicy {
     const { policy } = this.obj?.spec;
     const [type] = Object.keys(policy);
