@@ -7,4 +7,5 @@ export {
   EntityFluxHelmRepositoriesCard,
   EntityFluxDeploymentsCard,
   EntityFluxSourcesCard,
+  EntityFluxImagePoliciesCard,
 } from './plugin';
