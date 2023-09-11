@@ -9,6 +9,9 @@ import {
   syncColumn,
   typeColumn,
   filters,
+  imagePolicy,
+  orderRange,
+  imageRepository,
 } from '../helpers';
 import { ImagePolicy } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
@@ -19,7 +22,9 @@ export const defaultColumns: TableColumn<ImagePolicy>[] = [
   typeColumn(),
   nameAndClusterNameColumn(),
   statusColumn(),
-  // add image policy, order / range and image repository ref
+  imagePolicy(),
+  orderRange(),
+  imageRepository(),
   updatedColumn(),
   syncColumn(),
 ];
@@ -46,6 +51,8 @@ export const FluxImagePoliciesTable = ({
       suspended,
       sourceRef,
       type,
+      imagePolicy,
+      imageRepositoryRef,
     } = d;
     return {
       id: `${clusterName}/${namespace}/${name}`,
@@ -56,6 +63,8 @@ export const FluxImagePoliciesTable = ({
       clusterName,
       sourceRef,
       type,
+      imagePolicy,
+      imageRepositoryRef,
     } as ImagePolicy & { id: string };
   });
 

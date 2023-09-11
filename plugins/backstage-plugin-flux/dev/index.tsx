@@ -556,7 +556,7 @@ createDevApp()
               ),
               newTestImagePolicy(
                 'test',
-                { semver: { range: '5.0.x' } },
+                { numerical: { order: 'asc' } },
                 'test',
               ),
             ]),

@@ -410,6 +410,9 @@ export class ImageUpdateAutomation extends FluxObject {
   get lastAutomationRunTime(): string {
     return this.obj?.status?.lastAutomationRunTime || '';
   }
+  get type(): Kind | string | undefined {
+    return this.obj.kind || this.obj.groupVersionKind?.kind;
+  }
 }
 
 export class ImagePolicy extends ImageUpdateAutomation {

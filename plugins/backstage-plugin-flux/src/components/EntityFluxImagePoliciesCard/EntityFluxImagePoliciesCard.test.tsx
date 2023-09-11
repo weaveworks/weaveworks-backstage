@@ -19,7 +19,7 @@ import { EntityFluxImagePoliciesCard } from './EntityFluxImagePoliciesCard';
 
 const makeTestImagePolicy = (
   name: string,
-  policy: { [name: string]: { range: string } },
+  policy: { [name: string]: { [name: string]: string } },
   imageRepositoryRef: string,
 ) => {
   return {

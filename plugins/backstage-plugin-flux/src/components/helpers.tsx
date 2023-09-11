@@ -28,7 +28,7 @@ import {
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
-import { helm, kubernetes, oci, git } from '../images/icons';
+import { helm, kubernetes, oci, git, imagepolicy } from '../images/icons';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -276,6 +276,8 @@ export const getIconType = (type: string) => {
       return git;
     case 'OCIRepository':
       return oci;
+    case 'ImagePolicy':
+      return imagepolicy;
     default:
       return null;
   }
@@ -295,7 +297,6 @@ export const typeColumn = <
     align: 'right',
     cellStyle: { paddingLeft, paddingRight: 6 },
     headerStyle: { paddingLeft, paddingRight: 0 },
-
     field: 'type',
     render: resource => (
       <Tooltip title={resource.type || 'Unknown'}>
@@ -348,6 +349,33 @@ export const updatedColumn = <T extends FluxObject>() => {
         }) as string,
     ),
     minWidth: '130px',
+  } as TableColumn<T>;
+};
+
+export const imagePolicy = <T extends ImagePolicy>() => {
+  return {
+    title: 'Image Policy',
+    field: 'imagepolicy',
+    render: resource => <span>{resource?.imagePolicy.type}</span>,
+    ...sortAndFilterOptions(resource => resource?.imagePolicy.type),
+  } as TableColumn<T>;
+};
+
+export const orderRange = <T extends ImagePolicy>() => {
+  return {
+    title: 'Order / Range',
+    field: 'orderrange',
+    render: resource => <span>{resource?.imagePolicy.value}</span>,
+    ...sortAndFilterOptions(resource => resource?.imagePolicy.value),
+  } as TableColumn<T>;
+};
+
+export const imageRepository = <T extends ImagePolicy>() => {
+  return {
+    title: 'Image Repository',
+    field: 'imagerepository',
+    render: resource => <span>{resource?.imageRepositoryRef}</span>,
+    ...sortAndFilterOptions(resource => resource?.imageRepositoryRef),
   } as TableColumn<T>;
 };
 

@@ -214,8 +214,9 @@ export const newTestHelmRelease = (
 
 export const newTestImagePolicy = (
   name: string,
-  policy: { [name: string]: { range: string } },
+  policy: { [name: string]: { [name: string]: string } },
   imageRepositoryRef: string,
+  ready: string = 'True',
 ) => {
   return {
     apiVersion: 'image.toolkit.fluxcd.io/v1beta1',
@@ -249,7 +250,7 @@ export const newTestImagePolicy = (
             'Applied revision: main@sha1:c933408394a3af8fa7208af8c9abf7fe430f99d4',
           observedGeneration: 1,
           reason: 'ReconciliationSucceeded',
-          status: 'True',
+          status: ready,
           type: 'Ready',
         },
       ],
