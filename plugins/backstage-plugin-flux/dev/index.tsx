@@ -382,11 +382,13 @@ createDevApp()
                 'flux-system',
                 './clusters/my-cluster',
                 true,
+                true,
               ),
               newTestKustomization(
                 'test-kustomization',
                 './clusters/my-test-cluster',
                 true,
+                false,
               ),
             ]),
           ],
@@ -420,6 +422,8 @@ createDevApp()
               newTestHelmRepository(
                 'podinfo',
                 'https://stefanprodan.github.io/podinfo',
+                true,
+                false,
               ),
             ]),
           ],
@@ -454,6 +458,7 @@ createDevApp()
                 'flux-system',
                 './clusters/my-cluster',
                 true,
+                false,
               ),
               newTestHelmRelease(
                 'prometheus1',
@@ -494,6 +499,8 @@ createDevApp()
               newTestHelmRepository(
                 'podinfo',
                 'https://stefanprodan.github.io/podinfo',
+                true,
+                true,
               ),
               newTestOCIRepository(
                 'podinfo',
