@@ -377,7 +377,7 @@ export const imageRepository = <T extends ImagePolicy>() => {
   } as TableColumn<T>;
 };
 
-export const latestImage = <T extends ImagePolicy>() => {
+export const latestImageSelected = <T extends ImagePolicy>() => {
   return {
     title: 'Latest Image',
     field: 'latestimage',
