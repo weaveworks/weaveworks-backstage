@@ -6,7 +6,7 @@ import {
   urlColumn,
   statusColumn,
   updatedColumn,
-  syncColumn,
+  actionColumn,
   Source,
   artifactColumn,
   typeColumn,
@@ -30,7 +30,7 @@ const commonEndColumns: TableColumn<Source>[] = [
   artifactColumn(),
   statusColumn(),
   updatedColumn(),
-  syncColumn(),
+  actionColumn(),
 ];
 
 export const sourceDefaultColumns = [

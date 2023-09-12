@@ -115,7 +115,7 @@ class StubKubernetesClient implements KubernetesApi {
     };
   }
 
-  // this is only used by sync right now, so it looks a little bit funny
+  // this is only used by sync and suspend/resume
   async proxy({
     init,
     path,
@@ -124,14 +124,24 @@ class StubKubernetesClient implements KubernetesApi {
     path: string;
     init?: RequestInit | undefined;
   }): Promise<any> {
-    // wait 100ms
+    // wait 100ms so the UI can show a loader or something
     await new Promise(resolve => setTimeout(resolve, 100));
 
     // Assumption: The initial request!
-    // Generates 2 more subsequent requests that can be retrieved in order via GET'ing
+    // In the case of "sync" it generates 2 more subsequent requests that can be
+    // retrieved in order via GET'ing. This simulate the polling the UI will do.
     //
     if (init?.method === 'PATCH') {
       const data = JSON.parse(init.body as string);
+
+      // We're getting a request to suspend/resume the resource
+      // just return 200 all good, no polling here.
+      if (data.spec && 'suspend' in data.spec) {
+        return {
+          ok: true,
+        } as Response;
+      }
+
       const reconiliationRequestedAt =
         data.metadata.annotations[ReconcileRequestAnnotation];
       this.mockResponses[path] = [
@@ -208,21 +218,33 @@ createDevApp()
                 'prometheus1',
                 'kube-prometheus-stack',
                 '6.3.5',
+                'True',
+                false,
               ),
               newTestHelmRelease(
                 'prometheus2',
                 'kube-prometheus-stack',
                 '6.3.5',
+                'True',
+                false,
               ),
               newTestHelmRelease(
                 'prometheus3',
                 'kube-prometheus-stack',
                 '6.3.5',
+                'False',
+                true,
               ),
-              newTestHelmRelease('redis1', 'redis', '7.0.1', 'False'),
-              newTestHelmRelease('redis2', 'redis', '7.0.1'),
-              newTestHelmRelease('http-api', 'redis', '1.2.5', 'False'),
-              newTestHelmRelease('queue-runner', 'redis', '1.0.1'),
+              newTestHelmRelease('redis1', 'redis', '7.0.1', 'False', false),
+              newTestHelmRelease('redis2', 'redis', '7.0.1', 'True', true),
+              newTestHelmRelease('http-api', 'redis', '1.2.5', 'False', false),
+              newTestHelmRelease(
+                'queue-runner',
+                'redis',
+                '1.0.1',
+                'True',
+                false,
+              ),
             ]),
           ],
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
@@ -360,11 +382,13 @@ createDevApp()
                 'flux-system',
                 './clusters/my-cluster',
                 true,
+                true,
               ),
               newTestKustomization(
                 'test-kustomization',
                 './clusters/my-test-cluster',
                 true,
+                false,
               ),
             ]),
           ],
@@ -398,6 +422,8 @@ createDevApp()
               newTestHelmRepository(
                 'podinfo',
                 'https://stefanprodan.github.io/podinfo',
+                true,
+                false,
               ),
             ]),
           ],
@@ -432,11 +458,14 @@ createDevApp()
                 'flux-system',
                 './clusters/my-cluster',
                 true,
+                false,
               ),
               newTestHelmRelease(
                 'prometheus1',
                 'kube-prometheus-stack',
                 '6.3.5',
+                'True',
+                true,
               ),
             ]),
           ],
@@ -470,6 +499,8 @@ createDevApp()
               newTestHelmRepository(
                 'podinfo',
                 'https://stefanprodan.github.io/podinfo',
+                true,
+                true,
               ),
               newTestOCIRepository(
                 'podinfo',

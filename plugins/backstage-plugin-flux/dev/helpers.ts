@@ -22,22 +22,33 @@ const copy = (obj: any): any => {
   return JSON.parse(JSON.stringify(obj));
 };
 
-const removeVerifiedCondition = (conditions: Condition[]): Condition[]  => copy(conditions).filter((cond: Condition) => cond.type !== 'SourceVerified');
+const removeVerifiedCondition = (conditions: Condition[]): Condition[] =>
+  copy(conditions).filter((cond: Condition) => cond.type !== 'SourceVerified');
 
-const applyReadyCondition = (status: boolean, conditions: Condition[]): Condition[] => {
+const applyReadyCondition = (
+  status: boolean,
+  conditions: Condition[],
+): Condition[] => {
   const ready = conditions.find(cond => cond.type === 'Ready');
   if (ready === undefined) {
     return conditions;
   }
 
   ready.status = Boolean(status) === true ? 'True' : 'False';
-  const result = conditions.filter((cond: Condition) => cond.type !== 'Ready')
+  const result = conditions.filter((cond: Condition) => cond.type !== 'Ready');
   result.unshift(ready);
 
   return result;
-}
+};
 
-const configureFixture = (name: string, url: string, fixture: any, verifiedFixture: any, unverifiedFixture: any, opts?: RepoOpts) => {
+const configureFixture = (
+  name: string,
+  url: string,
+  fixture: any,
+  verifiedFixture: any,
+  unverifiedFixture: any,
+  opts?: RepoOpts,
+) => {
   let result = copy(fixture);
 
   if (opts?.verify) {
@@ -49,11 +60,16 @@ const configureFixture = (name: string, url: string, fixture: any, verifiedFixtu
   }
 
   if (opts?.verify && opts?.pending) {
-    result.status.conditions = removeVerifiedCondition(result.status.conditions);
+    result.status.conditions = removeVerifiedCondition(
+      result.status.conditions,
+    );
   }
 
   if (opts?.ready !== undefined) {
-    result.status.conditions = applyReadyCondition(opts.ready!, result.status.conditions);
+    result.status.conditions = applyReadyCondition(
+      opts.ready!,
+      result.status.conditions,
+    );
   }
 
   result.spec.url = url;
@@ -63,53 +79,77 @@ const configureFixture = (name: string, url: string, fixture: any, verifiedFixtu
     .toISO()!;
 
   return result;
-}
+};
 
 export const newTestOCIRepository = (
   name: string,
   url: string,
-  opts?: RepoOpts
+  opts?: RepoOpts,
 ) => {
-  return configureFixture(name, url, ociRepository, verifiedOCIRepository, unverifiedOCIRepository, opts);
+  return configureFixture(
+    name,
+    url,
+    ociRepository,
+    verifiedOCIRepository,
+    unverifiedOCIRepository,
+    opts,
+  );
 };
 
 export const newTestGitRepository = (
   name: string,
   url: string,
-  opts?: RepoOpts
+  opts?: RepoOpts,
 ) => {
-  return configureFixture(name, url, gitRepository, verifiedGitRepository, unverifiedGitRepository, opts);
+  return configureFixture(
+    name,
+    url,
+    gitRepository,
+    verifiedGitRepository,
+    unverifiedGitRepository,
+    opts,
+  );
 };
 
 export const newTestKustomization = (
   name: string,
   path: string,
   ready: boolean,
+  suspend: boolean,
 ) => {
-    const result = copy(kustomization);
+  const result = copy(kustomization);
 
-    result.metadata.name = name;
-    result.spec.path = path;
+  result.metadata.name = name;
+  result.spec.path = path;
 
-    result.metadata.name = name;
-    result.spec.path = path;
-    result.status.conditions = applyReadyCondition(ready, result.status.conditions);
+  result.metadata.name = name;
+  result.spec.path = path;
+  result.status.conditions = applyReadyCondition(
+    ready,
+    result.status.conditions,
+  );
+  result.spec.suspend = suspend;
 
-    return result;
+  return result;
 };
 
 export const newTestHelmRepository = (
   name: string,
   url: string,
   ready: boolean = true,
+  suspend: boolean,
 ) => {
-    const result = copy(helmRepository);
+  const result = copy(helmRepository);
 
-    result.metadata.name = name;
-    result.spec.url = url;
-    result.status.conditions = applyReadyCondition(ready, result.status.conditions);
+  result.metadata.name = name;
+  result.spec.url = url;
+  result.status.conditions = applyReadyCondition(
+    ready,
+    result.status.conditions,
+  );
+  result.spec.suspend = suspend;
 
-    return result;
+  return result;
 };
 
 export const newTestHelmRelease = (
@@ -117,6 +157,7 @@ export const newTestHelmRelease = (
   chart: string,
   version: string,
   ready: string = 'True',
+  suspend: boolean,
 ) => {
   return {
     apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
@@ -131,6 +172,7 @@ export const newTestHelmRelease = (
       namespace: 'default',
     },
     spec: {
+      suspend,
       interval: '5m',
       chart: {
         spec: {
