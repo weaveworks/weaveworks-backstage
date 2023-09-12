@@ -21,6 +21,7 @@ const makeTestImagePolicy = (
   name: string,
   policy: { [name: string]: { [name: string]: string } },
   imageRepositoryRef: string,
+  latestImage?: string,
 ) => {
   return {
     apiVersion: 'image.toolkit.fluxcd.io/v1beta1',
@@ -56,7 +57,7 @@ const makeTestImagePolicy = (
           type: 'Ready',
         },
       ],
-      latestImage: 'ghcr.io/stefanprodan/podinfo:5.0.3',
+      latestImage,
       observedGeneration: 2,
     },
   };
@@ -90,11 +91,13 @@ class StubKubernetesClient implements KubernetesApi {
                   'podinfo',
                   { semver: { range: '5.0.x' } },
                   'podinfo',
+                  'ghcr.io/stefanprodan/podinfo:5.0.3',
                 ),
                 makeTestImagePolicy(
                   'test',
                   { numerical: { order: 'asc' } },
                   'test',
+                  'ghcr.io/user/test:1.0.0',
                 ),
               ],
             },
@@ -178,11 +181,13 @@ describe('<FluxImagePoliciesCard />', () => {
           name: 'podinfo',
           imagePolicy: 'semver / 5.0.x',
           imageRepositoryRef: 'podinfo',
+          latestImage: 'ghcr.io/stefanprodan/podinfo:5.0.3',
         },
         {
           name: 'test',
           imagePolicy: 'numerical / asc',
           imageRepositoryRef: 'test',
+          latestImage: 'ghcr.io/user/test:1.0.0',
         },
       ];
 
@@ -194,6 +199,7 @@ describe('<FluxImagePoliciesCard />', () => {
         expect(tr).toBeInTheDocument();
         expect(tr).toHaveTextContent(testCase.imagePolicy);
         expect(tr).toHaveTextContent(testCase.imageRepositoryRef);
+        expect(tr).toHaveTextContent(testCase.latestImage);
       }
     });
   });

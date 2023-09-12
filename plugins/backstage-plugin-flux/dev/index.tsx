@@ -553,11 +553,13 @@ createDevApp()
                 'podinfo',
                 { semver: { range: '5.0.x' } },
                 'podinfo',
+                'ghcr.io/stefanprodan/podinfo:5.0.3',
               ),
               newTestImagePolicy(
                 'test',
                 { numerical: { order: 'asc' } },
                 'test',
+                'ghcr.io/user/test:1.0.0',
               ),
             ]),
           ],

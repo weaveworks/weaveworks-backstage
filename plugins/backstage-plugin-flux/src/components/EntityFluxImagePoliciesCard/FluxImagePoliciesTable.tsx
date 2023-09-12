@@ -11,6 +11,7 @@ import {
   filters,
   imageRepository,
   policy,
+  latestImage,
 } from '../helpers';
 import { ImagePolicy } from '../../objects';
 import { FluxEntityTable } from '../FluxEntityTable';
@@ -23,6 +24,7 @@ export const defaultColumns: TableColumn<ImagePolicy>[] = [
   statusColumn(),
   policy(),
   imageRepository(),
+  latestImage(),
   updatedColumn(),
   syncColumn(),
 ];
@@ -51,6 +53,7 @@ export const FluxImagePoliciesTable = ({
       type,
       imagePolicy,
       imageRepositoryRef,
+      latestImage,
     } = d;
     return {
       id: `${clusterName}/${namespace}/${name}`,
@@ -63,6 +66,7 @@ export const FluxImagePoliciesTable = ({
       type,
       imagePolicy,
       imageRepositoryRef,
+      latestImage,
     } as ImagePolicy & { id: string };
   });
 

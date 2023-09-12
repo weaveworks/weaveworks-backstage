@@ -216,6 +216,7 @@ export const newTestImagePolicy = (
   name: string,
   policy: { [name: string]: { [name: string]: string } },
   imageRepositoryRef: string,
+  latestImage: string,
   ready: string = 'True',
 ) => {
   return {
@@ -254,7 +255,7 @@ export const newTestImagePolicy = (
           type: 'Ready',
         },
       ],
-      latestImage: 'ghcr.io/stefanprodan/podinfo:5.0.3',
+      latestImage,
       observedGeneration: 2,
     },
   };

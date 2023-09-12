@@ -377,6 +377,15 @@ export const imageRepository = <T extends ImagePolicy>() => {
   } as TableColumn<T>;
 };
 
+export const latestImage = <T extends ImagePolicy>() => {
+  return {
+    title: 'Latest Image',
+    field: 'latestimage',
+    render: resource => <span>{resource?.latestImage}</span>,
+    ...sortAndFilterOptions(resource => resource?.latestImage),
+  } as TableColumn<T>;
+};
+
 //
 // sorting and filtering helpers
 //

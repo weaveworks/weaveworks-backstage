@@ -433,8 +433,13 @@ export class ImagePolicy extends ImageUpdateAutomation {
       value: '',
     };
   }
+
   get imageRepositoryRef(): string {
     return this.obj?.spec?.imageRepositoryRef?.name || '';
+  }
+
+  get latestImage(): string {
+    return this.obj?.status?.latestImage || '';
   }
 }
 
