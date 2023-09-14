@@ -9,6 +9,8 @@ import {
 } from '@backstage/core-components';
 import { Box, IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
+import PauseIcon from '@material-ui/icons/Pause';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 import { useSyncResource, useWeaveFluxDeepLink } from '../hooks';
 import {
@@ -29,6 +31,7 @@ import {
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 import { helm, kubernetes, oci, git, imagepolicy } from '../images/icons';
+import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -75,40 +78,139 @@ export const Url = ({ resource }: { resource: Source }): JSX.Element => {
 
 export function SyncButton({
   resource,
+  sync,
+  status,
 }: {
   resource: Source | Deployment | ImagePolicy;
+  sync: () => Promise<void>;
+  status: boolean;
 }) {
-  const { sync, isSyncing } = useSyncResource(resource);
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
-  const title = isSyncing ? `Syncing ${label}` : `Sync ${label}`;
-
+  const title = status ? `Syncing ${label}` : `Sync ${label}`;
   return (
     <Tooltip title={title}>
-      {/* <Progress /> can't handle forwardRef (?) so we wrap in a div */}
       <div>
-        {isSyncing ? (
-          <Progress data-testid="syncing" />
-        ) : (
-          <IconButton
-            data-testid={`sync ${label}`}
-            className={classes.syncButton}
-            size="small"
-            onClick={sync}
-            disabled={resource.suspended}
-          >
-            <RetryIcon />
-          </IconButton>
-        )}
+        <IconButton
+          data-testid={`sync ${label}`}
+          className={classes.actionButton}
+          size="small"
+          onClick={sync}
+          disabled={resource.suspended}
+        >
+          <RetryIcon />
+        </IconButton>
       </div>
     </Tooltip>
   );
 }
 
-export function syncColumn<T extends Source | Deployment | ImagePolicy>() {
+export function SuspendButton({
+  resource,
+  toggleSuspend,
+  status,
+}: {
+  resource: Source | Deployment;
+  toggleSuspend: () => Promise<void>;
+  status: boolean;
+}) {
+  const classes = useStyles();
+  const label = `${resource.namespace}/${resource.name}`;
+  const title = status ? `Suspending ${label}` : `Suspend ${label}`;
+
+  return (
+    <Tooltip title={title}>
+      <div>
+        <IconButton
+          data-testid={`suspend ${label}`}
+          className={classes.actionButton}
+          size="small"
+          onClick={toggleSuspend}
+          disabled={resource.suspended}
+        >
+          <PauseIcon />
+        </IconButton>
+      </div>
+    </Tooltip>
+  );
+}
+
+export function ResumeButton({
+  resource,
+  toggleResume,
+  status,
+}: {
+  resource: Source | Deployment;
+  toggleResume: () => Promise<void>;
+  status: boolean;
+}) {
+  const classes = useStyles();
+  const label = `${resource.namespace}/${resource.name}`;
+  const title = status ? `Resuming ${label}` : `Resume ${label}`;
+
+  return (
+    <Tooltip title={title}>
+      <div>
+        <IconButton
+          data-testid={`resume ${label}`}
+          className={classes.actionButton}
+          size="small"
+          onClick={toggleResume}
+          disabled={!resource.suspended}
+        >
+          <PlayArrowIcon />
+        </IconButton>
+      </div>
+    </Tooltip>
+  );
+}
+
+export function GroupAction({
+  resource,
+}: {
+  resource: Source | Deployment | ImagePolicy;
+}) {
+  const { sync, isSyncing } = useSyncResource(resource);
+  const { loading: isSuspending, toggleSuspend } = useToggleSuspendResource(
+    resource as Source | Deployment,
+    true,
+  );
+  const { loading: isResuming, toggleSuspend: toogleResume } =
+    useToggleSuspendResource(resource as Source | Deployment, false);
+  const isLoading = isSyncing || isSuspending || isResuming;
+
+  console.log(resource.type);
+  return (
+    <>
+      {isLoading ? (
+        <Progress data-testid="loading" />
+      ) : (
+        <Flex>
+          <SyncButton resource={resource} sync={sync} status={isSyncing} />
+          {!(resource.type === 'ImagePolicy') ? (
+            <>
+              <SuspendButton
+                resource={resource as Source | Deployment}
+                toggleSuspend={toggleSuspend}
+                status={isSuspending}
+              />
+              <ResumeButton
+                resource={resource as Source | Deployment}
+                toggleResume={toogleResume}
+                status={isResuming}
+              />
+            </>
+          ) : null}
+        </Flex>
+      )}
+    </>
+  );
+}
+
+export function actionColumn<T extends Source | Deployment | ImagePolicy>() {
   return {
-    title: 'Sync',
-    render: row => <SyncButton resource={row} />,
+    title: 'Actions',
+    render: row => <GroupAction resource={row} />,
     width: '24px',
   } as TableColumn<T>;
 }

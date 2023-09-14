@@ -115,6 +115,7 @@ export const newTestKustomization = (
   name: string,
   path: string,
   ready: boolean,
+  suspend: boolean,
 ) => {
   const result = copy(kustomization);
 
@@ -127,6 +128,7 @@ export const newTestKustomization = (
     ready,
     result.status.conditions,
   );
+  result.spec.suspend = suspend;
 
   return result;
 };
@@ -135,6 +137,7 @@ export const newTestHelmRepository = (
   name: string,
   url: string,
   ready: boolean = true,
+  suspend: boolean,
 ) => {
   const result = copy(helmRepository);
 
@@ -144,6 +147,7 @@ export const newTestHelmRepository = (
     ready,
     result.status.conditions,
   );
+  result.spec.suspend = suspend;
 
   return result;
 };
@@ -153,6 +157,7 @@ export const newTestHelmRelease = (
   chart: string,
   version: string,
   ready: string = 'True',
+  suspend: boolean,
 ) => {
   return {
     apiVersion: 'helm.toolkit.fluxcd.io/v2beta1',
@@ -167,6 +172,7 @@ export const newTestHelmRelease = (
       namespace: 'default',
     },
     spec: {
+      suspend,
       interval: '5m',
       chart: {
         spec: {

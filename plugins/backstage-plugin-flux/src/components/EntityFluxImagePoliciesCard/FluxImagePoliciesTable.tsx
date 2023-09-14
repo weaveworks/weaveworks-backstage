@@ -6,7 +6,7 @@ import {
   nameAndClusterNameColumn,
   statusColumn,
   updatedColumn,
-  syncColumn,
+  actionColumn,
   typeColumn,
   filters,
   imageRepository,
@@ -26,7 +26,7 @@ export const defaultColumns: TableColumn<ImagePolicy>[] = [
   imageRepository(),
   latestImageSelected(),
   updatedColumn(),
-  syncColumn(),
+  actionColumn(),
 ];
 
 type Props = {

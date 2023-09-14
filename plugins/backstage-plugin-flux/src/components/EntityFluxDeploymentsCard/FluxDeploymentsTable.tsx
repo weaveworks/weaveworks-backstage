@@ -6,7 +6,7 @@ import {
   nameAndClusterNameColumn,
   statusColumn,
   updatedColumn,
-  syncColumn,
+  actionColumn,
   Deployment,
   repoColumn,
   sourceColumn,
@@ -25,7 +25,7 @@ export const defaultColumns: TableColumn<Deployment>[] = [
   sourceColumn(),
   statusColumn(),
   updatedColumn(),
-  syncColumn(),
+  actionColumn(),
 ];
 
 type Props = {

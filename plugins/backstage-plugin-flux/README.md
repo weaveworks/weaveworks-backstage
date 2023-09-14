@@ -66,13 +66,13 @@ subjects:
     namespace: flux-system
 ```
 
-The "sync" button requires additional permissions, it implements same functionality as [flux reconcile](https://fluxcd.io/flux/cmd/flux_reconcile/) for resources.
+The "sync", "suspend/resume" button requires additional permissions, it implements same functionality as [flux reconcile](https://fluxcd.io/flux/cmd/flux_reconcile/) for resources.
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: sync-flux-resources
+  name: patch-flux-resources
 rules:
   - apiGroups:
       - source.toolkit.fluxcd.io
@@ -100,11 +100,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: backstage-sync-flux-resources-rolebinding
+  name: backstage-patch-flux-resources-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: sync-flux-resources
+  name: patch-flux-resources
 subjects:
   - kind: ServiceAccount
     name: backstage # replace with the name of the SA that your Backstage runs as

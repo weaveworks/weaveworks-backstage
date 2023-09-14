@@ -32,7 +32,7 @@ export const useStyles = makeStyles(theme => ({
     fontWeight: 600,
     marginBottom: '6px',
   },
-  syncButton: {
+  actionButton: {
     padding: 0,
     margin: '-5px 0',
   },
