@@ -179,7 +179,6 @@ export function GroupAction({
     useToggleSuspendResource(resource as Source | Deployment, false);
   const isLoading = isSyncing || isSuspending || isResuming;
 
-  console.log(resource.type);
   return (
     <>
       {isLoading ? (
