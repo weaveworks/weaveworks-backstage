@@ -24,6 +24,7 @@ You can also add cards for resources with the following components, each of thes
 - EntityFluxGitRepositoriesCard
 - EntityFluxOCIRepositoriesCard
 - EntityFluxHelmRepositoriesCard
+- EntityFluxImagePoliciesCard
 
 As with other Backstage plugins, you can compose the UI you need.
 

@@ -11,12 +11,14 @@ import {
   HelmRelease,
   OCIRepository,
   Kustomization,
+  ImagePolicy,
   gitRepositoriesGVK,
   helmReleaseGVK,
   ociRepositoriesGVK,
   kustomizationGVK,
   helmRepositoryGVK,
   HelmRepository,
+  imagePolicyGVK,
 } from '../objects';
 import { Deployment, Source } from '../components/helpers';
 
@@ -249,6 +251,29 @@ export function useFluxSources(entity: Entity): Response<Source> {
         return new GitRepository(item);
     }
   }, kubernetesObjects);
+
+  return {
+    data,
+    loading,
+    errors: error
+      ? [new Error(error), ...(kubernetesErrors || [])]
+      : kubernetesErrors,
+  };
+}
+
+/**
+ * Query for the Image Policies associated with this Entity.
+ * @public
+ */
+export function useImagePolicies(entity: Entity): Response<ImagePolicy> {
+  const { kubernetesObjects, loading, error } = useCustomResources(entity, [
+    imagePolicyGVK,
+  ]);
+
+  const { data, kubernetesErrors } = toResponse<ImagePolicy>(
+    item => new ImagePolicy(item),
+    kubernetesObjects,
+  );
 
   return {
     data,

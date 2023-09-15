@@ -26,10 +26,11 @@ import {
   Kustomization,
   HelmRepository,
   OCIRepository,
+  ImagePolicy,
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
-import { helm, kubernetes, oci, git } from '../images/icons';
+import { helm, kubernetes, oci, git, imagepolicy } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
@@ -80,7 +81,7 @@ export function SyncButton({
   sync,
   status,
 }: {
-  resource: Source | Deployment;
+  resource: Source | Deployment | ImagePolicy;
   sync: () => Promise<void>;
   status: boolean;
 }) {
@@ -164,14 +165,18 @@ export function ResumeButton({
   );
 }
 
-export function GroupAction({ resource }: { resource: Source | Deployment }) {
+export function GroupAction({
+  resource,
+}: {
+  resource: Source | Deployment | ImagePolicy;
+}) {
   const { sync, isSyncing } = useSyncResource(resource);
   const { loading: isSuspending, toggleSuspend } = useToggleSuspendResource(
-    resource,
+    resource as Source | Deployment,
     true,
   );
   const { loading: isResuming, toggleSuspend: toogleResume } =
-    useToggleSuspendResource(resource, false);
+    useToggleSuspendResource(resource as Source | Deployment, false);
   const isLoading = isSyncing || isSuspending || isResuming;
 
   return (
@@ -181,23 +186,27 @@ export function GroupAction({ resource }: { resource: Source | Deployment }) {
       ) : (
         <Flex>
           <SyncButton resource={resource} sync={sync} status={isSyncing} />
-          <SuspendButton
-            resource={resource}
-            toggleSuspend={toggleSuspend}
-            status={isSuspending}
-          />
-          <ResumeButton
-            resource={resource}
-            toggleResume={toogleResume}
-            status={isResuming}
-          />
+          {!(resource.type === 'ImagePolicy') ? (
+            <>
+              <SuspendButton
+                resource={resource as Source | Deployment}
+                toggleSuspend={toggleSuspend}
+                status={isSuspending}
+              />
+              <ResumeButton
+                resource={resource as Source | Deployment}
+                toggleResume={toogleResume}
+                status={isResuming}
+              />
+            </>
+          ) : null}
         </Flex>
       )}
     </>
   );
 }
 
-export function actionColumn<T extends Source | Deployment>() {
+export function actionColumn<T extends Source | Deployment | ImagePolicy>() {
   return {
     title: 'Actions',
     render: row => <GroupAction resource={row} />,
@@ -368,13 +377,20 @@ export const getIconType = (type: string) => {
       return git;
     case 'OCIRepository':
       return oci;
+    case 'ImagePolicy':
+      return imagepolicy;
     default:
       return null;
   }
 };
 
 export const typeColumn = <
-  T extends Deployment | OCIRepository | GitRepository | HelmRepository,
+  T extends
+    | Deployment
+    | OCIRepository
+    | GitRepository
+    | HelmRepository
+    | ImagePolicy,
 >() => {
   const paddingLeft = 0;
   return {
@@ -382,7 +398,6 @@ export const typeColumn = <
     align: 'right',
     cellStyle: { paddingLeft, paddingRight: 6 },
     headerStyle: { paddingLeft, paddingRight: 0 },
-
     field: 'type',
     render: resource => (
       <Tooltip title={resource.type || 'Unknown'}>
@@ -435,6 +450,40 @@ export const updatedColumn = <T extends FluxObject>() => {
         }) as string,
     ),
     minWidth: '130px',
+  } as TableColumn<T>;
+};
+
+export const policy = <T extends ImagePolicy>() => {
+  return {
+    title: 'Image Policy',
+    field: 'imagepolicy',
+    render: resource => (
+      <span>
+        {resource?.imagePolicy.type} / {resource?.imagePolicy.value}
+      </span>
+    ),
+    ...sortAndFilterOptions(
+      resource =>
+        `${resource?.imagePolicy.type} / ${resource?.imagePolicy.value}`,
+    ),
+  } as TableColumn<T>;
+};
+
+export const imageRepository = <T extends ImagePolicy>() => {
+  return {
+    title: 'Image Repository',
+    field: 'imagerepository',
+    render: resource => <span>{resource?.imageRepositoryRef}</span>,
+    ...sortAndFilterOptions(resource => resource?.imageRepositoryRef),
+  } as TableColumn<T>;
+};
+
+export const latestImageSelected = <T extends ImagePolicy>() => {
+  return {
+    title: 'Latest Image',
+    field: 'latestimage',
+    render: resource => <span>{resource?.latestImage}</span>,
+    ...sortAndFilterOptions(resource => resource?.latestImage),
   } as TableColumn<T>;
 };
 

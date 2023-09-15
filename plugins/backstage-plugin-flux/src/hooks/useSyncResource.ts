@@ -2,7 +2,7 @@ import { AlertApi, alertApiRef, useApi } from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
 import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 import { useAsyncFn } from 'react-use';
-import { gvkFromKind } from '../objects';
+import { ImagePolicy, gvkFromKind } from '../objects';
 import { Deployment, Source } from '../components/helpers';
 
 export const ReconcileRequestAnnotation = 'reconcile.fluxcd.io/requestedAt';
@@ -99,7 +99,7 @@ export async function requestSyncResource(
 }
 
 export async function syncResource(
-  resource: Source | Deployment,
+  resource: Source | Deployment | ImagePolicy,
   kubernetesApi: KubernetesApi,
   alertApi: AlertApi,
 ) {
@@ -155,7 +155,7 @@ export async function syncResource(
  *
  * @public
  */
-export function useSyncResource(resource: Source | Deployment) {
+export function useSyncResource(resource: Source | Deployment | ImagePolicy) {
   const kubernetesApi = useApi(kubernetesApiRef);
   const alertApi = useApi(alertApiRef);
 

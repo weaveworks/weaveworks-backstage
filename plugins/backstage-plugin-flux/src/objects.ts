@@ -84,6 +84,11 @@ export interface NamespacedObjectReference {
   namespace: string;
 }
 
+export interface ImgPolicy {
+  type?: string;
+  value?: string;
+}
+
 export class FluxObject {
   obj: any;
   clusterName: string;
@@ -389,6 +394,55 @@ export class HelmRelease extends FluxObject {
   }
 }
 
+export class ImageUpdateAutomation extends FluxObject {
+  get sourceRef(): ObjectRef | undefined {
+    if (!this.obj.spec?.sourceRef) {
+      return undefined;
+    }
+    const source = {
+      ...this.obj.spec.sourceRef,
+    };
+    if (!source.namespace) {
+      source.namespace = this.namespace;
+    }
+    return source;
+  }
+
+  get lastAutomationRunTime(): string {
+    return this.obj?.status?.lastAutomationRunTime || '';
+  }
+
+  get type(): Kind | string | undefined {
+    return this.obj.kind || this.obj.groupVersionKind?.kind;
+  }
+}
+
+export class ImagePolicy extends ImageUpdateAutomation {
+  get imagePolicy(): ImgPolicy {
+    const { policy } = this.obj?.spec;
+    const [type] = Object.keys(policy);
+    if (type) {
+      const [val] = Object.values(policy[type]);
+      return {
+        type,
+        value: (val as string) || '',
+      };
+    }
+    return {
+      type: '',
+      value: '',
+    };
+  }
+
+  get imageRepositoryRef(): string {
+    return this.obj?.spec?.imageRepositoryRef?.name || '';
+  }
+
+  get latestImage(): string {
+    return this.obj?.status?.latestImage || '';
+  }
+}
+
 export const helmReleaseGVK: CustomResourceMatcher = {
   apiVersion: 'v2beta1',
   group: 'helm.toolkit.fluxcd.io',
@@ -419,6 +473,12 @@ export const kustomizationGVK: CustomResourceMatcher = {
   plural: 'kustomizations',
 };
 
+export const imagePolicyGVK: CustomResourceMatcher = {
+  apiVersion: 'v1beta1',
+  group: 'image.toolkit.fluxcd.io',
+  plural: 'imagepolicies',
+};
+
 export function gvkFromKind(
   kind: String | Kind | undefined,
 ): CustomResourceMatcher | undefined {
@@ -433,6 +493,8 @@ export function gvkFromKind(
       return ociRepositoriesGVK;
     case 'Kustomization':
       return kustomizationGVK;
+    case 'ImagePolicy':
+      return imagePolicyGVK;
     default:
       break;
   }

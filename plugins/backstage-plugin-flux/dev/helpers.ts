@@ -217,3 +217,52 @@ export const newTestHelmRelease = (
     },
   };
 };
+
+export const newTestImagePolicy = (
+  name: string,
+  policy: { [name: string]: { [name: string]: string } },
+  imageRepositoryRef: string,
+  latestImage: string,
+  ready: string = 'True',
+) => {
+  return {
+    apiVersion: 'image.toolkit.fluxcd.io/v1beta1',
+    kind: 'ImagePolicy',
+    metadata: {
+      creationTimestamp: '2023-06-29T08:06:59Z',
+      finalizers: ['finalizers.fluxcd.io'],
+      generation: 2,
+      labels: {
+        'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+        'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+      },
+      name,
+      namespace: 'flux-system',
+      resourceVersion: '13621',
+      uid: '5009e51d-0fee-4f8e-9df1-7684c8aac4bd',
+    },
+    spec: {
+      imageRepositoryRef: {
+        name: imageRepositoryRef,
+      },
+      policy,
+    },
+    status: {
+      conditions: [
+        {
+          lastTransitionTime: DateTime.now()
+            .minus({ hours: randomInt(22) + 1 })
+            .toISO(),
+          message:
+            'Applied revision: main@sha1:c933408394a3af8fa7208af8c9abf7fe430f99d4',
+          observedGeneration: 1,
+          reason: 'ReconciliationSucceeded',
+          status: ready,
+          type: 'Ready',
+        },
+      ],
+      latestImage,
+      observedGeneration: 2,
+    },
+  };
+};
