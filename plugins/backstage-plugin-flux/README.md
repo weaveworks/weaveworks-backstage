@@ -290,3 +290,16 @@ You can configure verification for the following resources:
 
 - [Git Repositories](https://fluxcd.io/flux/components/source/gitrepositories/#verification)
 - [OCI Repositories](https://fluxcd.io/flux/components/source/ocirepositories/#verification)
+
+## Debugging
+
+If you are seeing this error.
+
+```
+Request failed with 401 Unauthorized, {"error":{"name":"AuthenticationError","message":"No Backstage token"},"request":{"method":"POST","url":"/api/kubernetes/resources/custom/query"},"response":{"statusCode":401}}
+```
+
+This is likely caused by this issue in [Backstage](https://github.com/backstage/backstage/issues/12394).
+
+The simplest thing to do is put some sort of authentication in front of your Backstage setup, for example using the [GitHub Authentication Provider](https://backstage.io/docs/auth/github/provider/) this will ensure there's an authentication token available.
+
