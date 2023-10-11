@@ -9,7 +9,6 @@
     "url": "https://github.com/weaveworks/weaveworks-backstage.git",
     "directory": "plugins/backstage-plugin-flux"
   },
-  "homepage": "https://docs.gitops.weave.works/docs/backstage/intro/",
   "publishConfig": {
     "access": "public",
     "main": "dist/index.esm.js",
