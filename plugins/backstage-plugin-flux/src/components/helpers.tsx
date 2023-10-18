@@ -27,6 +27,7 @@ import {
   HelmRepository,
   OCIRepository,
   ImagePolicy,
+  FluxController,
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
@@ -42,7 +43,7 @@ export type Deployment = HelmRelease | Kustomization;
 export const NameLabel = ({
   resource,
 }: {
-  resource: FluxObject;
+  resource: FluxObject | FluxController;
 }): JSX.Element => {
   const { name, namespace } = resource;
   const deepLink = useWeaveFluxDeepLink(resource);
@@ -242,7 +243,7 @@ export const VerifiedStatus = ({
 export const nameAndClusterName = ({
   resource,
 }: {
-  resource: FluxObject;
+  resource: FluxObject | FluxController;
 }): JSX.Element => (
   <Flex column>
     <NameLabel resource={resource} />
@@ -250,7 +251,7 @@ export const nameAndClusterName = ({
   </Flex>
 );
 
-export const idColumn = <T extends FluxObject>() => {
+export const idColumn = <T extends FluxObject | FluxController>() => {
   return {
     title: 'Id',
     field: 'id',
@@ -259,7 +260,9 @@ export const idColumn = <T extends FluxObject>() => {
 };
 
 // Added hidden column to allow checkbox filtering by clusterName
-export const clusterNameFilteringColumn = <T extends FluxObject>() => {
+export const clusterNameFilteringColumn = <
+  T extends FluxObject | FluxController,
+>() => {
   return {
     title: 'Cluster name',
     hidden: true,
@@ -267,7 +270,9 @@ export const clusterNameFilteringColumn = <T extends FluxObject>() => {
   } as TableColumn<T>;
 };
 
-export const nameAndClusterNameColumn = <T extends FluxObject>() => {
+export const nameAndClusterNameColumn = <
+  T extends FluxObject | FluxController,
+>() => {
   return {
     title: 'Name',
     render: resource => nameAndClusterName({ resource }),

@@ -1,5 +1,4 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-
 import {
   FluxObject,
   GitRepository,
@@ -8,9 +7,14 @@ import {
   HelmRepository,
   OCIRepository,
   ImagePolicy,
+  FluxController,
 } from '../objects';
 
-const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
+const typedUrl = (
+  baseUrl: string,
+  a: FluxObject | FluxController,
+  type: string,
+): string => {
   const queryStringData = {
     clusterName: a.clusterName,
     name: a.name,
@@ -26,7 +30,7 @@ const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
 };
 
 export const useWeaveFluxDeepLink = (
-  resource: FluxObject,
+  resource: FluxObject | FluxController,
 ): string | undefined => {
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
@@ -35,7 +39,13 @@ export const useWeaveFluxDeepLink = (
     return undefined;
   }
 
-  switch (resource.type) {
+  if (
+    (resource as FluxController)?.labels?.['control-plane'] === 'controller'
+  ) {
+    return typedUrl(baseUrl, resource as FluxController, 'flux_runtime');
+  }
+
+  switch ((resource as FluxObject).type) {
     case 'HelmRelease':
       return typedUrl(baseUrl, resource as HelmRelease, 'helm_release');
     case 'GitRepository':

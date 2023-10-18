@@ -8,4 +8,5 @@ export {
   EntityFluxDeploymentsCard,
   EntityFluxSourcesCard,
   EntityFluxImagePoliciesCard,
+  FluxRuntimeCard,
 } from './plugin';

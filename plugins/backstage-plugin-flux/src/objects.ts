@@ -89,6 +89,17 @@ export interface ImgPolicy {
   value?: string;
 }
 
+export type FluxController = {
+  name: string;
+  namespace: string;
+  conditions: Condition[];
+  images: string[];
+  suspended: boolean;
+  clusterName: string;
+  uid: string;
+  labels: { [key: string]: string };
+};
+
 export class FluxObject {
   obj: any;
   clusterName: string;

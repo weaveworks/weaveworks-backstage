@@ -35,9 +35,20 @@ import {
   newTestKustomization,
   newTestHelmRepository,
   newTestImagePolicy,
+  newTestFluxRuntime,
 } from './helpers';
 import { ReconcileRequestAnnotation } from '../src/hooks';
 import { EntityFluxSourcesCard } from '../src/components/EntityFluxSourcesCard';
+import { FluxRuntimeCard } from '../src/components/FluxRuntimeCard';
+
+const baseControllerLabels = {
+  'app.kubernetes.io/instance': 'flux-system',
+  'app.kubernetes.io/part-of': 'flux',
+  'app.kubernetes.io/version': 'v2.1.2',
+  'control-plane': 'controller',
+  'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+  'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+};
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -602,6 +613,52 @@ createDevApp()
             <EntityFluxImagePoliciesCard />
           </Content>
         </EntityProvider>
+      </TestApiProvider>
+    ),
+  })
+  .addPage({
+    title: 'Flux Runtime',
+    path: '/flux_runtime',
+    element: (
+      <TestApiProvider
+        apis={[
+          [
+            configApiRef,
+            new ConfigReader({
+              gitops: { baseUrl: 'https://example.com/wego' },
+            }),
+          ],
+          [
+            kubernetesApiRef,
+            new StubKubernetesClient([
+              newTestFluxRuntime(
+                'helm-controller',
+                ['ghcr.io/fluxcd/helm-controller:v0.36.2'],
+                'mock-cluster',
+                {
+                  ...baseControllerLabels,
+                  'app.kubernetes.io/component': 'helm-controller',
+                },
+              ),
+              newTestFluxRuntime(
+                'image-automation-controller',
+                ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
+                'mock-cluster',
+                {
+                  ...baseControllerLabels,
+                  'app.kubernetes.io/component': 'image-automation-controller',
+                },
+              ),
+            ]),
+          ],
+          [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+        ]}
+      >
+        {/* <EntityProvider entity={fakeEntity}> */}
+        <Content>
+          <FluxRuntimeCard />
+        </Content>
+        {/* </EntityProvider> */}
       </TestApiProvider>
     ),
   })

@@ -266,3 +266,36 @@ export const newTestImagePolicy = (
     },
   };
 };
+
+export const newTestFluxRuntime = (
+  name: string,
+  images: string[],
+  clusterName: string,
+  labels: { [name: string]: string },
+) => {
+  return {
+    name,
+    namespace: 'flux-system',
+    conditions: [
+      {
+        type: 'Available',
+        status: 'True',
+        reason: 'MinimumReplicasAvailable',
+        message: 'Deployment has minimum availability.',
+        timestamp: '',
+      },
+      {
+        type: 'Progressing',
+        status: 'True',
+        reason: 'NewReplicaSetAvailable',
+        message: 'ReplicaSet has successfully progressed.',
+        timestamp: '',
+      },
+    ],
+    images,
+    suspended: false,
+    clusterName,
+    uid: '4527e05c-eed4-489d-93ae-0cd66ca3277e',
+    labels,
+  };
+};

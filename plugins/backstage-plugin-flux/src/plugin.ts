@@ -143,3 +143,17 @@ export const EntityFluxImagePoliciesCard = weaveworksFluxPlugin.provide(
     },
   }),
 );
+
+/**
+ * Card used to show the state of Flux Runtime.
+ * @public
+ */
+export const FluxRuntimeCard = weaveworksFluxPlugin.provide(
+  createComponentExtension({
+    name: 'FluxRuntimeCard',
+    component: {
+      lazy: () =>
+        import('./components/FluxRuntimeCard').then(m => m.FluxRuntimeCard),
+    },
+  }),
+);
