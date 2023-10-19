@@ -83,7 +83,10 @@ class StubKubernetesClient implements KubernetesApi {
 
   async getClusters(): Promise<{ name: string; authProvider: string }[]> {
     await new Promise(resolve => setTimeout(resolve, 100));
-    return [{ name: 'mock-cluster', authProvider: 'serviceAccount' }];
+    return [
+      { name: 'mock-cluster-1', authProvider: 'serviceAccount1' },
+      { name: 'mock-cluster-2', authProvider: 'serviceAccount2' },
+    ];
   }
 
   getWorkloadsByEntity(
@@ -182,6 +185,18 @@ class StubKubernetesClient implements KubernetesApi {
 
       return {
         ok: true,
+      } as Response;
+    }
+
+    if (!init?.method) {
+      return {
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            kind: 'DeploymentList',
+            apiVersion: 'apps/v1',
+            items: this.resources,
+          }),
       } as Response;
     }
 
@@ -634,7 +649,7 @@ createDevApp()
               newTestFluxRuntime(
                 'helm-controller',
                 ['ghcr.io/fluxcd/helm-controller:v0.36.2'],
-                'mock-cluster',
+                'mock-cluster-1',
                 {
                   ...baseControllerLabels,
                   'app.kubernetes.io/component': 'helm-controller',
@@ -643,7 +658,16 @@ createDevApp()
               newTestFluxRuntime(
                 'image-automation-controller',
                 ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
-                'mock-cluster',
+                'mock-cluster-1',
+                {
+                  ...baseControllerLabels,
+                  'app.kubernetes.io/component': 'image-automation-controller',
+                },
+              ),
+              newTestFluxRuntime(
+                'image-automation-controller',
+                ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
+                'mock-cluster-2',
                 {
                   ...baseControllerLabels,
                   'app.kubernetes.io/component': 'image-automation-controller',
@@ -654,11 +678,9 @@ createDevApp()
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
-        {/* <EntityProvider entity={fakeEntity}> */}
         <Content>
           <FluxRuntimeCard />
         </Content>
-        {/* </EntityProvider> */}
       </TestApiProvider>
     ),
   })

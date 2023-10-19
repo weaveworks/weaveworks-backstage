@@ -1,6 +1,5 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { kubernetesApiRef } from '@backstage/plugin-kubernetes';
-import { useState } from 'react';
 import { FluxController } from '../objects';
 
 interface Cluster {
@@ -11,24 +10,29 @@ interface Cluster {
 
 export const DEPLOYMENTS_PATH =
   '/apis/apps/v1/namespaces/flux-system/deployments?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500';
-export function getAllDeployments(): FluxController[] {
-  const kubernetesApi = useApi(kubernetesApiRef);
-  const [deployments, setDeployments] = useState<any>([]);
 
-  kubernetesApi.getClusters().then((clusters: Cluster[]) =>
-    Promise.all(
-      clusters.map((cluster: Cluster) =>
-        kubernetesApi.proxy({
-          clusterName: cluster.name,
-          path: DEPLOYMENTS_PATH,
-        }),
-      ),
-    ).then((data: any) => {
-      console.log(data);
-      // setDeployments(data);
-    }),
+export async function getAllDeployments() {
+  const kubernetesApi = useApi(kubernetesApiRef);
+
+  const clusters = await kubernetesApi.getClusters();
+
+  const deploymentsListsProxyData = await Promise.all(
+    clusters.map((cluster: Cluster) =>
+      kubernetesApi.proxy({
+        clusterName: cluster.name,
+        path: DEPLOYMENTS_PATH,
+      }),
+    ),
   );
 
-  // return deployments;
-  return [] as FluxController[];
+  const deploymentsLists = async () => {
+    let items: FluxController[] = [];
+    for (const item of deploymentsListsProxyData) {
+      const i = await item.json();
+      items = [...items, ...i.items];
+    }
+    return items;
+  };
+
+  return deploymentsLists;
 }

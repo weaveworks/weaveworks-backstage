@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { FluxRuntimeTable, defaultColumns } from './FluxRuntimeTable';
-import {
-  getAllDeployments,
-  // useGetDeployments,
-} from '../../hooks/useGetDeployments';
+import { getAllDeployments } from '../../hooks/useGetDeployments';
+import { FluxController } from '../../objects';
 
-const FluxRuntimePanel = ({ many }: { many?: boolean }) => {
-  let deployments = getAllDeployments();
+const FluxRuntimePanel: FC<{ many?: boolean }> = ({ many }) => {
+  const [deployments, setDeployments] = useState<FluxController[]>();
 
-  console.log(deployments);
+  useEffect(() => {
+    getAllDeployments().then(data => {
+      console.log(data);
+    });
+  }, [getAllDeployments]);
 
   // if (error) {
   //   return (
@@ -28,10 +30,10 @@ const FluxRuntimePanel = ({ many }: { many?: boolean }) => {
   return (
     <InfoCard title="Flux runtime">
       <FluxRuntimeTable
-        deployments={[]}
+        deployments={deployments || []}
         isLoading={
           // loading &&
-          false
+          !deployments
         }
         columns={defaultColumns}
         many={many}
