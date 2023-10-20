@@ -1,40 +1,21 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { FluxRuntimeTable, defaultColumns } from './FluxRuntimeTable';
 import { getAllDeployments } from '../../hooks/useGetDeployments';
-import { FluxController } from '../../objects';
 
 const FluxRuntimePanel: FC<{ many?: boolean }> = ({ many }) => {
-  const [deployments, setDeployments] = useState<FluxController[]>();
+  const { data, isLoading, error } = getAllDeployments();
 
-  useEffect(() => {
-    getAllDeployments().then(data => {
-      console.log(data);
-    });
-  }, [getAllDeployments]);
-
-  // if (error) {
-  //   return (
-  //     <div>
-  //       Errors:
-  //       <ul>
-  //         {errors.map(err => (
-  //           <li>{err.message}</li>
-  //         ))}
-  //       </ul>
-  //     </div>
-  //   );
-  // }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <InfoCard title="Flux runtime">
       <FluxRuntimeTable
-        deployments={deployments || []}
-        isLoading={
-          // loading &&
-          !deployments
-        }
+        deployments={data || []}
+        isLoading={isLoading || !data}
         columns={defaultColumns}
         many={many}
       />
