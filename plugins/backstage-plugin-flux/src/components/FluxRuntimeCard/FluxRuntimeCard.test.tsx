@@ -59,11 +59,7 @@ class StubKubernetesClient implements KubernetesApi {
 
   getCustomObjectsByEntity = jest.fn();
 
-  async proxy(options: {
-    clusterName: string;
-    path: string;
-    init?: RequestInit;
-  }): Promise<Response> {
+  async proxy(): Promise<Response> {
     return Promise.resolve({
       ok: true,
       json: () =>
@@ -161,7 +157,7 @@ describe('<FluxRuntimeCard />', () => {
         {
           name: 'mock-cluster-1',
           namespace: 'flux-system',
-          //   version: '',
+          version: 'v2.1.2',
           availableComponents: [
             'helm-controller',
             'image-automation-controller',
@@ -170,7 +166,7 @@ describe('<FluxRuntimeCard />', () => {
         {
           name: 'mock-cluster-2',
           namespace: 'flux-system',
-          //   version: '',
+          version: 'v2.1.2',
           availableComponents: ['image-automation-controller'],
         },
       ];
