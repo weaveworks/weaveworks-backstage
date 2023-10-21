@@ -36,6 +36,13 @@ import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
+export type Cluster = {
+  name: string;
+  namespace: string;
+  version: string;
+  availableComponents: string[];
+};
+
 /**
  * Calculate a Name label for a resource with the namespace/name and link to
  * this in Weave GitOps if possible.
@@ -251,7 +258,7 @@ export const nameAndClusterName = ({
   </Flex>
 );
 
-export const idColumn = <T extends FluxObject | FluxController>() => {
+export const idColumn = <T extends FluxObject | Cluster>() => {
   return {
     title: 'Id',
     field: 'id',
@@ -261,12 +268,43 @@ export const idColumn = <T extends FluxObject | FluxController>() => {
 
 // Added hidden column to allow checkbox filtering by clusterName
 export const clusterNameFilteringColumn = <
-  T extends FluxObject | FluxController,
+  T extends FluxObject | Cluster,
 >() => {
   return {
     title: 'Cluster name',
     hidden: true,
     field: 'clusterName',
+  } as TableColumn<T>;
+};
+
+export const clusterColumn = <T extends Cluster>() => {
+  return {
+    title: 'Cluster',
+    render: resource => <span>{resource?.name}</span>,
+    ...sortAndFilterOptions(resource => resource?.name),
+  } as TableColumn<T>;
+};
+
+export const namespaceColumn = <T extends Cluster>() => {
+  return {
+    title: 'Namespace',
+    render: resource => <span>{resource?.namespace}</span>,
+    ...sortAndFilterOptions(resource => resource?.namespace),
+  } as TableColumn<T>;
+};
+
+export const versionColumn = <T extends Cluster>() => {
+  return {
+    title: 'Version',
+    render: resource => <span>{resource?.version}</span>,
+    ...sortAndFilterOptions(resource => resource?.version),
+  } as TableColumn<T>;
+};
+
+export const availableComponentsColumn = <T extends Cluster>() => {
+  return {
+    title: 'Available Components',
+    render: resource => <span>{resource?.availableComponents.join(', ')}</span>,
   } as TableColumn<T>;
 };
 

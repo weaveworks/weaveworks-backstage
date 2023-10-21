@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { InfoCard } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { FluxRuntimeTable, defaultColumns } from './FluxRuntimeTable';
-import { getAllDeployments } from '../../hooks/useGetDeployments';
+import { useGetDeployments } from '../../hooks/useGetDeployments';
 
 const FluxRuntimePanel: FC<{ many?: boolean }> = ({ many }) => {
-  const { data, isLoading, error } = getAllDeployments();
+  const { data, isLoading, error } = useGetDeployments();
 
   if (error) {
     return <div>Error: {error.message}</div>;

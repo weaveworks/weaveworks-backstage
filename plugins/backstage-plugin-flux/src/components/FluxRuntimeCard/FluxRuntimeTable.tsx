@@ -1,24 +1,29 @@
 import React from 'react';
 import { TableColumn } from '@backstage/core-components';
 import {
-  clusterNameFilteringColumn,
   idColumn,
-  nameAndClusterNameColumn,
   filters,
+  clusterColumn,
+  namespaceColumn,
+  versionColumn,
+  Cluster,
+  availableComponentsColumn,
 } from '../helpers';
 import { FluxEntityTable } from '../FluxEntityTable';
 import { FluxController } from '../../objects';
 
-export const defaultColumns: TableColumn<FluxController>[] = [
-  clusterNameFilteringColumn(),
+export const defaultColumns: TableColumn<Cluster>[] = [
   idColumn(),
-  nameAndClusterNameColumn(),
+  clusterColumn(),
+  namespaceColumn(),
+  versionColumn(),
+  availableComponentsColumn(),
 ];
 
 type Props = {
   deployments: FluxController[];
   isLoading: boolean;
-  columns: TableColumn<FluxController>[];
+  columns: TableColumn<Cluster>[];
   many?: boolean;
 };
 
@@ -28,22 +33,46 @@ export const FluxRuntimeTable = ({
   columns,
   many,
 }: Props) => {
-  const data = deployments.map(d => {
-    const { clusterName, namespace, name, conditions, suspended } = d;
+  let clusters: Cluster[] = [];
+  deployments.forEach(deployment => {
+    const cls = clusters.find(
+      cluster => cluster.name === deployment.clusterName,
+    );
+    if (cls) {
+      cls.availableComponents = [
+        ...cls.availableComponents,
+        deployment.labels['app.kubernetes.io/component'],
+      ];
+    } else {
+      clusters = [
+        ...clusters,
+        {
+          name: deployment.clusterName,
+          namespace: deployment.namespace,
+          version: deployment.labels['app.kubernetes.io/version'],
+          availableComponents: [
+            deployment.labels['app.kubernetes.io/component'],
+          ],
+        },
+      ];
+    }
+  });
+
+  const data = clusters.map(c => {
+    const { name, namespace, version, availableComponents } = c;
     return {
-      id: `${clusterName}/${namespace}/${name}`,
-      conditions,
-      suspended,
+      id: `${namespace}/${name}`,
       name,
       namespace,
-      clusterName,
-    } as FluxController & { id: string };
+      version,
+      availableComponents,
+    } as Cluster & { id: string };
   });
 
   return (
     <FluxEntityTable
       columns={columns}
-      data={data as FluxController[]}
+      data={data as Cluster[]}
       isLoading={isLoading}
       filters={filters}
       many={many}
