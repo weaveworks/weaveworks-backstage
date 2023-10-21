@@ -60,11 +60,11 @@ describe('getDeploymentsList', () => {
               items: [deployment],
             }),
         } as Response;
-      } else
-        return {
-          ok: true,
-          json: () => Promise.resolve(),
-        } as Response;
+      }
+      return {
+        ok: true,
+        json: () => Promise.resolve(),
+      } as Response;
     });
 
     await getDeploymentsList(kubernetesApi);
