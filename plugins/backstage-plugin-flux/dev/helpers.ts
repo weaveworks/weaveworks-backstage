@@ -267,7 +267,7 @@ export const newTestImagePolicy = (
   };
 };
 
-export const newTestFluxRuntime = (
+export const newTestFluxController = (
   name: string,
   images: string[],
   clusterName: string,

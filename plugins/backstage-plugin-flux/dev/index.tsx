@@ -35,13 +35,13 @@ import {
   newTestKustomization,
   newTestHelmRepository,
   newTestImagePolicy,
-  newTestFluxRuntime,
+  newTestFluxController,
 } from './helpers';
 import { ReconcileRequestAnnotation } from '../src/hooks';
 import { EntityFluxSourcesCard } from '../src/components/EntityFluxSourcesCard';
 import { FluxRuntimeCard } from '../src/components/FluxRuntimeCard';
 
-const baseControllerLabels = {
+export const baseControllerLabels = {
   'app.kubernetes.io/instance': 'flux-system',
   'app.kubernetes.io/part-of': 'flux',
   'app.kubernetes.io/version': 'v2.1.2',
@@ -646,7 +646,7 @@ createDevApp()
           [
             kubernetesApiRef,
             new StubKubernetesClient([
-              newTestFluxRuntime(
+              newTestFluxController(
                 'helm-controller',
                 ['ghcr.io/fluxcd/helm-controller:v0.36.2'],
                 'mock-cluster-1',
@@ -655,7 +655,7 @@ createDevApp()
                   'app.kubernetes.io/component': 'helm-controller',
                 },
               ),
-              newTestFluxRuntime(
+              newTestFluxController(
                 'image-automation-controller',
                 ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
                 'mock-cluster-1',
@@ -664,7 +664,7 @@ createDevApp()
                   'app.kubernetes.io/component': 'image-automation-controller',
                 },
               ),
-              newTestFluxRuntime(
+              newTestFluxController(
                 'image-automation-controller',
                 ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
                 'mock-cluster-2',
