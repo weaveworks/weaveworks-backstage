@@ -27,7 +27,6 @@ import {
   HelmRepository,
   OCIRepository,
   ImagePolicy,
-  FluxController,
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
@@ -50,7 +49,7 @@ export type Cluster = {
 export const NameLabel = ({
   resource,
 }: {
-  resource: FluxObject | FluxController;
+  resource: FluxObject;
 }): JSX.Element => {
   const { name, namespace } = resource;
   const deepLink = useWeaveFluxDeepLink(resource);
@@ -250,7 +249,7 @@ export const VerifiedStatus = ({
 export const nameAndClusterName = ({
   resource,
 }: {
-  resource: FluxObject | FluxController;
+  resource: FluxObject;
 }): JSX.Element => (
   <Flex column>
     <NameLabel resource={resource} />
@@ -308,9 +307,7 @@ export const availableComponentsColumn = <T extends Cluster>() => {
   } as TableColumn<T>;
 };
 
-export const nameAndClusterNameColumn = <
-  T extends FluxObject | FluxController,
->() => {
+export const nameAndClusterNameColumn = <T extends FluxObject>() => {
   return {
     title: 'Name',
     render: resource => nameAndClusterName({ resource }),

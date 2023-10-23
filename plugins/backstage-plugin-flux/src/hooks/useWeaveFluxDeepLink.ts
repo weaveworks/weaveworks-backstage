@@ -7,14 +7,9 @@ import {
   HelmRepository,
   OCIRepository,
   ImagePolicy,
-  FluxController,
 } from '../objects';
 
-const typedUrl = (
-  baseUrl: string,
-  a: FluxObject | FluxController,
-  type: string,
-): string => {
+const typedUrl = (baseUrl: string, a: FluxObject, type: string): string => {
   const queryStringData = {
     clusterName: a.clusterName,
     name: a.name,
@@ -30,7 +25,7 @@ const typedUrl = (
 };
 
 export const useWeaveFluxDeepLink = (
-  resource: FluxObject | FluxController,
+  resource: FluxObject,
 ): string | undefined => {
   const config = useApi(configApiRef);
   const baseUrl = config.getOptionalString('gitops.baseUrl');
@@ -39,13 +34,7 @@ export const useWeaveFluxDeepLink = (
     return undefined;
   }
 
-  if (
-    (resource as FluxController)?.labels?.['control-plane'] === 'controller'
-  ) {
-    return typedUrl(baseUrl, resource as FluxController, 'flux_runtime');
-  }
-
-  switch ((resource as FluxObject).type) {
+  switch (resource.type) {
     case 'HelmRelease':
       return typedUrl(baseUrl, resource as HelmRelease, 'helm_release');
     case 'GitRepository':
