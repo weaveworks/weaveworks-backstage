@@ -8,11 +8,13 @@ import {
   versionColumn,
   Cluster,
   availableComponentsColumn,
+  clusterNameFilteringColumn,
 } from '../helpers';
 import { FluxEntityTable } from '../FluxEntityTable';
 import { FluxController } from '../../objects';
 
 export const defaultColumns: TableColumn<Cluster>[] = [
+  clusterNameFilteringColumn(),
   idColumn(),
   clusterColumn(),
   namespaceColumn(),
@@ -36,7 +38,7 @@ export const FluxRuntimeTable = ({
   let clusters: Cluster[] = [];
   deployments.forEach(deployment => {
     const cls = clusters.find(
-      cluster => cluster.name === deployment.clusterName,
+      cluster => cluster.clusterName === deployment.clusterName,
     );
     if (cls) {
       cls.availableComponents = [
@@ -47,7 +49,7 @@ export const FluxRuntimeTable = ({
       clusters = [
         ...clusters,
         {
-          name: deployment.clusterName,
+          clusterName: deployment.clusterName,
           namespace: deployment.namespace,
           version: deployment.labels['app.kubernetes.io/version'],
           availableComponents: [
@@ -59,10 +61,10 @@ export const FluxRuntimeTable = ({
   });
 
   const data = clusters.map(c => {
-    const { name, namespace, version, availableComponents } = c;
+    const { clusterName, namespace, version, availableComponents } = c;
     return {
       id: `${namespace}/${name}`,
-      name,
+      clusterName,
       namespace,
       version,
       availableComponents,

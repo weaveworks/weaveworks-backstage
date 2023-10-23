@@ -36,7 +36,7 @@ import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
 export type Cluster = {
-  name: string;
+  clusterName: string;
   namespace: string;
   version: string;
   availableComponents: string[];
@@ -279,8 +279,8 @@ export const clusterNameFilteringColumn = <
 export const clusterColumn = <T extends Cluster>() => {
   return {
     title: 'Cluster',
-    render: resource => <span>{resource?.name}</span>,
-    ...sortAndFilterOptions(resource => resource?.name),
+    render: resource => <span>{resource?.clusterName}</span>,
+    ...sortAndFilterOptions(resource => resource?.clusterName),
   } as TableColumn<T>;
 };
 
