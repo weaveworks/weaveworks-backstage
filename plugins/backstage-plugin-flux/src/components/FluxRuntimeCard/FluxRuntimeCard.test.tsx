@@ -10,7 +10,15 @@ import {
 } from '@backstage/plugin-kubernetes';
 import { KubernetesRequestBody } from '@backstage/plugin-kubernetes-common';
 import { FluxRuntimeCard } from './FluxRuntimeCard';
-import { baseControllerLabels } from '../../../dev';
+
+const baseControllerLabels = {
+  'app.kubernetes.io/instance': 'flux-system',
+  'app.kubernetes.io/part-of': 'flux',
+  'app.kubernetes.io/version': 'v2.1.2',
+  'control-plane': 'controller',
+  'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+  'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+};
 
 const makeTestFluxController = (
   name: string,
@@ -178,8 +186,7 @@ describe('<FluxRuntimeCard />', () => {
         const tr = cell.closest('tr');
         expect(tr).toBeInTheDocument();
         expect(tr).toHaveTextContent(testCase.namespace);
-        expect(tr).toHaveTextContent(testCase.availableComponents[0]);
-        expect(tr).toHaveTextContent(testCase.availableComponents[1]);
+        expect(tr).toHaveTextContent(testCase.availableComponents.join(', '));
       }
     });
   });

@@ -41,7 +41,7 @@ import { ReconcileRequestAnnotation } from '../src/hooks';
 import { EntityFluxSourcesCard } from '../src/components/EntityFluxSourcesCard';
 import { FluxRuntimeCard } from '../src/components/FluxRuntimeCard';
 
-export const baseControllerLabels = {
+const baseControllerLabels = {
   'app.kubernetes.io/instance': 'flux-system',
   'app.kubernetes.io/part-of': 'flux',
   'app.kubernetes.io/version': 'v2.1.2',
