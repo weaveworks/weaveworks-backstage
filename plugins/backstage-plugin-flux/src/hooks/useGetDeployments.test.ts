@@ -49,6 +49,11 @@ describe('getDeploymentsList', () => {
 
   it('should get a Deployments list', async () => {
     const kubernetesApi = makeMockKubernetesApi();
+
+    kubernetesApi.getClusters.mockImplementation(async () => {
+      return [{ name: 'mock-cluster-1', authProvider: 'serviceAccount1' }];
+    });
+
     kubernetesApi.proxy.mockImplementation(async ({ init }) => {
       if (!init?.method) {
         return {
