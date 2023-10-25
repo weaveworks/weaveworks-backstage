@@ -269,13 +269,14 @@ export const newTestImagePolicy = (
 
 export const newTestFluxController = (
   name: string,
+  namespace: string,
   images: string[],
   clusterName: string,
   labels: { [name: string]: string },
 ) => {
   return {
     name,
-    namespace: 'flux-system',
+    namespace,
     conditions: [
       {
         type: 'Available',

@@ -22,13 +22,14 @@ const baseControllerLabels = {
 
 const makeTestFluxController = (
   name: string,
+  namespace: string,
   images: string[],
   clusterName: string,
   labels: { [name: string]: string },
 ) => {
   return {
     name,
-    namespace: 'flux-system',
+    namespace,
     conditions: [
       {
         type: 'Available',
@@ -77,6 +78,7 @@ class StubKubernetesClient implements KubernetesApi {
           items: [
             makeTestFluxController(
               'helm-controller',
+              'default',
               ['ghcr.io/fluxcd/helm-controller:v0.36.2'],
               'mock-cluster-1',
               {
@@ -86,6 +88,7 @@ class StubKubernetesClient implements KubernetesApi {
             ),
             makeTestFluxController(
               'image-automation-controller',
+              'default',
               ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
               'mock-cluster-1',
               {
@@ -95,6 +98,7 @@ class StubKubernetesClient implements KubernetesApi {
             ),
             makeTestFluxController(
               'image-automation-controller',
+              'flux-system',
               ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
               'mock-cluster-2',
               {
@@ -164,7 +168,7 @@ describe('<FluxRuntimeCard />', () => {
       const testCases = [
         {
           name: 'mock-cluster-1',
-          namespace: 'flux-system',
+          namespace: 'default',
           version: 'v2.1.2',
           availableComponents: [
             'helm-controller',

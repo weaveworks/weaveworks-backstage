@@ -63,7 +63,7 @@ export const FluxRuntimeTable = ({
   const data = clusters.map(c => {
     const { clusterName, namespace, version, availableComponents } = c;
     return {
-      id: `${namespace}/${name}`,
+      id: `${namespace}/${clusterName}`,
       clusterName,
       namespace,
       version,

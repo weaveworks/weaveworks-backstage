@@ -4,18 +4,48 @@ import { FluxController } from '../objects';
 import { useQuery } from 'react-query';
 import _ from 'lodash';
 
-export const DEPLOYMENTS_PATH =
-  '/apis/apps/v1/namespaces/flux-system/deployments?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500';
+export const NAMESPACES_PATH = `/api/v1/namespaces?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500`;
+export const DEPLOYMENTS_PATH = (ns: string) =>
+  `/apis/apps/v1/namespaces/${ns}/deployments?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500`;
 
 export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
   const clusters = await kubernetesApi?.getClusters();
 
-  const deploymentsListsProxyData = await Promise.all(
-    clusters?.map(cluster =>
-      kubernetesApi.proxy({
+  const namespacesListsProxyData = await Promise.all(
+    clusters?.map(async cluster => {
+      return {
         clusterName: cluster.name,
-        path: DEPLOYMENTS_PATH,
-      }),
+        proxy: await kubernetesApi.proxy({
+          clusterName: cluster.name,
+          path: NAMESPACES_PATH,
+        }),
+      };
+    }),
+  );
+
+  const namespacesLists = async () => {
+    let namespacesLists: any[] = [];
+    for (const namespacesList of namespacesListsProxyData) {
+      const clusterName = namespacesList.clusterName;
+      const namespaces = await namespacesList.proxy.json();
+      namespacesLists = [
+        ...namespacesLists,
+        { clusterName, namespaces: namespaces.items },
+      ];
+    }
+    return _.uniqWith(namespacesLists, _.isEqual);
+  };
+
+  const namespacesList = await namespacesLists();
+
+  const deploymentsListsProxyData = await Promise.all(
+    namespacesList?.flatMap(nsList =>
+      nsList.namespaces.map((ns: any) =>
+        kubernetesApi.proxy({
+          clusterName: ns.clusterName,
+          path: DEPLOYMENTS_PATH(ns.name),
+        }),
+      ),
     ),
   );
 

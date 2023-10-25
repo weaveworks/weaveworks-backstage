@@ -304,6 +304,9 @@ export const availableComponentsColumn = <T extends Cluster>() => {
   return {
     title: 'Available Components',
     render: resource => <span>{resource?.availableComponents.join(', ')}</span>,
+    ...sortAndFilterOptions(resource =>
+      resource?.availableComponents.join(', '),
+    ),
   } as TableColumn<T>;
 };
 

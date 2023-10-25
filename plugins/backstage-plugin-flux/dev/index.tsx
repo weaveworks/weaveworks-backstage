@@ -40,6 +40,10 @@ import {
 import { ReconcileRequestAnnotation } from '../src/hooks';
 import { EntityFluxSourcesCard } from '../src/components/EntityFluxSourcesCard';
 import { FluxRuntimeCard } from '../src/components/FluxRuntimeCard';
+import {
+  DEPLOYMENTS_PATH,
+  NAMESPACES_PATH,
+} from '../src/hooks/useGetDeployments';
 
 const baseControllerLabels = {
   'app.kubernetes.io/instance': 'flux-system',
@@ -188,7 +192,36 @@ class StubKubernetesClient implements KubernetesApi {
       } as Response;
     }
 
-    if (!init?.method) {
+    if (!init?.method && path === NAMESPACES_PATH) {
+      return {
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            kind: 'NamespacesList',
+            apiVersion: 'meta.k8s.io/v1',
+            items: [
+              {
+                name: 'flux-system',
+                uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
+                resourceVersion: '1583',
+                creationTimestamp: '2023-10-19T16:34:12Z',
+                labels: {
+                  'app.kubernetes.io/instance': 'flux-system',
+                  'app.kubernetes.io/part-of': 'flux',
+                  'app.kubernetes.io/version': 'v2.0.0',
+                  'kubernetes.io/metadata.name': 'flux-system',
+                  'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+                  'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+                  'pod-security.kubernetes.io/warn': 'restricted',
+                  'pod-security.kubernetes.io/warn-version': 'latest',
+                },
+              },
+            ],
+          }),
+      } as Response;
+    }
+
+    if (!init?.method && path === DEPLOYMENTS_PATH('flux-system')) {
       return {
         ok: true,
         json: () =>
@@ -648,6 +681,7 @@ createDevApp()
             new StubKubernetesClient([
               newTestFluxController(
                 'helm-controller',
+                'default',
                 ['ghcr.io/fluxcd/helm-controller:v0.36.2'],
                 'mock-cluster-1',
                 {
@@ -657,6 +691,7 @@ createDevApp()
               ),
               newTestFluxController(
                 'image-automation-controller',
+                'default',
                 ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
                 'mock-cluster-1',
                 {
@@ -666,6 +701,7 @@ createDevApp()
               ),
               newTestFluxController(
                 'image-automation-controller',
+                'flux-system',
                 ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
                 'mock-cluster-2',
                 {
