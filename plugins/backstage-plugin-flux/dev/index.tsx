@@ -41,8 +41,8 @@ import { ReconcileRequestAnnotation } from '../src/hooks';
 import { EntityFluxSourcesCard } from '../src/components/EntityFluxSourcesCard';
 import { FluxRuntimeCard } from '../src/components/FluxRuntimeCard';
 import {
-  DEPLOYMENTS_PATH,
   NAMESPACES_PATH,
+  getDeploymentsPath,
 } from '../src/hooks/useGetDeployments';
 
 const fakeEntity: Entity = {
@@ -242,7 +242,7 @@ class StubKubernetesClient implements KubernetesApi {
       }
     }
 
-    if (!init?.method && path === DEPLOYMENTS_PATH('flux-system')) {
+    if (!init?.method && path === getDeploymentsPath('flux-system')) {
       return {
         ok: true,
         json: () =>
@@ -254,7 +254,7 @@ class StubKubernetesClient implements KubernetesApi {
       } as Response;
     }
 
-    if (!init?.method && path === DEPLOYMENTS_PATH('default')) {
+    if (!init?.method && path === getDeploymentsPath('default')) {
       return {
         ok: true,
         json: () =>

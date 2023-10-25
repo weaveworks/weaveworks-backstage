@@ -22,7 +22,7 @@ interface Namespace {
 }
 
 export const NAMESPACES_PATH = `/api/v1/namespaces?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500`;
-export const DEPLOYMENTS_PATH = (ns: string) =>
+export const getDeploymentsPath = (ns: string) =>
   `/apis/apps/v1/namespaces/${ns}/deployments?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500`;
 
 export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
@@ -41,17 +41,13 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
   );
 
   const namespacesLists = async () => {
-    let namespacesLists: { clusterName: string; namespaces: Namespace[] }[] =
-      [];
+    let nsLists: { clusterName: string; namespaces: Namespace[] }[] = [];
     for (const namespacesList of namespacesListsProxyData) {
       const { clusterName } = namespacesList;
       const namespaces = await namespacesList.proxy.json();
-      namespacesLists = [
-        ...namespacesLists,
-        { clusterName, namespaces: namespaces.items },
-      ];
+      nsLists = [...nsLists, { clusterName, namespaces: namespaces.items }];
     }
-    return _.uniqWith(namespacesLists, _.isEqual);
+    return _.uniqWith(nsLists, _.isEqual);
   };
 
   const namespacesList = await namespacesLists();
@@ -61,7 +57,7 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
       nsList.namespaces.map(ns =>
         kubernetesApi.proxy({
           clusterName: nsList.clusterName,
-          path: DEPLOYMENTS_PATH(ns.name),
+          path: getDeploymentsPath(ns.name),
         }),
       ),
     ),
