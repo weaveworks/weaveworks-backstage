@@ -1,25 +1,8 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
-import { FluxController } from '../objects';
+import { FluxController, Namespace } from '../objects';
 import { useQuery } from 'react-query';
 import _ from 'lodash';
-
-interface Namespace {
-  name: string;
-  uid: string;
-  resourceVersion: string;
-  creationTimestamp: string;
-  labels: {
-    'app.kubernetes.io/instance': string;
-    'app.kubernetes.io/part-of': string;
-    'app.kubernetes.io/version': string;
-    'kubernetes.io/metadata.name': string;
-    'kustomize.toolkit.fluxcd.io/name': string;
-    'kustomize.toolkit.fluxcd.io/namespace': string;
-    'pod-security.kubernetes.io/warn': string;
-    'pod-security.kubernetes.io/warn-version': string;
-  };
-}
 
 export const NAMESPACES_PATH = `/api/v1/namespaces?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500`;
 export const getDeploymentsPath = (ns: string) =>

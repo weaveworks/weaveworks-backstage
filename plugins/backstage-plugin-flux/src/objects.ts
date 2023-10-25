@@ -89,6 +89,14 @@ export interface ImgPolicy {
   value?: string;
 }
 
+export interface Namespace {
+  name: string;
+  uid: string;
+  resourceVersion: string;
+  creationTimestamp: string;
+  labels: { [key: string]: string };
+}
+
 export type FluxController = {
   name: string;
   namespace: string;
