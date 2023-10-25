@@ -4,6 +4,23 @@ import { FluxController } from '../objects';
 import { useQuery } from 'react-query';
 import _ from 'lodash';
 
+interface Namespace {
+  name: string;
+  uid: string;
+  resourceVersion: string;
+  creationTimestamp: string;
+  labels: {
+    'app.kubernetes.io/instance': string;
+    'app.kubernetes.io/part-of': string;
+    'app.kubernetes.io/version': string;
+    'kubernetes.io/metadata.name': string;
+    'kustomize.toolkit.fluxcd.io/name': string;
+    'kustomize.toolkit.fluxcd.io/namespace': string;
+    'pod-security.kubernetes.io/warn': string;
+    'pod-security.kubernetes.io/warn-version': string;
+  };
+}
+
 export const NAMESPACES_PATH = `/api/v1/namespaces?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500`;
 export const DEPLOYMENTS_PATH = (ns: string) =>
   `/apis/apps/v1/namespaces/${ns}/deployments?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500`;
@@ -24,9 +41,10 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
   );
 
   const namespacesLists = async () => {
-    let namespacesLists: any[] = [];
+    let namespacesLists: { clusterName: string; namespaces: Namespace[] }[] =
+      [];
     for (const namespacesList of namespacesListsProxyData) {
-      const clusterName = namespacesList.clusterName;
+      const { clusterName } = namespacesList;
       const namespaces = await namespacesList.proxy.json();
       namespacesLists = [
         ...namespacesLists,
@@ -40,9 +58,9 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
 
   const deploymentsListsProxyData = await Promise.all(
     namespacesList?.flatMap(nsList =>
-      nsList.namespaces.map((ns: any) =>
+      nsList.namespaces.map(ns =>
         kubernetesApi.proxy({
-          clusterName: ns.clusterName,
+          clusterName: nsList.clusterName,
           path: DEPLOYMENTS_PATH(ns.name),
         }),
       ),

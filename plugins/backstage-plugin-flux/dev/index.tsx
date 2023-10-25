@@ -45,15 +45,6 @@ import {
   NAMESPACES_PATH,
 } from '../src/hooks/useGetDeployments';
 
-const baseControllerLabels = {
-  'app.kubernetes.io/instance': 'flux-system',
-  'app.kubernetes.io/part-of': 'flux',
-  'app.kubernetes.io/version': 'v2.1.2',
-  'control-plane': 'controller',
-  'kustomize.toolkit.fluxcd.io/name': 'flux-system',
-  'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
-};
-
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
   kind: 'Component',
@@ -135,12 +126,12 @@ class StubKubernetesClient implements KubernetesApi {
     };
   }
 
-  // this is only used by sync and suspend/resume
   async proxy({
+    clusterName,
     init,
     path,
   }: {
-    clusterName: string;
+    clusterName?: string;
     path: string;
     init?: RequestInit | undefined;
   }): Promise<any> {
@@ -193,32 +184,62 @@ class StubKubernetesClient implements KubernetesApi {
     }
 
     if (!init?.method && path === NAMESPACES_PATH) {
-      return {
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            kind: 'NamespacesList',
-            apiVersion: 'meta.k8s.io/v1',
-            items: [
-              {
-                name: 'flux-system',
-                uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
-                resourceVersion: '1583',
-                creationTimestamp: '2023-10-19T16:34:12Z',
-                labels: {
-                  'app.kubernetes.io/instance': 'flux-system',
-                  'app.kubernetes.io/part-of': 'flux',
-                  'app.kubernetes.io/version': 'v2.0.0',
-                  'kubernetes.io/metadata.name': 'flux-system',
-                  'kustomize.toolkit.fluxcd.io/name': 'flux-system',
-                  'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
-                  'pod-security.kubernetes.io/warn': 'restricted',
-                  'pod-security.kubernetes.io/warn-version': 'latest',
+      if (clusterName === 'mock-cluster-1') {
+        return {
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              kind: 'NamespacesList',
+              apiVersion: 'meta.k8s.io/v1',
+              items: [
+                {
+                  name: 'flux-system',
+                  uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
+                  resourceVersion: '1583',
+                  creationTimestamp: '2023-10-19T16:34:12Z',
+                  labels: {
+                    'app.kubernetes.io/instance': 'flux-system',
+                    'app.kubernetes.io/part-of': 'flux',
+                    'app.kubernetes.io/version': 'v2.0.0',
+                    'kubernetes.io/metadata.name': 'flux-system',
+                    'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+                    'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+                    'pod-security.kubernetes.io/warn': 'restricted',
+                    'pod-security.kubernetes.io/warn-version': 'latest',
+                  },
                 },
-              },
-            ],
-          }),
-      } as Response;
+              ],
+            }),
+        } as Response;
+      }
+      if (clusterName === 'mock-cluster-2') {
+        return {
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              kind: 'NamespacesList',
+              apiVersion: 'meta.k8s.io/v1',
+              items: [
+                {
+                  name: 'default',
+                  uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
+                  resourceVersion: '1583',
+                  creationTimestamp: '2023-10-19T16:34:12Z',
+                  labels: {
+                    'app.kubernetes.io/instance': 'default',
+                    'app.kubernetes.io/part-of': 'flux',
+                    'app.kubernetes.io/version': 'v2.0.0',
+                    'kubernetes.io/metadata.name': 'default',
+                    'kustomize.toolkit.fluxcd.io/name': 'default',
+                    'kustomize.toolkit.fluxcd.io/namespace': 'default',
+                    'pod-security.kubernetes.io/warn': 'restricted',
+                    'pod-security.kubernetes.io/warn-version': 'latest',
+                  },
+                },
+              ],
+            }),
+        } as Response;
+      }
     }
 
     if (!init?.method && path === DEPLOYMENTS_PATH('flux-system')) {
@@ -228,7 +249,19 @@ class StubKubernetesClient implements KubernetesApi {
           Promise.resolve({
             kind: 'DeploymentList',
             apiVersion: 'apps/v1',
-            items: this.resources,
+            items: [this.resources[0], this.resources[1]],
+          }),
+      } as Response;
+    }
+
+    if (!init?.method && path === DEPLOYMENTS_PATH('default')) {
+      return {
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            kind: 'DeploymentList',
+            apiVersion: 'apps/v1',
+            items: [this.resources[2]],
           }),
       } as Response;
     }
@@ -681,32 +714,47 @@ createDevApp()
             new StubKubernetesClient([
               newTestFluxController(
                 'helm-controller',
-                'default',
+                'flux-system',
                 ['ghcr.io/fluxcd/helm-controller:v0.36.2'],
                 'mock-cluster-1',
                 {
-                  ...baseControllerLabels,
                   'app.kubernetes.io/component': 'helm-controller',
-                },
-              ),
-              newTestFluxController(
-                'image-automation-controller',
-                'default',
-                ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
-                'mock-cluster-1',
-                {
-                  ...baseControllerLabels,
-                  'app.kubernetes.io/component': 'image-automation-controller',
+                  'app.kubernetes.io/instance': 'flux-system',
+                  'app.kubernetes.io/part-of': 'flux',
+                  'app.kubernetes.io/version': 'v2.1.2',
+                  'control-plane': 'controller',
+                  'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+                  'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
                 },
               ),
               newTestFluxController(
                 'image-automation-controller',
                 'flux-system',
                 ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
+                'mock-cluster-1',
+                {
+                  'app.kubernetes.io/component': 'image-automation-controller',
+                  'app.kubernetes.io/instance': 'flux-system',
+                  'app.kubernetes.io/part-of': 'flux',
+                  'app.kubernetes.io/version': 'v2.1.2',
+                  'control-plane': 'controller',
+                  'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+                  'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+                },
+              ),
+              newTestFluxController(
+                'image-automation-controller',
+                'default',
+                ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
                 'mock-cluster-2',
                 {
-                  ...baseControllerLabels,
                   'app.kubernetes.io/component': 'image-automation-controller',
+                  'app.kubernetes.io/instance': 'default',
+                  'app.kubernetes.io/part-of': 'flux',
+                  'app.kubernetes.io/version': 'v2.1.2',
+                  'control-plane': 'controller',
+                  'kustomize.toolkit.fluxcd.io/name': 'default',
+                  'kustomize.toolkit.fluxcd.io/namespace': 'default',
                 },
               ),
             ]),

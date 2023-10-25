@@ -78,32 +78,47 @@ class StubKubernetesClient implements KubernetesApi {
           items: [
             makeTestFluxController(
               'helm-controller',
-              'default',
+              'flux-system',
               ['ghcr.io/fluxcd/helm-controller:v0.36.2'],
               'mock-cluster-1',
               {
-                ...baseControllerLabels,
                 'app.kubernetes.io/component': 'helm-controller',
-              },
-            ),
-            makeTestFluxController(
-              'image-automation-controller',
-              'default',
-              ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
-              'mock-cluster-1',
-              {
-                ...baseControllerLabels,
-                'app.kubernetes.io/component': 'image-automation-controller',
+                'app.kubernetes.io/instance': 'flux-system',
+                'app.kubernetes.io/part-of': 'flux',
+                'app.kubernetes.io/version': 'v2.1.2',
+                'control-plane': 'controller',
+                'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+                'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
               },
             ),
             makeTestFluxController(
               'image-automation-controller',
               'flux-system',
               ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
+              'mock-cluster-1',
+              {
+                'app.kubernetes.io/component': 'image-automation-controller',
+                'app.kubernetes.io/instance': 'flux-system',
+                'app.kubernetes.io/part-of': 'flux',
+                'app.kubernetes.io/version': 'v2.1.2',
+                'control-plane': 'controller',
+                'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+                'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+              },
+            ),
+            makeTestFluxController(
+              'image-automation-controller',
+              'default',
+              ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
               'mock-cluster-2',
               {
-                ...baseControllerLabels,
                 'app.kubernetes.io/component': 'image-automation-controller',
+                'app.kubernetes.io/instance': 'default',
+                'app.kubernetes.io/part-of': 'flux',
+                'app.kubernetes.io/version': 'v2.1.2',
+                'control-plane': 'controller',
+                'kustomize.toolkit.fluxcd.io/name': 'default',
+                'kustomize.toolkit.fluxcd.io/namespace': 'default',
               },
             ),
           ],
@@ -168,7 +183,7 @@ describe('<FluxRuntimeCard />', () => {
       const testCases = [
         {
           name: 'mock-cluster-1',
-          namespace: 'default',
+          namespace: 'flux-system',
           version: 'v2.1.2',
           availableComponents: [
             'helm-controller',
@@ -177,7 +192,7 @@ describe('<FluxRuntimeCard />', () => {
         },
         {
           name: 'mock-cluster-2',
-          namespace: 'flux-system',
+          namespace: 'default',
           version: 'v2.1.2',
           availableComponents: ['image-automation-controller'],
         },
