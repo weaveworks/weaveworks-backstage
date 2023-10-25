@@ -11,15 +11,6 @@ import {
 import { KubernetesRequestBody } from '@backstage/plugin-kubernetes-common';
 import { FluxRuntimeCard } from './FluxRuntimeCard';
 
-const baseControllerLabels = {
-  'app.kubernetes.io/instance': 'flux-system',
-  'app.kubernetes.io/part-of': 'flux',
-  'app.kubernetes.io/version': 'v2.1.2',
-  'control-plane': 'controller',
-  'kustomize.toolkit.fluxcd.io/name': 'flux-system',
-  'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
-};
-
 const makeTestFluxController = (
   name: string,
   namespace: string,

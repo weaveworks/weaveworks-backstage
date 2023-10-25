@@ -1,5 +1,5 @@
 import { kubernetesApiRef } from '@backstage/plugin-kubernetes';
-import { DEPLOYMENTS_PATH, getDeploymentsList } from './useGetDeployments';
+import { getDeploymentsList } from './useGetDeployments';
 import { FluxController } from '../objects';
 
 function makeMockKubernetesApi() {
