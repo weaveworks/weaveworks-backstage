@@ -1,6 +1,6 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
-import { FluxController, Namespace } from '../objects';
+import { FluxController, FluxControllerEnriched, Namespace } from '../objects';
 import { useQuery } from 'react-query';
 import _ from 'lodash';
 
@@ -50,7 +50,7 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
   );
 
   const deploymentsLists = async () => {
-    let items: FluxController[] = [];
+    let items: FluxControllerEnriched[] = [];
     for (const item of deploymentsListsProxyData) {
       const { clusterName } = item;
       const i = await item.proxy.json();
@@ -74,7 +74,7 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
 export function useGetDeployments() {
   const kubernetesApi = useApi(kubernetesApiRef);
 
-  const { isLoading, data, error } = useQuery<FluxController[], Error>(
+  const { isLoading, data, error } = useQuery<FluxControllerEnriched[], Error>(
     'deployments',
     () => getDeploymentsList(kubernetesApi),
   );
