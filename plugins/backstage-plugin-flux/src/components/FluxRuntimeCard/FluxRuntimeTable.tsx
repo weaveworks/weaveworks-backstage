@@ -43,17 +43,17 @@ export const FluxRuntimeTable = ({
     if (cls) {
       cls.availableComponents = [
         ...cls.availableComponents,
-        deployment.labels['app.kubernetes.io/component'],
+        deployment.metadata.labels['app.kubernetes.io/component'],
       ];
     } else {
       clusters = [
         ...clusters,
         {
           clusterName: deployment.clusterName,
-          namespace: deployment.namespace,
-          version: deployment.labels['app.kubernetes.io/version'],
+          namespace: deployment.metadata.namespace,
+          version: deployment.metadata.labels['app.kubernetes.io/version'],
           availableComponents: [
-            deployment.labels['app.kubernetes.io/component'],
+            deployment.metadata.labels['app.kubernetes.io/component'],
           ],
         },
       ];

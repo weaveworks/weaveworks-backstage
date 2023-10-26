@@ -34,36 +34,27 @@ describe('getDeploymentsList', () => {
     },
   } as Namespace;
   const deployment = {
-    name: 'image-automation-controller',
-    namespace: 'flux-system',
-    conditions: [
-      {
-        type: 'Available',
-        status: 'True',
-        reason: 'MinimumReplicasAvailable',
-        message: 'Deployment has minimum availability.',
-        timestamp: '',
+    apiVersion: 'meta.k8s.io/v1',
+    kind: 'PartialObjectMetadata',
+    metadata: {
+      name: 'image-automation-controller',
+      namespace: 'flux-system',
+      uid: 'b062d329-538d-4bb3-b4df-b2ac4b06dba8',
+      resourceVersion: '1001263',
+      generation: 1,
+      creationTimestamp: '2023-10-19T16:34:14Z',
+      labels: {
+        'app.kubernetes.io/component': 'image-automation-controller',
+        'app.kubernetes.io/instance': 'flux-system',
+        'app.kubernetes.io/part-of': 'flux',
+        'app.kubernetes.io/version': 'v2.1.2',
+        'control-plane': 'controller',
+        'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+        'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
       },
-      {
-        type: 'Progressing',
-        status: 'True',
-        reason: 'NewReplicaSetAvailable',
-        message: 'ReplicaSet has successfully progressed.',
-        timestamp: '',
+      annotations: {
+        'deployment.kubernetes.io/revision': '1',
       },
-    ],
-    images: ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
-    suspended: false,
-    clusterName: 'mock-cluster-1',
-    uid: '4527e05c-eed4-489d-93ae-0cd66ca3277e',
-    labels: {
-      'app.kubernetes.io/component': 'image-automation-controller',
-      'app.kubernetes.io/instance': 'flux-system',
-      'app.kubernetes.io/part-of': 'flux',
-      'app.kubernetes.io/version': 'v2.1.2',
-      'control-plane': 'controller',
-      'kustomize.toolkit.fluxcd.io/name': 'flux-system',
-      'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
     },
   } as FluxController;
 

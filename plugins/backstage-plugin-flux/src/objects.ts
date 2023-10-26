@@ -98,14 +98,18 @@ export interface Namespace {
 }
 
 export type FluxController = {
-  name: string;
-  namespace: string;
-  conditions: Condition[];
-  images: string[];
-  suspended: boolean;
-  clusterName: string;
-  uid: string;
-  labels: { [key: string]: string };
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    namespace: string;
+    uid: string;
+    resourceVersion: string;
+    generation: number;
+    creationTimestamp: string;
+    labels: { [key: string]: string };
+    annotations: { [key: string]: string };
+  };
 };
 
 export class FluxObject {
