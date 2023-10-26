@@ -110,7 +110,10 @@ export type FluxController = {
     labels: { [key: string]: string };
     annotations: { [key: string]: string };
   };
+  clusterName?: string;
 };
+
+export type FluxControllerEnriched = FluxController & { clusterName: string };
 
 export class FluxObject {
   obj: any;

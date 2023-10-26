@@ -11,7 +11,7 @@ import {
   clusterNameFilteringColumn,
 } from '../helpers';
 import { FluxEntityTable } from '../FluxEntityTable';
-import { FluxController } from '../../objects';
+import { FluxControllerEnriched } from '../../objects';
 
 export const defaultColumns: TableColumn<Cluster>[] = [
   clusterNameFilteringColumn(),
@@ -23,7 +23,7 @@ export const defaultColumns: TableColumn<Cluster>[] = [
 ];
 
 type Props = {
-  deployments: FluxController[];
+  deployments: FluxControllerEnriched[];
   isLoading: boolean;
   columns: TableColumn<Cluster>[];
   many?: boolean;

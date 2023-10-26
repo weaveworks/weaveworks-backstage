@@ -37,20 +37,29 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
 
   const deploymentsListsProxyData = await Promise.all(
     namespacesList?.flatMap(nsList =>
-      nsList.namespaces.map(ns =>
-        kubernetesApi.proxy({
+      nsList.namespaces.map(async ns => {
+        return {
           clusterName: nsList.clusterName,
-          path: getDeploymentsPath(ns.name),
-        }),
-      ),
+          proxy: await kubernetesApi.proxy({
+            clusterName: nsList.clusterName,
+            path: getDeploymentsPath(ns.name),
+          }),
+        };
+      }),
     ),
   );
 
   const deploymentsLists = async () => {
     let items: FluxController[] = [];
     for (const item of deploymentsListsProxyData) {
-      const i = await item.json();
-      items = [...items, ...i.items];
+      const { clusterName } = item;
+      const i = await item.proxy.json();
+      items = [
+        ...items,
+        ...i.items.map((i: FluxController) => {
+          return { ...i, clusterName };
+        }),
+      ];
     }
     return _.uniqWith(items, _.isEqual);
   };
