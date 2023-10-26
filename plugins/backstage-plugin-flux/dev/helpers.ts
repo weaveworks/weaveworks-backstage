@@ -270,33 +270,22 @@ export const newTestImagePolicy = (
 export const newTestFluxController = (
   name: string,
   namespace: string,
-  images: string[],
-  clusterName: string,
   labels: { [name: string]: string },
 ) => {
   return {
-    name,
-    namespace,
-    conditions: [
-      {
-        type: 'Available',
-        status: 'True',
-        reason: 'MinimumReplicasAvailable',
-        message: 'Deployment has minimum availability.',
-        timestamp: '',
+    apiVersion: 'meta.k8s.io/v1',
+    kind: 'PartialObjectMetadata',
+    metadata: {
+      name,
+      namespace,
+      uid: 'b062d329-538d-4bb3-b4df-b2ac4b06dba8',
+      resourceVersion: '1001263',
+      generation: 1,
+      creationTimestamp: '2023-10-19T16:34:14Z',
+      labels,
+      annotations: {
+        'deployment.kubernetes.io/revision': '1',
       },
-      {
-        type: 'Progressing',
-        status: 'True',
-        reason: 'NewReplicaSetAvailable',
-        message: 'ReplicaSet has successfully progressed.',
-        timestamp: '',
-      },
-    ],
-    images,
-    suspended: false,
-    clusterName,
-    uid: '4527e05c-eed4-489d-93ae-0cd66ca3277e',
-    labels,
+    },
   };
 };

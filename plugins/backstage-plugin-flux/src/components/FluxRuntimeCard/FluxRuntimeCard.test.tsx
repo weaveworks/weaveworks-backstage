@@ -14,34 +14,23 @@ import { FluxRuntimeCard } from './FluxRuntimeCard';
 const makeTestFluxController = (
   name: string,
   namespace: string,
-  images: string[],
-  clusterName: string,
   labels: { [name: string]: string },
 ) => {
   return {
-    name,
-    namespace,
-    conditions: [
-      {
-        type: 'Available',
-        status: 'True',
-        reason: 'MinimumReplicasAvailable',
-        message: 'Deployment has minimum availability.',
-        timestamp: '',
+    apiVersion: 'meta.k8s.io/v1',
+    kind: 'PartialObjectMetadata',
+    metadata: {
+      name,
+      namespace,
+      uid: 'b062d329-538d-4bb3-b4df-b2ac4b06dba8',
+      resourceVersion: '1001263',
+      generation: 1,
+      creationTimestamp: '2023-10-19T16:34:14Z',
+      labels,
+      annotations: {
+        'deployment.kubernetes.io/revision': '1',
       },
-      {
-        type: 'Progressing',
-        status: 'True',
-        reason: 'NewReplicaSetAvailable',
-        message: 'ReplicaSet has successfully progressed.',
-        timestamp: '',
-      },
-    ],
-    images,
-    suspended: false,
-    clusterName,
-    uid: '4527e05c-eed4-489d-93ae-0cd66ca3277e',
-    labels,
+    },
   };
 };
 
@@ -67,26 +56,18 @@ class StubKubernetesClient implements KubernetesApi {
           kind: 'DeploymentList',
           apiVersion: 'apps/v1',
           items: [
-            makeTestFluxController(
-              'helm-controller',
-              'flux-system',
-              ['ghcr.io/fluxcd/helm-controller:v0.36.2'],
-              'mock-cluster-1',
-              {
-                'app.kubernetes.io/component': 'helm-controller',
-                'app.kubernetes.io/instance': 'flux-system',
-                'app.kubernetes.io/part-of': 'flux',
-                'app.kubernetes.io/version': 'v2.1.2',
-                'control-plane': 'controller',
-                'kustomize.toolkit.fluxcd.io/name': 'flux-system',
-                'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
-              },
-            ),
+            makeTestFluxController('helm-controller', 'flux-system', {
+              'app.kubernetes.io/component': 'helm-controller',
+              'app.kubernetes.io/instance': 'flux-system',
+              'app.kubernetes.io/part-of': 'flux',
+              'app.kubernetes.io/version': 'v2.1.2',
+              'control-plane': 'controller',
+              'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+              'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+            }),
             makeTestFluxController(
               'image-automation-controller',
               'flux-system',
-              ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
-              'mock-cluster-1',
               {
                 'app.kubernetes.io/component': 'image-automation-controller',
                 'app.kubernetes.io/instance': 'flux-system',
@@ -97,21 +78,15 @@ class StubKubernetesClient implements KubernetesApi {
                 'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
               },
             ),
-            makeTestFluxController(
-              'image-automation-controller',
-              'default',
-              ['ghcr.io/fluxcd/image-automation-controller:v0.36.1'],
-              'mock-cluster-2',
-              {
-                'app.kubernetes.io/component': 'image-automation-controller',
-                'app.kubernetes.io/instance': 'default',
-                'app.kubernetes.io/part-of': 'flux',
-                'app.kubernetes.io/version': 'v2.1.2',
-                'control-plane': 'controller',
-                'kustomize.toolkit.fluxcd.io/name': 'default',
-                'kustomize.toolkit.fluxcd.io/namespace': 'default',
-              },
-            ),
+            makeTestFluxController('image-automation-controller', 'default', {
+              'app.kubernetes.io/component': 'image-automation-controller',
+              'app.kubernetes.io/instance': 'default',
+              'app.kubernetes.io/part-of': 'flux',
+              'app.kubernetes.io/version': 'v2.1.2',
+              'control-plane': 'controller',
+              'kustomize.toolkit.fluxcd.io/name': 'default',
+              'kustomize.toolkit.fluxcd.io/namespace': 'default',
+            }),
           ],
         }),
     }) as Promise<Response>;
