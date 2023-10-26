@@ -56,8 +56,8 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
       const i = await item.proxy.json();
       items = [
         ...items,
-        ...i.items.map((i: FluxController) => {
-          return { ...i, clusterName };
+        ...i.items.map((fc: FluxController) => {
+          return { ...fc, clusterName };
         }),
       ];
     }

@@ -1,6 +1,7 @@
 import {
   createComponentExtension,
   createPlugin,
+  createRoutableExtension,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
@@ -155,5 +156,18 @@ export const FluxRuntimeCard = weaveworksFluxPlugin.provide(
       lazy: () =>
         import('./components/FluxRuntimeCard').then(m => m.FluxRuntimeCard),
     },
+  }),
+);
+
+/**
+ * Page used to show Flux Controllers / Deployments in Flux Runtime
+ * @public
+ */
+export const TechRadarPage = weaveworksFluxPlugin.provide(
+  createRoutableExtension({
+    name: 'TechRadarPage',
+    component: () =>
+      import('./components/FluxRuntimePage').then(m => m.FluxRuntimePage),
+    mountPoint: rootRouteRef,
   }),
 );
