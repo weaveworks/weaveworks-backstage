@@ -281,10 +281,66 @@ kubernetes:
 6. [Optional] Add a Card to a Page
 
 - Create a page: An example of a basic page can be found at [Flux Runtime Page](https://github.com/weaveworks/weaveworks-backstage/plugins/backstage-plugin-flux/src/components/FluxRuntimePage/index.tsx/).
+
 - Add the page to the plugin exports:
-  - `plugins/backstage-plugin-flux/src/plugin.ts`
-  - `plugins/backstage-plugin-flux/src/index.ts`
-- Add the page to the `App.tsx` file at the root of the project: `packages/app/src/App.tsx`
+
+```tsx
+// In plugins/backstage-plugin-flux/src/plugin.ts
+
+/**
+ * Page used to show Flux Controllers / Deployments in Flux Runtime
+ * @public
+ */
+export const FluxRuntimePage = weaveworksFluxPlugin.provide(
+  createRoutableExtension({
+    name: 'FluxRuntimePage',
+    component: () =>
+      import('./components/FluxRuntimePage').then(m => m.FluxRuntimePage),
+    mountPoint: rootRouteRef,
+  }),
+);
+```
+
+```tsx
+// In plugins/backstage-plugin-flux/src/index.ts
+
+export {
+  ....
+  FluxRuntimePage,
+} from './plugin';
+```
+
+- Add the page to the `App.tsx` file at the root of the project:
+
+```tsx
+// In packages/app/src/App.tsx
+
+const routes = (
+  <FlatRoutes>
+    ...
+    <Route path="/flux-runtime" element={<FluxRuntimePage >} />
+  </FlatRoutes>
+);
+```
+
+- Add the page to the navigation bar:
+
+```tsx
+// In packages/app/src/components/Root/Root.tsx
+
+export const Root = ({ children }: PropsWithChildren<{}>) => (
+  <SidebarPage>
+    <Sidebar>
+      <SidebarGroup label="Menu" icon={<MenuIcon />}>
+        ...
+        <SidebarScrollWrapper>
+          <SidebarItem icon={FluxIcon} to="flux-runtime" text="Flux Runtime" />
+        </SidebarScrollWrapper>
+      </SidebarGroup>
+    </Sidebar>
+    {children}
+  </SidebarPage>
+```
 
 ## Verification
 
