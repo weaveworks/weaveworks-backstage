@@ -42,7 +42,7 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
           clusterName: nsList.clusterName,
           proxy: await kubernetesApi.proxy({
             clusterName: nsList.clusterName,
-            path: getDeploymentsPath(ns.name),
+            path: getDeploymentsPath(ns.metadata.name),
           }),
         };
       }),
