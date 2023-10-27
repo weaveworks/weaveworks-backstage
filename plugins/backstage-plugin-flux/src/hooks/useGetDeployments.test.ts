@@ -18,21 +18,24 @@ function makeMockKubernetesApi() {
 
 describe('getDeploymentsList', () => {
   const namespace = {
-    name: 'flux-system',
-    uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
-    resourceVersion: '1583',
-    creationTimestamp: '2023-10-19T16:34:12Z',
-    labels: {
-      'app.kubernetes.io/instance': 'flux-system',
-      'app.kubernetes.io/part-of': 'flux',
-      'app.kubernetes.io/version': 'v2.0.0',
-      'kubernetes.io/metadata.name': 'flux-system',
-      'kustomize.toolkit.fluxcd.io/name': 'flux-system',
-      'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
-      'pod-security.kubernetes.io/warn': 'restricted',
-      'pod-security.kubernetes.io/warn-version': 'latest',
+    metadata: {
+      name: 'flux-system',
+      uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
+      resourceVersion: '1583',
+      creationTimestamp: '2023-10-19T16:34:12Z',
+      labels: {
+        'app.kubernetes.io/instance': 'flux-system',
+        'app.kubernetes.io/part-of': 'flux',
+        'app.kubernetes.io/version': 'v2.0.0',
+        'kubernetes.io/metadata.name': 'flux-system',
+        'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+        'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+        'pod-security.kubernetes.io/warn': 'restricted',
+        'pod-security.kubernetes.io/warn-version': 'latest',
+      },
     },
   } as Namespace;
+
   const deployment = {
     apiVersion: 'meta.k8s.io/v1',
     kind: 'PartialObjectMetadata',
