@@ -73,6 +73,7 @@ export const FluxRuntimeTable = ({
 
   return (
     <FluxEntityTable
+      title={'flux controllers'}
       columns={columns}
       data={data as Cluster[]}
       isLoading={isLoading}

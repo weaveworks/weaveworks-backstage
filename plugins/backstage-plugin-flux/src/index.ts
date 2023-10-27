@@ -9,4 +9,5 @@ export {
   EntityFluxSourcesCard,
   EntityFluxImagePoliciesCard,
   FluxRuntimeCard,
+  FluxIcon,
 } from './plugin';

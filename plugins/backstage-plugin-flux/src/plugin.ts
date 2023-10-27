@@ -163,11 +163,24 @@ export const FluxRuntimeCard = weaveworksFluxPlugin.provide(
  * Page used to show Flux Controllers / Deployments in Flux Runtime
  * @public
  */
-export const TechRadarPage = weaveworksFluxPlugin.provide(
+export const FluxRuntimePage = weaveworksFluxPlugin.provide(
   createRoutableExtension({
     name: 'TechRadarPage',
     component: () =>
       import('./components/FluxRuntimePage').then(m => m.FluxRuntimePage),
     mountPoint: rootRouteRef,
+  }),
+);
+
+/**
+ * Export for Flux Icon to use in nav
+ * @public
+ */
+export const FluxIcon = weaveworksFluxPlugin.provide(
+  createComponentExtension({
+    name: 'FluxIcon',
+    component: {
+      lazy: () => import('./images/icons').then(m => m.FluxIcon),
+    },
   }),
 );
