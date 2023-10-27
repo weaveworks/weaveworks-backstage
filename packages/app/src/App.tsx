@@ -36,6 +36,7 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 import { EntityFluxHelmReleasesCard } from '@weaveworksoss/backstage-plugin-flux';
+import { FluxRuntimePage } from '@weaveworksoss/backstage-plugin-flux/src/components/FluxRuntimePage';
 
 const app = createApp({
   components: {
@@ -111,6 +112,7 @@ const routes = (
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/weaveworks-flux" element={<EntityFluxHelmReleasesCard />} />
+    <Route path="/flux-runtime" element={<FluxRuntimePage />} />
   </FlatRoutes>
 );
 

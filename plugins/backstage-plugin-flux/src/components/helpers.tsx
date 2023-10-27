@@ -30,7 +30,7 @@ import {
 } from '../objects';
 import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
-import { helm, kubernetes, oci, git, imagepolicy } from '../images/icons';
+import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
@@ -421,7 +421,7 @@ export const getIconType = (type: string) => {
     case 'OCIRepository':
       return oci;
     case 'ImagePolicy':
-      return imagepolicy;
+      return flux;
     default:
       return null;
   }
