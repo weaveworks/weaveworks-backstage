@@ -44,6 +44,7 @@ import {
   NAMESPACES_PATH,
   getDeploymentsPath,
 } from '../src/hooks/useGetDeployments';
+import { Namespace } from '../src/objects';
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -193,21 +194,23 @@ class StubKubernetesClient implements KubernetesApi {
               apiVersion: 'meta.k8s.io/v1',
               items: [
                 {
-                  name: 'flux-system',
-                  uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
-                  resourceVersion: '1583',
-                  creationTimestamp: '2023-10-19T16:34:12Z',
-                  labels: {
-                    'app.kubernetes.io/instance': 'flux-system',
-                    'app.kubernetes.io/part-of': 'flux',
-                    'app.kubernetes.io/version': 'v2.0.0',
-                    'kubernetes.io/metadata.name': 'flux-system',
-                    'kustomize.toolkit.fluxcd.io/name': 'flux-system',
-                    'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
-                    'pod-security.kubernetes.io/warn': 'restricted',
-                    'pod-security.kubernetes.io/warn-version': 'latest',
+                  metadata: {
+                    name: 'flux-system',
+                    labels: {
+                      'app.kubernetes.io/instance': 'flux-system',
+                      'app.kubernetes.io/part-of': 'flux',
+                      'app.kubernetes.io/version': 'v2.0.0',
+                      'kubernetes.io/metadata.name': 'flux-system',
+                      'kustomize.toolkit.fluxcd.io/name': 'flux-system',
+                      'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
+                      'pod-security.kubernetes.io/warn': 'restricted',
+                      'pod-security.kubernetes.io/warn-version': 'latest',
+                    },
+                    uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
+                    resourceVersion: '1583',
+                    creationTimestamp: '2023-10-19T16:34:12Z',
                   },
-                },
+                } as Namespace,
               ],
             }),
         } as Response;
@@ -221,21 +224,23 @@ class StubKubernetesClient implements KubernetesApi {
               apiVersion: 'meta.k8s.io/v1',
               items: [
                 {
-                  name: 'default',
-                  uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
-                  resourceVersion: '1583',
-                  creationTimestamp: '2023-10-19T16:34:12Z',
-                  labels: {
-                    'app.kubernetes.io/instance': 'default',
-                    'app.kubernetes.io/part-of': 'flux',
-                    'app.kubernetes.io/version': 'v2.0.0',
-                    'kubernetes.io/metadata.name': 'default',
-                    'kustomize.toolkit.fluxcd.io/name': 'default',
-                    'kustomize.toolkit.fluxcd.io/namespace': 'default',
-                    'pod-security.kubernetes.io/warn': 'restricted',
-                    'pod-security.kubernetes.io/warn-version': 'latest',
+                  metadata: {
+                    name: 'default',
+                    uid: '1dcca7cb-c651-4a86-93b4-ecf440df2353',
+                    resourceVersion: '1583',
+                    creationTimestamp: '2023-10-19T16:34:12Z',
+                    labels: {
+                      'app.kubernetes.io/instance': 'default',
+                      'app.kubernetes.io/part-of': 'flux',
+                      'app.kubernetes.io/version': 'v2.0.0',
+                      'kubernetes.io/metadata.name': 'default',
+                      'kustomize.toolkit.fluxcd.io/name': 'default',
+                      'kustomize.toolkit.fluxcd.io/namespace': 'default',
+                      'pod-security.kubernetes.io/warn': 'restricted',
+                      'pod-security.kubernetes.io/warn-version': 'latest',
+                    },
                   },
-                },
+                } as Namespace,
               ],
             }),
         } as Response;
