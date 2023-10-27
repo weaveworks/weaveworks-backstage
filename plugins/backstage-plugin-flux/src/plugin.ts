@@ -165,7 +165,7 @@ export const FluxRuntimeCard = weaveworksFluxPlugin.provide(
  */
 export const FluxRuntimePage = weaveworksFluxPlugin.provide(
   createRoutableExtension({
-    name: 'TechRadarPage',
+    name: 'FluxRuntimePage',
     component: () =>
       import('./components/FluxRuntimePage').then(m => m.FluxRuntimePage),
     mountPoint: rootRouteRef,

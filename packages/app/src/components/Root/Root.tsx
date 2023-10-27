@@ -26,7 +26,7 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import { FluxIcon } from '@weaveworksoss/backstage-plugin-flux/src/images/icons';
+import { FluxIcon } from '@weaveworksoss/backstage-plugin-flux';
 
 const useSidebarLogoStyles = makeStyles({
   root: {

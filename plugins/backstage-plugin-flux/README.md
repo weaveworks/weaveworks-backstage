@@ -278,6 +278,14 @@ kubernetes:
           caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
 ```
 
+6. [Optional] Add a Card to a Page
+
+- Create a page: An example of a basic page can be found at [Flux Runtime Page](https://github.com/weaveworks/weaveworks-backstage/plugins/backstage-plugin-flux/src/components/FluxRuntimePage/index.tsx/).
+- Add the page to the plugin exports:
+  - `plugins/backstage-plugin-flux/src/plugin.ts`
+  - `plugins/backstage-plugin-flux/src/index.ts`
+- Add the page to the `App.tsx` file at the root of the project: `packages/app/src/App.tsx`
+
 ## Verification
 
 For the resources where we display a Verification status, if the Flux resource
