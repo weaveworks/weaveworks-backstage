@@ -181,6 +181,8 @@ class StubKubernetesClient implements KubernetesApi {
           }),
       } as Response;
     }
+
+    return null;
   }
 }
 
