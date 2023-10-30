@@ -282,34 +282,6 @@ kubernetes:
 
 - Create a page: An example of a basic page can be found at [Flux Runtime Page](https://github.com/weaveworks/weaveworks-backstage/plugins/backstage-plugin-flux/src/components/FluxRuntimePage/index.tsx/).
 
-- Add the page to the plugin exports:
-
-```tsx
-// In plugins/backstage-plugin-flux/src/plugin.ts
-
-/**
- * Page used to show Flux Controllers / Deployments in Flux Runtime
- * @public
- */
-export const FluxRuntimePage = weaveworksFluxPlugin.provide(
-  createRoutableExtension({
-    name: 'FluxRuntimePage',
-    component: () =>
-      import('./components/FluxRuntimePage').then(m => m.FluxRuntimePage),
-    mountPoint: rootRouteRef,
-  }),
-);
-```
-
-```tsx
-// In plugins/backstage-plugin-flux/src/index.ts
-
-export {
-  ....
-  FluxRuntimePage,
-} from './plugin';
-```
-
 - Add the page to the `App.tsx` file at the root of the project:
 
 ```tsx
@@ -327,6 +299,8 @@ const routes = (
 
 ```tsx
 // In packages/app/src/components/Root/Root.tsx
+
+import { FluxIcon } from '@weaveworksoss/backstage-plugin-flux';
 
 export const Root = ({ children }: PropsWithChildren<{}>) => (
   <SidebarPage>
