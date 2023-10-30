@@ -284,7 +284,7 @@ kubernetes:
 
 6. [Optional] Add a Flux Runtime page to your app
 
-- An example of a basic page can be found at [Flux Runtime Page](https://github.com/weaveworks/weaveworks-backstage/plugins/backstage-plugin-flux/src/components/FluxRuntimePage/index.tsx/).
+- An example Page is included as the `<FluxRuntimePage />` component. 
 - Add the page to your app by first adding a route in `App.tsx`
 
 ```tsx
