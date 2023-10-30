@@ -25,6 +25,10 @@ You can also add cards for resources with the following components, each of thes
 - EntityFluxOCIRepositoriesCard
 - EntityFluxHelmRepositoriesCard
 - EntityFluxImagePoliciesCard
+
+The plugin also provides a page for viewing the Flux runtime state across your clusters, and a Card if you would prefer to include it some other page you have instead.
+
+- FluxRuntimePage
 - FluxRuntimeCard
 
 As with other Backstage plugins, you can compose the UI you need.
@@ -278,14 +282,16 @@ kubernetes:
           caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
 ```
 
-6. [Optional] Add a Card to a Page
+6. [Optional] Add a Flux Runtime page to your app
 
-- Create a page: An example of a basic page can be found at [Flux Runtime Page](https://github.com/weaveworks/weaveworks-backstage/plugins/backstage-plugin-flux/src/components/FluxRuntimePage/index.tsx/).
-
-- Add the page to the `App.tsx` file at the root of the project:
+- An example of a basic page can be found at [Flux Runtime Page](https://github.com/weaveworks/weaveworks-backstage/plugins/backstage-plugin-flux/src/components/FluxRuntimePage/index.tsx/).
+- Add the page to your app by first adding a route in `App.tsx`
 
 ```tsx
 // In packages/app/src/App.tsx
+import { FluxRuntimePage } from '@weaveworksoss/backstage-plugin-flux';
+
+// ...
 
 const routes = (
   <FlatRoutes>
@@ -301,6 +307,8 @@ const routes = (
 // In packages/app/src/components/Root/Root.tsx
 
 import { FluxIcon } from '@weaveworksoss/backstage-plugin-flux';
+
+// ...
 
 export const Root = ({ children }: PropsWithChildren<{}>) => (
   <SidebarPage>
