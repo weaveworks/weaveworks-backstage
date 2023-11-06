@@ -26,6 +26,11 @@ You can also add cards for resources with the following components, each of thes
 - EntityFluxHelmRepositoriesCard
 - EntityFluxImagePoliciesCard
 
+The plugin also provides a page for viewing the Flux runtime state across your clusters, and a Card if you would prefer to include it some other page you have instead.
+
+- FluxRuntimePage
+- FluxRuntimeCard
+
 As with other Backstage plugins, you can compose the UI you need.
 
 ## Prerequisite
@@ -277,6 +282,48 @@ kubernetes:
           caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
 ```
 
+6. [Optional] Add a Flux Runtime page to your app
+
+- An example Page is included as the `<FluxRuntimePage />` component. 
+- Add the page to your app by first adding a route in `App.tsx`
+
+```tsx
+// In packages/app/src/App.tsx
+import { FluxRuntimePage } from '@weaveworksoss/backstage-plugin-flux';
+
+// ...
+
+const routes = (
+  <FlatRoutes>
+    ...
+    <Route path="/flux-runtime" element={<FluxRuntimePage >} />
+  </FlatRoutes>
+);
+```
+
+- Add the page to the navigation bar:
+
+```tsx
+// In packages/app/src/components/Root/Root.tsx
+
+import { FluxIcon } from '@weaveworksoss/backstage-plugin-flux';
+
+// ...
+
+export const Root = ({ children }: PropsWithChildren<{}>) => (
+  <SidebarPage>
+    <Sidebar>
+      <SidebarGroup label="Menu" icon={<MenuIcon />}>
+        ...
+        <SidebarScrollWrapper>
+          <SidebarItem icon={FluxIcon} to="flux-runtime" text="Flux Runtime" />
+        </SidebarScrollWrapper>
+      </SidebarGroup>
+    </Sidebar>
+    {children}
+  </SidebarPage>
+```
+
 ## Verification
 
 For the resources where we display a Verification status, if the Flux resource
@@ -302,4 +349,3 @@ Request failed with 401 Unauthorized, {"error":{"name":"AuthenticationError","me
 This is likely caused by this issue in [Backstage](https://github.com/backstage/backstage/issues/12394).
 
 The simplest thing to do is put some sort of authentication in front of your Backstage setup, for example using the [GitHub Authentication Provider](https://backstage.io/docs/auth/github/provider/) this will ensure there's an authentication token available.
-

@@ -38,7 +38,8 @@ export function FluxEntityTable<T extends object = {}>({
         emptyContent={
           <div className={classes.empty}>
             <Typography variant="body1">
-              No {title} found for this entity.
+              No {title} found
+              {title === 'flux controllers' ? '' : 'for this entity'}.
             </Typography>
           </div>
         }

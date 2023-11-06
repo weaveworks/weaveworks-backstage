@@ -266,3 +266,26 @@ export const newTestImagePolicy = (
     },
   };
 };
+
+export const newTestFluxController = (
+  name: string,
+  namespace: string,
+  labels: { [name: string]: string },
+) => {
+  return {
+    apiVersion: 'meta.k8s.io/v1',
+    kind: 'PartialObjectMetadata',
+    metadata: {
+      name,
+      namespace,
+      uid: 'b062d329-538d-4bb3-b4df-b2ac4b06dba8',
+      resourceVersion: '1001263',
+      generation: 1,
+      creationTimestamp: '2023-10-19T16:34:14Z',
+      labels,
+      annotations: {
+        'deployment.kubernetes.io/revision': '1',
+      },
+    },
+  };
+};

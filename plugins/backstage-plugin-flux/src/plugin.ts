@@ -1,6 +1,7 @@
 import {
   createComponentExtension,
   createPlugin,
+  createRoutableExtension,
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
@@ -140,6 +141,46 @@ export const EntityFluxImagePoliciesCard = weaveworksFluxPlugin.provide(
         import('./components/EntityFluxImagePoliciesCard').then(
           m => m.EntityFluxImagePoliciesCard,
         ),
+    },
+  }),
+);
+
+/**
+ * Card used to show the state of Flux Runtime.
+ * @public
+ */
+export const FluxRuntimeCard = weaveworksFluxPlugin.provide(
+  createComponentExtension({
+    name: 'FluxRuntimeCard',
+    component: {
+      lazy: () =>
+        import('./components/FluxRuntimeCard').then(m => m.FluxRuntimeCard),
+    },
+  }),
+);
+
+/**
+ * Page used to show Flux Controllers / Deployments in Flux Runtime
+ * @public
+ */
+export const FluxRuntimePage = weaveworksFluxPlugin.provide(
+  createRoutableExtension({
+    name: 'FluxRuntimePage',
+    component: () =>
+      import('./components/FluxRuntimePage').then(m => m.FluxRuntimePage),
+    mountPoint: rootRouteRef,
+  }),
+);
+
+/**
+ * Export for Flux Icon to use in nav
+ * @public
+ */
+export const FluxIcon = weaveworksFluxPlugin.provide(
+  createComponentExtension({
+    name: 'FluxIcon',
+    component: {
+      lazy: () => import('./images/icons').then(m => m.FluxIcon),
     },
   }),
 );

@@ -4,7 +4,8 @@
     "packages/*/src",
     "plugins/*/src",
     "plugins/*/dev",
-    "plugins/*/migrations"
+    "plugins/*/migrations",
+    "plugins/backstage-plugin-flux/src/components/FluxRuntimePage"
   ],
   "exclude": ["node_modules"],
   "compilerOptions": {

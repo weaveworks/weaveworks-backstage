@@ -1,5 +1,4 @@
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-
 import {
   FluxObject,
   GitRepository,

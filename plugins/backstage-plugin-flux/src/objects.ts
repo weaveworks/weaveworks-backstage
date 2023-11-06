@@ -89,6 +89,34 @@ export interface ImgPolicy {
   value?: string;
 }
 
+export interface Namespace {
+  metadata: {
+    name: string;
+    labels: { [key: string]: string };
+    uid: string;
+    resourceVersion: string;
+    creationTimestamp: string;
+  };
+}
+
+export type FluxController = {
+  apiVersion: string;
+  kind: string;
+  metadata: {
+    name: string;
+    namespace: string;
+    uid: string;
+    resourceVersion: string;
+    generation: number;
+    creationTimestamp: string;
+    labels: { [key: string]: string };
+    annotations: { [key: string]: string };
+  };
+  clusterName?: string;
+};
+
+export type FluxControllerEnriched = FluxController & { clusterName: string };
+
 export class FluxObject {
   obj: any;
   clusterName: string;
