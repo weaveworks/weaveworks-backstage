@@ -229,7 +229,7 @@ spec:
   interval: 1m0s
 ```
 
-5. [Optional] Configure linking through to Weave GitOps, configure your `app-config.yaml`
+5. [Optional] Configure linking through to Weave GitOps and availability of actions on resources (sync/suspend/resume), configure your `app-config.yaml`
 
 If you have [Weave GitOps](https://www.weave.works/product/gitops/) or [Weave GitOps Enterprise](https://www.weave.works/product/gitops-enterprise/) you can configure the plugins to link through to the UI which will provide more information on the resources.
 
@@ -282,9 +282,21 @@ kubernetes:
           caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
 ```
 
+You can also update the configuration to manage the access to sync/suspend/resume of resources. By default it will be set to false so all actions will be available. To limit this, simple set it to true.
+
+```yaml
+# app-config.yaml
+
+gitops:
+  #
+  readOnly: true
+```
+
+The UI will reflect this by showing the buttons corresponding to sync/suspend/resume as disabled.
+
 6. [Optional] Add a Flux Runtime page to your app
 
-- An example Page is included as the `<FluxRuntimePage />` component. 
+- An example Page is included as the `<FluxRuntimePage />` component.
 - Add the page to your app by first adding a route in `App.tsx`
 
 ```tsx
