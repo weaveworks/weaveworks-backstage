@@ -93,7 +93,7 @@ export function SyncButton({
   resource: Source | Deployment | ImagePolicy;
   sync: () => Promise<void>;
   status: boolean;
-  readOnly: boolean;
+  readOnly?: boolean;
 }) {
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
@@ -124,7 +124,7 @@ export function SuspendButton({
   resource: Source | Deployment;
   toggleSuspend: () => Promise<void>;
   status: boolean;
-  readOnly: boolean;
+  readOnly?: boolean;
 }) {
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
@@ -156,7 +156,7 @@ export function ResumeButton({
   resource: Source | Deployment;
   toggleResume: () => Promise<void>;
   status: boolean;
-  readOnly: boolean;
+  readOnly?: boolean;
 }) {
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
@@ -193,7 +193,7 @@ export function GroupAction({
     useToggleSuspendResource(resource as Source | Deployment, false);
   const isLoading = isSyncing || isSuspending || isResuming;
   const config = useApi(configApiRef);
-  const readOnly = config.getBoolean('gitops.readOnly');
+  const readOnly = config.getOptionalBoolean('gitops.readOnly');
 
   return (
     <>

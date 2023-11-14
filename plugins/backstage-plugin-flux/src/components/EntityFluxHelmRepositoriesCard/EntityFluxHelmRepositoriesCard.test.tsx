@@ -108,7 +108,10 @@ describe('<EntityFluxHelmRepositoriesCard />', () => {
             [
               configApiRef,
               new ConfigReader({
-                gitops: { baseUrl: 'https://example.com/wego' },
+                gitops: {
+                  baseUrl: 'https://example.com/wego',
+                  readOnly: false,
+                },
               }),
             ],
             [kubernetesApiRef, new StubKubernetesClient()],
@@ -121,7 +124,7 @@ describe('<EntityFluxHelmRepositoriesCard />', () => {
           <EntityProvider entity={entity}>
             <EntityFluxHelmRepositoriesCard />
           </EntityProvider>
-        </TestApiProvider>
+        </TestApiProvider>,
       );
 
       const { getByText } = result;
@@ -167,7 +170,7 @@ describe('<EntityFluxHelmRepositoriesCard />', () => {
           <EntityProvider entity={entity}>
             <EntityFluxHelmRepositoriesCard />
           </EntityProvider>
-        </TestApiProvider>
+        </TestApiProvider>,
       );
 
       const { getByText } = rendered;
