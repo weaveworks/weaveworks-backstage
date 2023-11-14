@@ -288,7 +288,6 @@ You can also update the configuration to restrict the access to the sync/suspend
 # app-config.yaml
 
 gitops:
-  #
   readOnly: true
 ```
 
