@@ -109,7 +109,7 @@ catalog:
 
 gitops:
   baseUrl: ${WEAVE_GITOPS_URL}
-  #  readOnly: false # Set to true to disable sync/suspend/resume of resources
+  # readOnly: true # Set to true to disable sync/suspend/resume of resources
 
 kubernetes:
   serviceLocatorMethod:
