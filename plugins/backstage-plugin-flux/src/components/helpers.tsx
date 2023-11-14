@@ -99,7 +99,7 @@ export function SyncButton({
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Syncing ${label}` : `Sync ${label}`;
   return (
-    <Tooltip title={title}>
+    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
       <div>
         <IconButton
           data-testid={`sync ${label}`}
@@ -131,7 +131,7 @@ export function SuspendButton({
   const title = status ? `Suspending ${label}` : `Suspend ${label}`;
 
   return (
-    <Tooltip title={title}>
+    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
       <div>
         <IconButton
           data-testid={`suspend ${label}`}
@@ -163,7 +163,7 @@ export function ResumeButton({
   const title = status ? `Resuming ${label}` : `Resume ${label}`;
 
   return (
-    <Tooltip title={title}>
+    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
       <div>
         <IconButton
           data-testid={`resume ${label}`}
