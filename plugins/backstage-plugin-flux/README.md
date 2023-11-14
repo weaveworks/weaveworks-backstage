@@ -282,7 +282,7 @@ kubernetes:
           caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
 ```
 
-You can also update the configuration to manage the access to sync/suspend/resume of resources. By default it will be set to false so all actions will be available. To limit this, simple set it to true.
+You can also update the configuration to restrict the access to the sync/suspend/resume of resources. To do this, simple set readOnly to true.
 
 ```yaml
 # app-config.yaml

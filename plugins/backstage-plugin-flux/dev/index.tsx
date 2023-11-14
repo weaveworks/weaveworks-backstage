@@ -307,7 +307,10 @@ createDevApp()
           [
             configApiRef,
             new ConfigReader({
-              gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
+              gitops: {
+                baseUrl: 'https://example.com/wego',
+                readOnly: false,
+              },
             }),
           ],
           [
