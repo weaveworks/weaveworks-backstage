@@ -292,6 +292,7 @@ gitops:
 ```
 
 The UI will reflect this by showing the buttons corresponding to sync/suspend/resume as disabled.
+Enabling readOnly mode disables the buttons in the UI and provides feedback to the user that resources cannot be changed. However this is only part of a full readOnly solution. The [Backstage Kubernetes Proxy](https://backstage.io/docs/features/kubernetes/proxy/) should be configured to deny users from changing resources.
 
 6. [Optional] Add a Flux Runtime page to your app
 
