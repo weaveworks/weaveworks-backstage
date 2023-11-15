@@ -1,18 +1,6 @@
-import {
-  BackstageIdentityApi,
-  OAuthApi,
-  ProfileInfoApi,
-  SessionApi,
-  githubAuthApiRef,
-  useApi,
-} from '@backstage/core-plugin-api';
+import { useApi } from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
-import {
-  FluxController,
-  FluxControllerEnriched,
-  FluxRelease,
-  Namespace,
-} from '../objects';
+import { FluxController, FluxControllerEnriched, Namespace } from '../objects';
 import { useQuery } from 'react-query';
 import _ from 'lodash';
 
@@ -89,36 +77,6 @@ export function useGetDeployments() {
   const { isLoading, data, error } = useQuery<FluxControllerEnriched[], Error>(
     'deployments',
     () => getDeploymentsList(kubernetesApi),
-  );
-
-  return { isLoading, data, error };
-}
-
-export async function getFluxReleases(
-  githubAuthApi: OAuthApi & ProfileInfoApi & BackstageIdentityApi & SessionApi,
-) {
-  const token = await githubAuthApi.getAccessToken();
-
-  const response = await fetch(
-    'https://api.github.com/repos/fluxcd/flux2/releases/latest',
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
-    },
-  );
-
-  return await response.json();
-}
-
-export function useGetLatestFluxRelease() {
-  const githubAuthApi = useApi(githubAuthApiRef);
-
-  const { isLoading, data, error } = useQuery<FluxRelease, Error>(
-    'latest_flux_release',
-    () => getFluxReleases(githubAuthApi),
   );
 
   return { isLoading, data, error };

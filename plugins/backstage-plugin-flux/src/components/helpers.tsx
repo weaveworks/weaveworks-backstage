@@ -33,7 +33,7 @@ import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
-import { useGetLatestFluxRelease } from '../hooks/useGetDeployments';
+import { useGetLatestFluxRelease } from '../hooks/useGetFluxRelease';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -324,7 +324,7 @@ export const FluxReleasesLink = ({
   const { data: latestFluxRelease } = useGetLatestFluxRelease();
   const FLUX_RELEASES_URL = 'https://github.com/fluxcd/flux2/releases';
 
-  return latestFluxRelease?.name?.substring(1) &&
+  return latestFluxRelease &&
     compare(
       latestFluxRelease?.name?.substring(1),
       resource.version.substring(1),
