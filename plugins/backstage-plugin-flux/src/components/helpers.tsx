@@ -7,6 +7,7 @@ import {
   TableColumn,
   TableFilter,
 } from '@backstage/core-components';
+import { compare } from 'compare-versions';
 import { Box, IconButton, Tooltip } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -32,6 +33,7 @@ import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
+import { useGetLatestFluxRelease } from '../hooks/useGetDeployments';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -307,6 +309,35 @@ export const availableComponentsColumn = <T extends Cluster>() => {
     ...sortAndFilterOptions(resource =>
       resource?.availableComponents.join(', '),
     ),
+  } as TableColumn<T>;
+};
+
+// /**
+//  * Compare the latest Flux release with the flux version present on the cluster and return
+//  * a link to the Flux releases page if there is a newer version available.
+//  */
+export const FluxReleasesLink = ({
+  resource,
+}: {
+  resource: Cluster;
+}): JSX.Element | null => {
+  const { data: latestFluxRelease } = useGetLatestFluxRelease();
+  const FLUX_RELEASES_URL = 'https://github.com/fluxcd/flux2/releases';
+
+  return latestFluxRelease?.name?.substring(1) &&
+    compare(
+      latestFluxRelease?.name?.substring(1),
+      resource.version.substring(1),
+      '>',
+    ) ? (
+    <Link to={FLUX_RELEASES_URL}>Update available</Link>
+  ) : null;
+};
+
+export const fluxUpdate = <T extends Cluster>() => {
+  return {
+    title: 'Flux update',
+    render: resource => <FluxReleasesLink resource={resource} />,
   } as TableColumn<T>;
 };
 

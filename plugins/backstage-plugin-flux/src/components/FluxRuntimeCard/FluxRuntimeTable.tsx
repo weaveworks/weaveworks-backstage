@@ -9,6 +9,7 @@ import {
   Cluster,
   availableComponentsColumn,
   clusterNameFilteringColumn,
+  fluxUpdate,
 } from '../helpers';
 import { FluxEntityTable } from '../FluxEntityTable';
 import { FluxControllerEnriched } from '../../objects';
@@ -20,6 +21,7 @@ export const defaultColumns: TableColumn<Cluster>[] = [
   namespaceColumn(),
   versionColumn(),
   availableComponentsColumn(),
+  fluxUpdate(),
 ];
 
 type Props = {
