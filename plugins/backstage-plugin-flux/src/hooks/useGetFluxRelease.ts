@@ -12,7 +12,7 @@ import { useQuery } from 'react-query';
 export const LATEST_FLUX_RELEASE_PATH =
   'https://api.github.com/repos/fluxcd/flux2/releases/latest';
 
-export async function getFluxReleases(
+export async function getFluxLatestRelease(
   githubAuthApi: OAuthApi & ProfileInfoApi & BackstageIdentityApi & SessionApi,
 ) {
   const token = await githubAuthApi.getAccessToken();
@@ -33,7 +33,7 @@ export function useGetLatestFluxRelease() {
 
   const { isLoading, data, error } = useQuery<FluxRelease, Error>(
     'latest_flux_release',
-    () => getFluxReleases(githubAuthApi),
+    () => getFluxLatestRelease(githubAuthApi),
   );
 
   return { isLoading, data, error };
