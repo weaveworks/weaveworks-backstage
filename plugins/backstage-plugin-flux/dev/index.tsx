@@ -721,7 +721,7 @@ createDevApp()
                 'app.kubernetes.io/component': 'helm-controller',
                 'app.kubernetes.io/instance': 'flux-system',
                 'app.kubernetes.io/part-of': 'flux',
-                'app.kubernetes.io/version': 'v2.1.2',
+                'app.kubernetes.io/version': 'v2.1.0',
                 'control-plane': 'controller',
                 'kustomize.toolkit.fluxcd.io/name': 'flux-system',
                 'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',

@@ -1,6 +1,11 @@
 import React from 'react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { configApiRef } from '@backstage/core-plugin-api';
+import {
+  configApiRef,
+  FetchApi,
+  fetchApiRef,
+  OAuthApi,
+} from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
   KubernetesApi,
@@ -14,7 +19,11 @@ import {
   getDeploymentsPath,
   NAMESPACES_PATH,
 } from '../../hooks/useGetDeployments';
-import { Namespace } from '../../objects';
+import { FluxRelease, Namespace } from '../../objects';
+
+const release = {
+  name: 'v3.1.2',
+} as FluxRelease;
 
 const makeTestFluxController = (
   name: string,
@@ -137,7 +146,7 @@ class StubKubernetesClient implements KubernetesApi {
                 'app.kubernetes.io/component': 'helm-controller',
                 'app.kubernetes.io/instance': 'flux-system',
                 'app.kubernetes.io/part-of': 'flux',
-                'app.kubernetes.io/version': 'v2.1.2',
+                'app.kubernetes.io/version': 'v2.1.0',
                 'control-plane': 'controller',
                 'kustomize.toolkit.fluxcd.io/name': 'flux-system',
                 'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
@@ -203,14 +212,24 @@ class StubKubernetesAuthProvidersApi implements KubernetesAuthProvidersApi {
 describe('<FluxRuntimeCard />', () => {
   let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
+  const unmockedFetch = global.fetch;
+
   beforeEach(() => {
     Wrapper = ({ children }: { children?: React.ReactNode }) => (
       <div>{children}</div>
     );
+
+    global.fetch = jest.fn(
+      () =>
+        Promise.resolve({
+          json: () => Promise.resolve(release),
+        }) as Promise<Response>,
+    );
   });
 
-  beforeEach(() => {
+  afterEach(() => {
     jest.resetAllMocks();
+    global.fetch = unmockedFetch;
   });
 
   describe('listing Flux Controllers per Cluster', () => {
@@ -225,6 +244,7 @@ describe('<FluxRuntimeCard />', () => {
                   gitops: { baseUrl: 'https://example.com/wego' },
                 }),
               ],
+              // [fetchApiRef, new StubFetchClient()],
               [kubernetesApiRef, new StubKubernetesClient()],
               [
                 kubernetesAuthProvidersApiRef,
@@ -243,17 +263,19 @@ describe('<FluxRuntimeCard />', () => {
         {
           cluster: 'mock-cluster-1',
           namespace: 'flux-system',
-          version: 'v2.1.2',
+          version: 'v2.1.0',
           availableComponents: [
             'helm-controller',
             'image-automation-controller',
           ],
+          link: 'Update available',
         },
         {
           cluster: 'mock-cluster-2',
           namespace: 'default',
           version: 'v2.1.2',
           availableComponents: ['image-automation-controller'],
+          link: 'Update available',
         },
       ];
 
@@ -266,6 +288,7 @@ describe('<FluxRuntimeCard />', () => {
         expect(tr).toHaveTextContent(testCase.namespace);
         expect(tr).toHaveTextContent(testCase.version);
         expect(tr).toHaveTextContent(testCase.availableComponents.join(', '));
+        expect(tr).toHaveTextContent(testCase.link);
       }
     });
   });
