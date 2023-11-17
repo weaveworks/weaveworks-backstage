@@ -1,11 +1,6 @@
 import React from 'react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import {
-  configApiRef,
-  FetchApi,
-  fetchApiRef,
-  OAuthApi,
-} from '@backstage/core-plugin-api';
+import { configApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
   KubernetesApi,
