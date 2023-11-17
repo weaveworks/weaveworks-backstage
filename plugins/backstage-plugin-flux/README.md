@@ -229,7 +229,7 @@ spec:
   interval: 1m0s
 ```
 
-5. [Optional] Configure linking through to Weave GitOps, configure your `app-config.yaml`
+5. [Optional] Configure linking through to Weave GitOps and availability of actions on resources (sync/suspend/resume), configure your `app-config.yaml`
 
 If you have [Weave GitOps](https://www.weave.works/product/gitops/) or [Weave GitOps Enterprise](https://www.weave.works/product/gitops-enterprise/) you can configure the plugins to link through to the UI which will provide more information on the resources.
 
@@ -282,9 +282,21 @@ kubernetes:
           caData: LS0tLS1CRUdJTiBDRVJUSUZJQ0...
 ```
 
+You can also update the configuration to restrict the access to the sync/suspend/resume of resources. To do this, simple set readOnly to true.
+
+```yaml
+# app-config.yaml
+
+gitops:
+  readOnly: true
+```
+
+The UI will reflect this by showing the buttons corresponding to sync/suspend/resume as disabled.
+Enabling readOnly mode disables the buttons in the UI and provides feedback to the user that resources cannot be changed. However this is only part of a full readOnly solution. The [Backstage Kubernetes Proxy](https://backstage.io/docs/features/kubernetes/proxy/) should be configured to deny users from changing resources and/or the ServiceAccount that Backstage uses to access the cluster should be limited to only have read permissions.
+
 6. [Optional] Add a Flux Runtime page to your app
 
-- An example Page is included as the `<FluxRuntimePage />` component. 
+- An example Page is included as the `<FluxRuntimePage />` component.
 - Add the page to your app by first adding a route in `App.tsx`
 
 ```tsx
