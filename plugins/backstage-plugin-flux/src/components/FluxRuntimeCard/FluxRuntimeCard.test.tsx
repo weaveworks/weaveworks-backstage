@@ -239,7 +239,6 @@ describe('<FluxRuntimeCard />', () => {
                   gitops: { baseUrl: 'https://example.com/wego' },
                 }),
               ],
-              // [fetchApiRef, new StubFetchClient()],
               [kubernetesApiRef, new StubKubernetesClient()],
               [
                 kubernetesAuthProvidersApiRef,
