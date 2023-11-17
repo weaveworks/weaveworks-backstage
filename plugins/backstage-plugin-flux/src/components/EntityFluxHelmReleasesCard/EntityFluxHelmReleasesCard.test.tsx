@@ -130,7 +130,7 @@ function renderHelmReleasesCard() {
         [
           configApiRef,
           new ConfigReader({
-            gitops: { baseUrl: 'https://example.com/wego' },
+            gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
           }),
         ],
         [kubernetesApiRef, new StubKubernetesClient()],
@@ -225,6 +225,39 @@ describe('<EntityFluxHelmReleasesCard />', () => {
       jest.resetAllMocks();
     });
 
+    it('should show sync as being disabled if gitops: readOnly is set to true', async () => {
+      const kubernetesApi = new StubKubernetesClient();
+
+      const rendered = await renderInTestApp(
+        <TestApiProvider
+          apis={[
+            [
+              configApiRef,
+              new ConfigReader({
+                gitops: {
+                  readOnly: true,
+                },
+              }),
+            ],
+            [kubernetesApiRef, kubernetesApi],
+            [
+              kubernetesAuthProvidersApiRef,
+              new StubKubernetesAuthProvidersApi(),
+            ],
+          ]}
+        >
+          <EntityProvider entity={entity}>
+            <EntityFluxHelmReleasesCard />
+          </EntityProvider>
+        </TestApiProvider>,
+      );
+
+      const { findByTestId } = rendered;
+
+      const button = await findByTestId('sync default/normal');
+      expect(button).toBeDisabled();
+    });
+
     it('clicking the button should trigger a sync (error in this case)', async () => {
       const kubernetesApi = new StubKubernetesClient();
 
@@ -245,7 +278,10 @@ describe('<EntityFluxHelmReleasesCard />', () => {
             [
               configApiRef,
               new ConfigReader({
-                gitops: { baseUrl: 'https://example.com/wego' },
+                gitops: {
+                  baseUrl: 'https://example.com/wego',
+                  readOnly: false,
+                },
               }),
             ],
             [kubernetesApiRef, kubernetesApi],
