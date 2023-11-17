@@ -1,5 +1,5 @@
 import { FluxRelease } from '../objects';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 
 export const LATEST_FLUX_RELEASE_PATH =
   'https://api.github.com/repos/fluxcd/flux2/releases/latest';
@@ -18,10 +18,10 @@ export async function getFluxLatestRelease() {
 }
 
 export function useGetLatestFluxRelease() {
-  const { isLoading, data, error } = useQuery<FluxRelease, Error>(
-    'latest_flux_release',
-    () => getFluxLatestRelease(),
-  );
+  const { isLoading, data, error } = useQuery<FluxRelease, Error>({
+    queryKey: ['latest_flux_release'],
+    queryFn: () => getFluxLatestRelease(),
+  });
 
   return { isLoading, data, error };
 }

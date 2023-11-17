@@ -1,7 +1,7 @@
 import { useApi } from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
 import { FluxController, FluxControllerEnriched, Namespace } from '../objects';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import _ from 'lodash';
 
 export const NAMESPACES_PATH = `/api/v1/namespaces?labelSelector=app.kubernetes.io%2Fpart-of%3Dflux&limit=500`;
@@ -74,10 +74,10 @@ export async function getDeploymentsList(kubernetesApi: KubernetesApi) {
 export function useGetDeployments() {
   const kubernetesApi = useApi(kubernetesApiRef);
 
-  const { isLoading, data, error } = useQuery<FluxControllerEnriched[], Error>(
-    'deployments',
-    () => getDeploymentsList(kubernetesApi),
-  );
+  const { isLoading, data, error } = useQuery<FluxControllerEnriched[], Error>({
+    queryKey: ['deployments'],
+    queryFn: () => getDeploymentsList(kubernetesApi),
+  });
 
   return { isLoading, data, error };
 }
