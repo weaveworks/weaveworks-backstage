@@ -32,6 +32,7 @@ import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -87,23 +88,25 @@ export function SyncButton({
   resource,
   sync,
   status,
+  readOnly,
 }: {
   resource: Source | Deployment | ImagePolicy;
   sync: () => Promise<void>;
   status: boolean;
+  readOnly?: boolean;
 }) {
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Syncing ${label}` : `Sync ${label}`;
   return (
-    <Tooltip title={title}>
+    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
       <div>
         <IconButton
           data-testid={`sync ${label}`}
           className={classes.actionButton}
           size="small"
           onClick={sync}
-          disabled={resource.suspended}
+          disabled={resource.suspended || readOnly}
         >
           <RetryIcon />
         </IconButton>
@@ -116,24 +119,26 @@ export function SuspendButton({
   resource,
   toggleSuspend,
   status,
+  readOnly,
 }: {
   resource: Source | Deployment;
   toggleSuspend: () => Promise<void>;
   status: boolean;
+  readOnly?: boolean;
 }) {
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Suspending ${label}` : `Suspend ${label}`;
 
   return (
-    <Tooltip title={title}>
+    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
       <div>
         <IconButton
           data-testid={`suspend ${label}`}
           className={classes.actionButton}
           size="small"
           onClick={toggleSuspend}
-          disabled={resource.suspended}
+          disabled={resource.suspended || readOnly}
         >
           <PauseIcon />
         </IconButton>
@@ -146,24 +151,26 @@ export function ResumeButton({
   resource,
   toggleResume,
   status,
+  readOnly,
 }: {
   resource: Source | Deployment;
   toggleResume: () => Promise<void>;
   status: boolean;
+  readOnly?: boolean;
 }) {
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Resuming ${label}` : `Resume ${label}`;
 
   return (
-    <Tooltip title={title}>
+    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
       <div>
         <IconButton
           data-testid={`resume ${label}`}
           className={classes.actionButton}
           size="small"
           onClick={toggleResume}
-          disabled={!resource.suspended}
+          disabled={!resource.suspended || readOnly}
         >
           <PlayArrowIcon />
         </IconButton>
@@ -185,6 +192,8 @@ export function GroupAction({
   const { loading: isResuming, toggleSuspend: toogleResume } =
     useToggleSuspendResource(resource as Source | Deployment, false);
   const isLoading = isSyncing || isSuspending || isResuming;
+  const config = useApi(configApiRef);
+  const readOnly = config.getOptionalBoolean('gitops.readOnly');
 
   return (
     <>
@@ -192,15 +201,22 @@ export function GroupAction({
         <Progress data-testid="loading" />
       ) : (
         <Flex>
-          <SyncButton resource={resource} sync={sync} status={isSyncing} />
+          <SyncButton
+            readOnly={readOnly}
+            resource={resource}
+            sync={sync}
+            status={isSyncing}
+          />
           {!(resource.type === 'ImagePolicy') ? (
             <>
               <SuspendButton
+                readOnly={readOnly}
                 resource={resource as Source | Deployment}
                 toggleSuspend={toggleSuspend}
                 status={isSuspending}
               />
               <ResumeButton
+                readOnly={readOnly}
                 resource={resource as Source | Deployment}
                 toggleResume={toogleResume}
                 status={isResuming}
