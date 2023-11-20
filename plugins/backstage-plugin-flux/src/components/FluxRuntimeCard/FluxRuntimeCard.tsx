@@ -33,10 +33,15 @@ const FluxRuntimePanel: FC<{ many?: boolean }> = ({ many }) => {
  * @public
  */
 export const FluxRuntimeCard = ({ many = true }: { many?: boolean }) => {
+  // Set both the garbage collection time and max-age to 1 hour
+  // gcTime should be higher than max-age to avoid removing things too soon.
+  const gcTime = 1000 * 60 * 60;
+  const maxAge = gcTime;
+
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        gcTime: 1000 * 60 * 60, // 1 hour
+        gcTime,
       },
     },
   });
@@ -49,7 +54,7 @@ export const FluxRuntimeCard = ({ many = true }: { many?: boolean }) => {
     <ThemeProvider theme={theme()}>
       <PersistQueryClientProvider
         client={queryClient}
-        persistOptions={{ persister }}
+        persistOptions={{ persister, maxAge }}
       >
         <FluxRuntimePanel many={many} />
       </PersistQueryClientProvider>
