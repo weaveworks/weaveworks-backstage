@@ -5,16 +5,32 @@ export const LATEST_FLUX_RELEASE_PATH =
   'https://api.github.com/repos/fluxcd/flux2/releases/latest';
 
 export async function getFluxLatestRelease() {
-  const headers = {
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-  };
+  // check local storage for cached value of latest release
+  const cachedValues = localStorage.getItem('REACT_QUERY_OFFLINE_CACHE');
 
-  const response = await fetch(LATEST_FLUX_RELEASE_PATH, {
-    headers,
-  });
+  // look for the latest flux release query in the cache
+  const latestRelease =
+    cachedValues &&
+    JSON.parse(cachedValues).clientState.queries.find(
+      (query: { queryKey: string[] }) =>
+        query.queryKey[0] === 'latest_flux_release',
+    ).state.data.name;
 
-  return await response.json();
+  // if the latest release is cached, return it
+  if (latestRelease) {
+    return latestRelease;
+  } else {
+    const headers = {
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    };
+
+    const response = await fetch(LATEST_FLUX_RELEASE_PATH, {
+      headers,
+    });
+
+    return await response.json();
+  }
 }
 
 export function useGetLatestFluxRelease() {
