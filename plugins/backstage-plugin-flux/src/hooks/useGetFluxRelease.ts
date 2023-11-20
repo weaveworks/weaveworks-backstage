@@ -19,18 +19,17 @@ export async function getFluxLatestRelease() {
   // if the latest release is cached, return it
   if (latestRelease) {
     return latestRelease;
-  } else {
-    const headers = {
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-    };
-
-    const response = await fetch(LATEST_FLUX_RELEASE_PATH, {
-      headers,
-    });
-
-    return await response.json();
   }
+  const headers = {
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  };
+
+  const response = await fetch(LATEST_FLUX_RELEASE_PATH, {
+    headers,
+  });
+
+  return await response.json();
 }
 
 export function useGetLatestFluxRelease() {
