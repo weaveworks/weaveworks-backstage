@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 type Props = {
+  children: React.ReactNode;
   className?: string;
   column?: boolean;
   align?: boolean;

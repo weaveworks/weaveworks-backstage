@@ -36,8 +36,7 @@ export const FluxRuntimeCard = ({ many = true }: { many?: boolean }) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        // @ts-ignore
-        cacheTime: 1000 * 60 * 60, // 1 hour
+        gcTime: 1000 * 60 * 60, // 1 hour
       },
     },
   });
