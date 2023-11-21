@@ -1,6 +1,10 @@
 import React from 'react';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { configApiRef } from '@backstage/core-plugin-api';
+import {
+  MockFetchApi,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/test-utils';
+import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
   KubernetesApi,
@@ -207,24 +211,14 @@ class StubKubernetesAuthProvidersApi implements KubernetesAuthProvidersApi {
 describe('<FluxRuntimeCard />', () => {
   let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
-  const unmockedFetch = global.fetch;
-
   beforeEach(() => {
     Wrapper = ({ children }: { children?: React.ReactNode }) => (
       <div>{children}</div>
-    );
-
-    global.fetch = jest.fn(
-      () =>
-        Promise.resolve({
-          json: () => Promise.resolve(release),
-        }) as Promise<Response>,
     );
   });
 
   afterEach(() => {
     jest.resetAllMocks();
-    global.fetch = unmockedFetch;
   });
 
   describe('listing Flux Controllers per Cluster', () => {
@@ -243,6 +237,16 @@ describe('<FluxRuntimeCard />', () => {
               [
                 kubernetesAuthProvidersApiRef,
                 new StubKubernetesAuthProvidersApi(),
+              ],
+              [
+                fetchApiRef,
+                new MockFetchApi({
+                  baseImplementation: async () => {
+                    return {
+                      json: async () => release,
+                    } as Response;
+                  },
+                }),
               ],
             ]}
           >
