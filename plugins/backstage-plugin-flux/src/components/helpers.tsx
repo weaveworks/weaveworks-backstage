@@ -33,8 +33,8 @@ import Flex from './Flex';
 import KubeStatusIndicator, { getIndicatorInfo } from './KubeStatusIndicator';
 import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
-import { useGetLatestFluxRelease } from '../hooks/useGetFluxRelease';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { useGetLatestFluxRelease } from '../hooks/useGetFluxRelease';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -328,10 +328,10 @@ export const availableComponentsColumn = <T extends Cluster>() => {
   } as TableColumn<T>;
 };
 
-// /**
-//  * Compare the latest Flux release with the flux version present on the cluster and return
-//  * a link to the Flux releases page if there is a newer version available.
-//  */
+/**
+ * Compare the latest Flux release with the flux version present on the cluster and return
+ * a link to the Flux releases page if there is a newer version available.
+ **/
 export const FluxReleasesLink = ({
   resource,
 }: {
