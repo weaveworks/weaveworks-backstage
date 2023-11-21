@@ -1,3 +1,4 @@
+import { MockFetchApi } from '@backstage/test-utils';
 import { FluxRelease } from '../objects';
 import { getFluxLatestRelease } from './useGetFluxRelease';
 
@@ -6,23 +7,16 @@ describe('getFluxLatestRelease', () => {
     name: 'v0.0.0',
   } as FluxRelease;
 
-  const unmockedFetch = global.fetch;
-
-  beforeEach(() => {
-    global.fetch = jest.fn(
-      () =>
-        Promise.resolve({
-          json: () => Promise.resolve(release),
-        }) as Promise<Response>,
-    );
-  });
-
-  afterEach(() => {
-    global.fetch = unmockedFetch;
-  });
-
   it('should get the latest release of Flux', async () => {
-    const latestFluxRelease = await getFluxLatestRelease();
+    const fetchApiMock = new MockFetchApi({
+      baseImplementation: async () => {
+        return {
+          json: async () => release,
+        } as Response;
+      },
+    });
+
+    const latestFluxRelease = await getFluxLatestRelease(fetchApiMock);
     expect(latestFluxRelease).toEqual(release);
   });
 });
