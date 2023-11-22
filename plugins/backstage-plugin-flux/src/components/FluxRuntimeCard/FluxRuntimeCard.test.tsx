@@ -19,6 +19,7 @@ import {
   NAMESPACES_PATH,
 } from '../../hooks/useGetDeployments';
 import { FluxRelease, Namespace } from '../../objects';
+import { waitFor } from '@testing-library/react';
 
 const release = {
   name: 'v3.1.2',
@@ -286,7 +287,9 @@ describe('<FluxRuntimeCard />', () => {
         expect(tr).toHaveTextContent(testCase.namespace);
         expect(tr).toHaveTextContent(testCase.version);
         expect(tr).toHaveTextContent(testCase.availableComponents.join(', '));
-        expect(tr).toHaveTextContent(testCase.link);
+        await waitFor(() => {
+          expect(tr).toHaveTextContent(testCase.link);
+        });
       }
     });
   });
