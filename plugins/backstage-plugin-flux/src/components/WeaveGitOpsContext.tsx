@@ -4,7 +4,7 @@ import {
   QueryClient,
   QueryClientConfig,
   QueryClientProvider,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../theme';
 

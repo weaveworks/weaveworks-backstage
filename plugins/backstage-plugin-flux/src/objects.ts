@@ -117,6 +117,10 @@ export type FluxController = {
 
 export type FluxControllerEnriched = FluxController & { clusterName: string };
 
+export type FluxRelease = {
+  name: string;
+};
+
 export class FluxObject {
   obj: any;
   clusterName: string;

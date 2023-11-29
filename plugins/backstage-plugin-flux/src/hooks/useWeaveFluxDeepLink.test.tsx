@@ -1,12 +1,11 @@
 import { ConfigApi, configApiRef } from '@backstage/core-plugin-api';
 import { TestApiProvider } from '@backstage/test-utils';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import React, { PropsWithChildren } from 'react';
 import { useWeaveFluxDeepLink } from './useWeaveFluxDeepLink';
 import { GitRepository, HelmRelease, OCIRepository } from '../objects';
 import * as unverifiedGitRepository from '../__fixtures__/unverified_git_repository.json';
 import * as unverifiedOCIRepository from '../__fixtures__/unverified_oci_repository.json';
-
 
 const testHelmRelease = new HelmRelease({
   clusterName: 'Default',
@@ -16,14 +15,12 @@ const testHelmRelease = new HelmRelease({
 
 const testGitRepository = new GitRepository({
   clusterName: 'Default',
-  payload:
-    JSON.stringify(unverifiedGitRepository),
+  payload: JSON.stringify(unverifiedGitRepository),
 });
 
 const testOCIRepository = new OCIRepository({
   clusterName: 'demo-cluster',
-  payload:
-    JSON.stringify(unverifiedOCIRepository),
+  payload: JSON.stringify(unverifiedOCIRepository),
 });
 
 let gitOpsUrl: string | undefined;
@@ -128,15 +125,12 @@ describe('useWeaveFluxDeepLink', () => {
           '{"apiVersion":"helm.toolkit.fluxcd.io/v2beta1","kind":"HelmRelease","metadata":{"annotations":{"metadata.weave.works/test":"value"},"creationTimestamp":"2023-05-25T14:14:46Z","finalizers":["finalizers.fluxcd.io"],"generation":5,"name":"normal","namespace":"default","resourceVersion":"1","uid":"82231842-2224-4f22-8576-5babf08d746d"}}',
       });
 
-
-      const { result } = renderHook(
-        () => useWeaveFluxDeepLink(helmRelease),
-        {
-          wrapper,
-        },
-      );
+      const { result } = renderHook(() => useWeaveFluxDeepLink(helmRelease), {
+        wrapper,
+      });
       expect(result.current).toBe(
         'https://example.com/helm_release/details?clusterName=demo-ns%2Ftest-cluster&name=normal&namespace=default',
-      );    });
+      );
+    });
   });
 });

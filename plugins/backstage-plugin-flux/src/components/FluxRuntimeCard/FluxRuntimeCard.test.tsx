@@ -1,6 +1,10 @@
 import React from 'react';
-import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import { configApiRef } from '@backstage/core-plugin-api';
+import {
+  MockFetchApi,
+  renderInTestApp,
+  TestApiProvider,
+} from '@backstage/test-utils';
+import { configApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
   KubernetesApi,
@@ -14,7 +18,12 @@ import {
   getDeploymentsPath,
   NAMESPACES_PATH,
 } from '../../hooks/useGetDeployments';
-import { Namespace } from '../../objects';
+import { FluxRelease, Namespace } from '../../objects';
+import { waitFor } from '@testing-library/react';
+
+const release = {
+  name: 'v3.1.2',
+} as FluxRelease;
 
 const makeTestFluxController = (
   name: string,
@@ -137,7 +146,7 @@ class StubKubernetesClient implements KubernetesApi {
                 'app.kubernetes.io/component': 'helm-controller',
                 'app.kubernetes.io/instance': 'flux-system',
                 'app.kubernetes.io/part-of': 'flux',
-                'app.kubernetes.io/version': 'v2.1.2',
+                'app.kubernetes.io/version': 'v2.1.0',
                 'control-plane': 'controller',
                 'kustomize.toolkit.fluxcd.io/name': 'flux-system',
                 'kustomize.toolkit.fluxcd.io/namespace': 'flux-system',
@@ -209,7 +218,7 @@ describe('<FluxRuntimeCard />', () => {
     );
   });
 
-  beforeEach(() => {
+  afterEach(() => {
     jest.resetAllMocks();
   });
 
@@ -230,6 +239,16 @@ describe('<FluxRuntimeCard />', () => {
                 kubernetesAuthProvidersApiRef,
                 new StubKubernetesAuthProvidersApi(),
               ],
+              [
+                fetchApiRef,
+                new MockFetchApi({
+                  baseImplementation: async () => {
+                    return {
+                      json: async () => release,
+                    } as Response;
+                  },
+                }),
+              ],
             ]}
           >
             <FluxRuntimeCard />
@@ -243,17 +262,19 @@ describe('<FluxRuntimeCard />', () => {
         {
           cluster: 'mock-cluster-1',
           namespace: 'flux-system',
-          version: 'v2.1.2',
+          version: 'v2.1.0',
           availableComponents: [
             'helm-controller',
             'image-automation-controller',
           ],
+          link: 'Update available',
         },
         {
           cluster: 'mock-cluster-2',
           namespace: 'default',
           version: 'v2.1.2',
           availableComponents: ['image-automation-controller'],
+          link: 'Update available',
         },
       ];
 
@@ -266,6 +287,9 @@ describe('<FluxRuntimeCard />', () => {
         expect(tr).toHaveTextContent(testCase.namespace);
         expect(tr).toHaveTextContent(testCase.version);
         expect(tr).toHaveTextContent(testCase.availableComponents.join(', '));
+        await waitFor(() => {
+          expect(tr).toHaveTextContent(testCase.link);
+        });
       }
     });
   });
