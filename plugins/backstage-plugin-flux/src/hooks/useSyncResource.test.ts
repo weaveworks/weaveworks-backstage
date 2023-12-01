@@ -79,6 +79,7 @@ describe('getRequest', () => {
 function makeMockKubernetesApi() {
   return {
     getObjectsByEntity: jest.fn(),
+    getCluster: jest.fn(),
     getClusters: jest.fn(),
     getWorkloadsByEntity: jest.fn(),
     getCustomObjectsByEntity: jest.fn(),
