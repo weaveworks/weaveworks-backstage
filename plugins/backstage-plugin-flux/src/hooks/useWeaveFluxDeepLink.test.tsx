@@ -1,6 +1,6 @@
 import { ConfigApi, configApiRef } from '@backstage/core-plugin-api';
 import { TestApiProvider } from '@backstage/test-utils';
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import React, { PropsWithChildren } from 'react';
 import { useWeaveFluxDeepLink } from './useWeaveFluxDeepLink';
 import { GitRepository, HelmRelease, OCIRepository } from '../objects';
