@@ -71,6 +71,18 @@ class StubKubernetesClient implements KubernetesApi {
     this.resources = resources;
   }
 
+  getCluster(_: string): Promise<
+    | {
+        name: string;
+        authProvider: string;
+        oidcTokenProvider?: string | undefined;
+        dashboardUrl?: string | undefined;
+      }
+    | undefined
+  > {
+    throw new Error('getCluster not implemented.');
+  }
+
   getObjectsByEntity(
     _: KubernetesRequestBody,
   ): Promise<ObjectsByEntityResponse> {

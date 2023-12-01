@@ -223,6 +223,8 @@ const makeTestKustomization = (name: string, path: string) => {
 class StubKubernetesClient implements KubernetesApi {
   getObjectsByEntity = jest.fn();
 
+  getCluster = jest.fn();
+
   async getClusters(): Promise<{ name: string; authProvider: string }[]> {
     return [{ name: 'mock-cluster', authProvider: 'serviceAccount' }];
   }

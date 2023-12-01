@@ -34,14 +34,14 @@ const FluxRuntimePanel: FC<{ many?: boolean }> = ({ many }) => {
  */
 export const FluxRuntimeCard = ({ many = true }: { many?: boolean }) => {
   // Set both the garbage collection time and max-age to 1 hour
-  // gcTime should be higher than max-age to avoid removing things too soon.
-  const gcTime = 1000 * 60 * 60;
-  const maxAge = gcTime;
+  // cacheTime should be higher than max-age to avoid removing things too soon.
+  const cacheTime = 1000 * 60 * 60;
+  const maxAge = cacheTime;
 
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        gcTime,
+        cacheTime,
       },
     },
   });
