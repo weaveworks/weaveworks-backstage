@@ -4,6 +4,7 @@ import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 import { useAsyncFn } from 'react-use';
 import { gvkFromKind } from '../objects';
 import { Deployment, Source } from '../components/helpers';
+import { useGetUserInfo } from './useGetUser';
 
 export const pathForResource = (
   name: string,
@@ -29,6 +30,7 @@ export function toggleSuspendRequest(
   clusterName: string,
   gvk: CustomResourceMatcher,
   suspend: boolean,
+  user: string,
 ) {
   return {
     clusterName,
@@ -39,6 +41,11 @@ export function toggleSuspendRequest(
         'Content-Type': 'application/merge-patch+json',
       },
       body: JSON.stringify({
+        metadata: {
+          annotations: {
+            'weave.works/suspended-by': user,
+          },
+        },
         spec: {
           suspend,
         },
@@ -66,9 +73,10 @@ export async function requestToggleSuspendResource(
   clusterName: string,
   gvk: CustomResourceMatcher,
   suspend: boolean,
+  user: string,
 ) {
   const res = await kubernetesApi.proxy(
-    toggleSuspendRequest(name, namespace, clusterName, gvk, suspend),
+    toggleSuspendRequest(name, namespace, clusterName, gvk, suspend, user),
   );
   const key = suspend ? 'Suspend' : 'Resume';
   if (!res.ok) {
@@ -85,6 +93,9 @@ export async function toggleSuspendResource(
   suspend: boolean,
 ) {
   const key = suspend ? 'Suspend' : 'Resume';
+  const { data } = useGetUserInfo();
+  const user = data?.result?.profile || data.result.userId;
+
   try {
     const gvk = gvkFromKind(resource.type);
     if (!gvk) {
@@ -98,10 +109,11 @@ export async function toggleSuspendResource(
       resource.clusterName,
       gvk,
       suspend,
+      user,
     );
 
     alertApi.post({
-      message: `${key} request successful`,
+      message: `${key} request made by ${user} was successful`,
       severity: 'success',
       display: 'transient',
     });
