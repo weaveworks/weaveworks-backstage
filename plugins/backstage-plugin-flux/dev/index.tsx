@@ -3,7 +3,13 @@ import { Content } from '@backstage/core-components';
 import { createDevApp } from '@backstage/dev-utils';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { Entity } from '@backstage/catalog-model';
-import { configApiRef } from '@backstage/core-plugin-api';
+import {
+  BackstageUserIdentity,
+  IdentityApi,
+  ProfileInfo,
+  configApiRef,
+  identityApiRef,
+} from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
   KubernetesApi,
@@ -45,6 +51,12 @@ import {
   getDeploymentsPath,
 } from '../src/hooks/useGetDeployments';
 import { Namespace } from '../src/objects';
+
+const userId = 'user:default/guest';
+const profile = {
+  displayName: 'Guest',
+  picture: 'https://avatars.githubusercontent.com/u/35202557?v=4',
+};
 
 const fakeEntity: Entity = {
   apiVersion: 'backstage.io/v1alpha1',
@@ -309,6 +321,36 @@ class StubKubernetesAuthProvidersApi implements KubernetesAuthProvidersApi {
   }
 }
 
+class StubIdentityApi implements IdentityApi {
+  async getBackstageIdentity(): Promise<BackstageUserIdentity> {
+    return {
+      ownershipEntityRefs: [userId],
+      type: 'user',
+      userEntityRef: userId,
+    };
+  }
+
+  async getProfileInfo(): Promise<ProfileInfo> {
+    return profile;
+  }
+
+  getCredentials = jest.fn();
+  signOut = jest.fn();
+
+  async fromLegacy(): Promise<{
+    result: {
+      userId: string;
+      profile: ProfileInfo;
+      getIdToken?: () => Promise<string>;
+      signOut?: () => Promise<void>;
+    };
+  }> {
+    return {
+      result: { profile, userId },
+    };
+  }
+}
+
 createDevApp()
   .addPage({
     title: 'Helm Releases',
@@ -322,6 +364,7 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
             }),
           ],
+          [identityApiRef, new StubIdentityApi()],
           [
             kubernetesApiRef,
             new StubKubernetesClient([
@@ -382,6 +425,7 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
             }),
           ],
+          [identityApiRef, new StubIdentityApi()],
           [
             kubernetesApiRef,
             new StubKubernetesClient([
@@ -428,6 +472,7 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
             }),
           ],
+          [identityApiRef, new StubIdentityApi()],
           [
             kubernetesApiRef,
             new StubKubernetesClient([
@@ -462,7 +507,6 @@ createDevApp()
               ),
             ]),
           ],
-
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
@@ -486,6 +530,7 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
             }),
           ],
+          [identityApiRef, new StubIdentityApi()],
           [
             kubernetesApiRef,
             new StubKubernetesClient([
@@ -503,7 +548,6 @@ createDevApp()
               ),
             ]),
           ],
-
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
@@ -527,6 +571,7 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
             }),
           ],
+          [identityApiRef, new StubIdentityApi()],
           [
             kubernetesApiRef,
             new StubKubernetesClient([
@@ -538,7 +583,6 @@ createDevApp()
               ),
             ]),
           ],
-
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
@@ -562,6 +606,7 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
             }),
           ],
+          [identityApiRef, new StubIdentityApi()],
           [
             kubernetesApiRef,
             new StubKubernetesClient([
@@ -580,7 +625,6 @@ createDevApp()
               ),
             ]),
           ],
-
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
@@ -604,6 +648,7 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
             }),
           ],
+          [identityApiRef, new StubIdentityApi()],
           [
             kubernetesApiRef,
             new StubKubernetesClient([
@@ -662,7 +707,6 @@ createDevApp()
               ),
             ]),
           ],
-
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
         ]}
       >
@@ -704,6 +748,7 @@ createDevApp()
             ]),
           ],
           [kubernetesAuthProvidersApiRef, new StubKubernetesAuthProvidersApi()],
+          [identityApiRef, new StubIdentityApi()],
         ]}
       >
         <EntityProvider entity={fakeEntity}>
@@ -726,6 +771,7 @@ createDevApp()
               gitops: { baseUrl: 'https://example.com/wego', readOnly: false },
             }),
           ],
+          [identityApiRef, new StubIdentityApi()],
           [
             kubernetesApiRef,
             new StubKubernetesClient([

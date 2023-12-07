@@ -91,8 +91,10 @@ export async function toggleSuspendResource(
   kubernetesApi: KubernetesApi,
   alertApi: AlertApi,
   suspend: boolean,
-  user: string,
 ) {
+  const { data } = useGetUserInfo();
+  const user = data?.result?.profile || data.result.userId;
+  console.log(user);
   const key = suspend ? 'Suspend' : 'Resume';
 
   try {
@@ -135,12 +137,9 @@ export function useToggleSuspendResource(
 ) {
   const kubernetesApi = useApi(kubernetesApiRef);
   const alertApi = useApi(alertApiRef);
-  const { data } = useGetUserInfo();
-  const user = data?.result?.profile || data.result.userId;
 
   const [{ loading }, toggleSuspend] = useAsyncFn(
-    () =>
-      toggleSuspendResource(resource, kubernetesApi, alertApi, suspend, user),
+    () => toggleSuspendResource(resource, kubernetesApi, alertApi, suspend),
     [resource, kubernetesApi, alert],
   );
 

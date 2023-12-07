@@ -7,9 +7,14 @@ import { ThemeProvider } from 'styled-components';
 import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { useGetUserInfo } from '../../hooks/useGetUser';
 
 const FluxRuntimePanel: FC<{ many?: boolean }> = ({ many }) => {
   const { data, isLoading, error } = useGetDeployments();
+
+  const { data: user } = useGetUserInfo();
+
+  console.log(user);
 
   if (error) {
     return <div>Error: {error.message}</div>;
