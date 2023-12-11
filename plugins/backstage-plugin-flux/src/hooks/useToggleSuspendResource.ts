@@ -4,6 +4,7 @@ import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 import { useAsyncFn } from 'react-use';
 import { gvkFromKind } from '../objects';
 import { Deployment, Source } from '../components/helpers';
+import { useGetUserInfo } from './useGetUser';
 
 export const pathForResource = (
   name: string,
@@ -131,10 +132,11 @@ export async function toggleSuspendResource(
 export function useToggleSuspendResource(
   resource: Source | Deployment,
   suspend: boolean,
-  user: string,
 ) {
   const kubernetesApi = useApi(kubernetesApiRef);
   const alertApi = useApi(alertApiRef);
+  const { data } = useGetUserInfo();
+  const user = data?.result?.profile.email || data?.result?.userId;
 
   const [{ loading }, toggleSuspend] = useAsyncFn(
     () =>

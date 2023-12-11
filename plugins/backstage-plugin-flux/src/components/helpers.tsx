@@ -35,7 +35,6 @@ import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useGetLatestFluxRelease } from '../hooks/useGetFluxRelease';
-import { useGetUserInfo } from '../hooks/useGetUser';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -188,15 +187,13 @@ export function GroupAction({
   resource: Source | Deployment | ImagePolicy;
 }) {
   const { sync, isSyncing } = useSyncResource(resource);
-  const { data } = useGetUserInfo();
-  const user = data?.result?.profile.email || data?.result?.userId;
+
   const { loading: isSuspending, toggleSuspend } = useToggleSuspendResource(
     resource as Source | Deployment,
     true,
-    user,
   );
   const { loading: isResuming, toggleSuspend: toogleResume } =
-    useToggleSuspendResource(resource as Source | Deployment, false, user);
+    useToggleSuspendResource(resource as Source | Deployment, false);
   const isLoading = isSyncing || isSuspending || isResuming;
   const config = useApi(configApiRef);
   const readOnly = config.getOptionalBoolean('gitops.readOnly');
