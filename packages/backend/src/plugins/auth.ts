@@ -49,12 +49,6 @@ export default async function createPlugin(
           // resolver: providers.github.resolvers.usernameMatchingUserEntityName(),
         },
       }),
-      google: providers.google.create({
-        signIn: {
-          resolver:
-            providers.google.resolvers.emailLocalPartMatchingUserEntityName(),
-        },
-      }),
     },
   });
 }
