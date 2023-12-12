@@ -1,4 +1,9 @@
-import { AlertApi, alertApiRef, useApi } from '@backstage/core-plugin-api';
+import {
+  AlertApi,
+  alertApiRef,
+  identityApiRef,
+  useApi,
+} from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
 import { CustomResourceMatcher } from '@backstage/plugin-kubernetes-common';
 import { useAsyncFn } from 'react-use';
@@ -136,7 +141,10 @@ export function useToggleSuspendResource(
   const kubernetesApi = useApi(kubernetesApiRef);
   const alertApi = useApi(alertApiRef);
   const { data } = useGetUserInfo();
-  const user = data?.result?.profile.email || data?.result?.userId;
+  const user =
+    data?.result?.profile.email ||
+    data?.result?.profile.displayName ||
+    data?.result?.userId;
 
   const [{ loading }, toggleSuspend] = useAsyncFn(
     () =>
