@@ -10,12 +10,10 @@ export async function getUserInfo(identityApi: IdentityApi) {
   const backstageIdentity = await identityApi.getBackstageIdentity();
   const profile = await identityApi.getProfileInfo();
 
-  const c = UserIdentity.fromLegacy({
+  return await UserIdentity.fromLegacy({
     userId: backstageIdentity.userEntityRef,
     profile: profile,
   });
-
-  return await c;
 }
 
 /**
@@ -28,6 +26,7 @@ export function useGetUserInfo() {
   const { isLoading, data, error } = useQuery<IdentityApi, Error>({
     queryKey: ['user_info'],
     queryFn: () => getUserInfo(identityApi),
+    // function getUserInfo(identityApi: IdentityApi): Promise<IdentityApi>
   });
 
   return { isLoading, data, error };

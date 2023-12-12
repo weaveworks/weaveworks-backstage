@@ -1,7 +1,7 @@
 import {
   AlertApi,
+  IdentityApi,
   alertApiRef,
-  identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
 import { KubernetesApi, kubernetesApiRef } from '@backstage/plugin-kubernetes';
@@ -10,6 +10,16 @@ import { useAsyncFn } from 'react-use';
 import { gvkFromKind } from '../objects';
 import { Deployment, Source } from '../components/helpers';
 import { useGetUserInfo } from './useGetUser';
+
+interface User extends IdentityApi {
+  result: {
+    userId: string;
+    profile: {
+      email: string;
+      displayName: string;
+    };
+  };
+}
 
 export const pathForResource = (
   name: string,
@@ -141,10 +151,11 @@ export function useToggleSuspendResource(
   const kubernetesApi = useApi(kubernetesApiRef);
   const alertApi = useApi(alertApiRef);
   const { data } = useGetUserInfo();
+  const userData = (data as User)?.result;
   const user =
-    data?.result?.profile.email ||
-    data?.result?.profile.displayName ||
-    data?.result?.userId;
+    userData?.profile?.email ||
+    userData?.profile?.displayName ||
+    userData?.userId;
 
   const [{ loading }, toggleSuspend] = useAsyncFn(
     () =>
