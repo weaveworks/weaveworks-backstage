@@ -334,8 +334,15 @@ class StubIdentityApi implements IdentityApi {
     return profile;
   }
 
-  getCredentials = jest.fn();
-  signOut = jest.fn();
+  getCredentials(): Promise<{
+    token?: string;
+  }> {
+    return Promise.resolve({ token: 'token' });
+  }
+
+  signOut(): Promise<void> {
+    return Promise.resolve();
+  }
 
   async fromLegacy(): Promise<{
     result: {
