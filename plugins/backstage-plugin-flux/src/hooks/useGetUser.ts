@@ -1,19 +1,19 @@
 import {
   IdentityApi,
+  ProfileInfo,
   identityApiRef,
   useApi,
 } from '@backstage/core-plugin-api';
-import { UserIdentity } from '@backstage/core-components';
 import { useQuery } from '@tanstack/react-query';
 
 export async function getUserInfo(identityApi: IdentityApi) {
   const backstageIdentity = await identityApi.getBackstageIdentity();
   const profile = await identityApi.getProfileInfo();
 
-  return await UserIdentity.fromLegacy({
+  return {
+    profile,
     userId: backstageIdentity.userEntityRef,
-    profile: profile,
-  });
+  };
 }
 
 /**
@@ -23,10 +23,15 @@ export async function getUserInfo(identityApi: IdentityApi) {
 export function useGetUserInfo() {
   const identityApi = useApi(identityApiRef);
 
-  const { isLoading, data, error } = useQuery<IdentityApi, Error>({
+  const { isLoading, data, error } = useQuery<
+    {
+      profile: ProfileInfo;
+      userId: string;
+    },
+    Error
+  >({
     queryKey: ['user_info'],
     queryFn: () => getUserInfo(identityApi),
-    // function getUserInfo(identityApi: IdentityApi): Promise<IdentityApi>
   });
 
   return { isLoading, data, error };

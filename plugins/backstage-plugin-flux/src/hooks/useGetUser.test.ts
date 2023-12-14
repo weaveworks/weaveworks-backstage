@@ -11,12 +11,6 @@ function makeMockIdentityApi() {
   } as jest.Mocked<typeof identityApiRef.T>;
 }
 
-function makeMockUserIdentityApi() {
-  return {
-    fromLegacy: jest.fn(),
-  };
-}
-
 describe('getUserInfo', () => {
   it('should get the user details', async () => {
     const userId = 'user:default/guest';
@@ -26,7 +20,6 @@ describe('getUserInfo', () => {
     };
 
     const identityApi = makeMockIdentityApi();
-    const userIdentityApi = makeMockUserIdentityApi();
 
     identityApi.getBackstageIdentity.mockImplementation(async () => {
       return {
@@ -38,14 +31,8 @@ describe('getUserInfo', () => {
 
     identityApi.getProfileInfo.mockImplementation(async () => profile);
 
-    userIdentityApi.fromLegacy.mockImplementation(async () => {
-      return {
-        result: { profile, userId },
-      };
-    });
-
     const userDetails = await getUserInfo(identityApi);
 
-    expect(userDetails).toEqual({ result: { profile, userId } });
+    expect(userDetails).toEqual({ profile, userId });
   });
 });

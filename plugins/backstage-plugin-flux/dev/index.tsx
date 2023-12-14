@@ -343,19 +343,6 @@ class StubIdentityApi implements IdentityApi {
   signOut(): Promise<void> {
     return Promise.resolve();
   }
-
-  async fromLegacy(): Promise<{
-    result: {
-      userId: string;
-      profile: ProfileInfo;
-      getIdToken?: () => Promise<string>;
-      signOut?: () => Promise<void>;
-    };
-  }> {
-    return {
-      result: { profile, userId },
-    };
-  }
 }
 
 createDevApp()

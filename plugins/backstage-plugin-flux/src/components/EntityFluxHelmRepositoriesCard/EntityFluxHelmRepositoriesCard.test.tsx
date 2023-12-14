@@ -2,13 +2,7 @@ import React from 'react';
 import { Entity } from '@backstage/catalog-model';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { renderInTestApp, TestApiProvider } from '@backstage/test-utils';
-import {
-  BackstageUserIdentity,
-  configApiRef,
-  IdentityApi,
-  identityApiRef,
-  ProfileInfo,
-} from '@backstage/core-plugin-api';
+import { configApiRef } from '@backstage/core-plugin-api';
 import { ConfigReader } from '@backstage/core-app-api';
 import {
   KubernetesApi,
@@ -23,12 +17,6 @@ import {
 } from '@backstage/plugin-kubernetes-common';
 import * as helmRepository from '../../__fixtures__/helm_repository.json';
 import { EntityFluxHelmRepositoriesCard } from './EntityFluxHelmRepositoriesCard';
-
-const userId = 'user:default/guest';
-const profile = {
-  displayName: 'Guest',
-  picture: 'https://avatars.githubusercontent.com/u/35202557?v=4',
-};
 
 const makeTestHelmRepository = (name: string, url: string) => {
   const repo = JSON.parse(JSON.stringify(helmRepository));
@@ -98,36 +86,6 @@ class StubKubernetesAuthProvidersApi implements KubernetesAuthProvidersApi {
   }
 }
 
-class StubIdentityApi implements IdentityApi {
-  async getBackstageIdentity(): Promise<BackstageUserIdentity> {
-    return {
-      ownershipEntityRefs: [userId],
-      type: 'user',
-      userEntityRef: userId,
-    };
-  }
-
-  async getProfileInfo(): Promise<ProfileInfo> {
-    return profile;
-  }
-
-  getCredentials = jest.fn();
-  signOut = jest.fn();
-
-  async fromLegacy(): Promise<{
-    result: {
-      userId: string;
-      profile: ProfileInfo;
-      getIdToken?: () => Promise<string>;
-      signOut?: () => Promise<void>;
-    };
-  }> {
-    return {
-      result: { profile, userId },
-    };
-  }
-}
-
 const entity: Entity = {
   apiVersion: 'v1',
   kind: 'Component',
@@ -163,7 +121,6 @@ describe('<EntityFluxHelmRepositoriesCard />', () => {
               kubernetesAuthProvidersApiRef,
               new StubKubernetesAuthProvidersApi(),
             ],
-            [identityApiRef, new StubIdentityApi()],
           ]}
         >
           <EntityProvider entity={entity}>
