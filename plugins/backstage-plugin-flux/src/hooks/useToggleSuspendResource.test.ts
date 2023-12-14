@@ -39,7 +39,7 @@ describe('toggleSuspendRequest', () => {
     const expected = {
       clusterName: 'test-cluster-name',
       init: {
-        body: `{"spec":{"suspend":false}}`,
+        body: `{"metadata":{"annotations":{"weave.works/suspended-by":"Guest"}},"spec":{"suspend":false}}`,
         headers: {
           'Content-Type': 'application/merge-patch+json',
         },
@@ -49,7 +49,7 @@ describe('toggleSuspendRequest', () => {
     };
 
     expect(
-      toggleSuspendRequest(name, namespace, clusterName, gvk, suspend),
+      toggleSuspendRequest(name, namespace, clusterName, gvk, suspend, 'Guest'),
     ).toEqual(expected);
   });
 });
@@ -116,6 +116,7 @@ describe('requestToggleSuspendResource', () => {
         'test-cluster-name',
         gvk,
         false,
+        'Guest',
       ),
     ).resolves.toBeUndefined();
   });
@@ -143,6 +144,7 @@ describe('requestToggleSuspendResource', () => {
         'test-cluster-name',
         gvk,
         false,
+        'Guest',
       ),
     ).rejects.toThrow('Failed to Resume resource: 500 Internal Server Error');
   });
@@ -168,13 +170,19 @@ describe('toggleSuspendResource', () => {
       status: 200,
     } as Response);
 
-    await toggleSuspendResource(helmRelease, kubernetesApi, alertApi, false);
+    await toggleSuspendResource(
+      helmRelease,
+      kubernetesApi,
+      alertApi,
+      false,
+      'Guest',
+    );
 
     // ASSERT we tried to PATCH the resource
     expect(kubernetesApi.proxy).toHaveBeenCalledWith({
       clusterName: 'test-clusterName',
       init: {
-        body: `{"spec":{"suspend":false}}`,
+        body: `{"metadata":{"annotations":{"weave.works/suspended-by":"Guest"}},"spec":{"suspend":false}}`,
         headers: {
           'Content-Type': 'application/merge-patch+json',
         },
@@ -185,7 +193,7 @@ describe('toggleSuspendResource', () => {
 
     expect(alertApi.post).toHaveBeenCalledWith({
       display: 'transient',
-      message: 'Resume request successful',
+      message: 'Resume request made by Guest was successful',
       severity: 'success',
     });
   });
@@ -200,7 +208,13 @@ describe('toggleSuspendResource', () => {
       statusText: 'Forbidden',
     } as Response);
 
-    await toggleSuspendResource(helmRelease, kubernetesApi, alertApi, false);
+    await toggleSuspendResource(
+      helmRelease,
+      kubernetesApi,
+      alertApi,
+      false,
+      'Guest',
+    );
 
     expect(alertApi.post).toHaveBeenCalledWith({
       display: 'transient',

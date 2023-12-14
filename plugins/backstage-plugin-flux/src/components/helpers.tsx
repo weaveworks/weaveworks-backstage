@@ -187,6 +187,7 @@ export function GroupAction({
   resource: Source | Deployment | ImagePolicy;
 }) {
   const { sync, isSyncing } = useSyncResource(resource);
+
   const { loading: isSuspending, toggleSuspend } = useToggleSuspendResource(
     resource as Source | Deployment,
     true,
