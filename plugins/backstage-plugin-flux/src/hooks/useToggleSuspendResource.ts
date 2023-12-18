@@ -31,6 +31,7 @@ export function toggleSuspendRequest(
   gvk: CustomResourceMatcher,
   suspend: boolean,
   user: string,
+  suspendMessage?: string,
 ) {
   return {
     clusterName,
@@ -44,6 +45,7 @@ export function toggleSuspendRequest(
         metadata: {
           annotations: {
             'weave.works/suspended-by': user,
+            'weave.works/suspended-comment': suspendMessage,
           },
         },
         spec: {
@@ -74,9 +76,18 @@ export async function requestToggleSuspendResource(
   gvk: CustomResourceMatcher,
   suspend: boolean,
   user: string,
+  suspendMessage?: string,
 ) {
   const res = await kubernetesApi.proxy(
-    toggleSuspendRequest(name, namespace, clusterName, gvk, suspend, user),
+    toggleSuspendRequest(
+      name,
+      namespace,
+      clusterName,
+      gvk,
+      suspend,
+      user,
+      suspendMessage,
+    ),
   );
   const key = suspend ? 'Suspend' : 'Resume';
   if (!res.ok) {
@@ -92,6 +103,7 @@ export async function toggleSuspendResource(
   alertApi: AlertApi,
   suspend: boolean,
   user: string,
+  suspendMessage?: string,
 ) {
   const key = suspend ? 'Suspend' : 'Resume';
 
@@ -109,6 +121,7 @@ export async function toggleSuspendResource(
       gvk,
       suspend,
       user,
+      suspendMessage,
     );
 
     alertApi.post({
@@ -132,6 +145,7 @@ export async function toggleSuspendResource(
 export function useToggleSuspendResource(
   resource: Source | Deployment,
   suspend: boolean,
+  suspendMessage?: string,
 ) {
   const kubernetesApi = useApi(kubernetesApiRef);
   const alertApi = useApi(alertApiRef);
@@ -144,8 +158,15 @@ export function useToggleSuspendResource(
 
   const [{ loading }, toggleSuspend] = useAsyncFn(
     () =>
-      toggleSuspendResource(resource, kubernetesApi, alertApi, suspend, user),
-    [resource, kubernetesApi, alert, user],
+      toggleSuspendResource(
+        resource,
+        kubernetesApi,
+        alertApi,
+        suspend,
+        user,
+        suspendMessage,
+      ),
+    [resource, kubernetesApi, alert, user, suspendMessage],
   );
 
   return { loading, toggleSuspend };
