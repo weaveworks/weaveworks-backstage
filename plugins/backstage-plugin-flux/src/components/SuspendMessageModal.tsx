@@ -8,7 +8,7 @@ export type Props = {
   onCloseModal: Dispatch<SetStateAction<boolean>>;
   open: boolean;
   setSuspendMessage: Dispatch<SetStateAction<string>>;
-  suspend: (suspendMessage: string) => Promise<void>;
+  suspend: () => Promise<void>;
   suspendMessage: string;
   className?: string;
 };
@@ -41,7 +41,7 @@ function SuspendMessageModal({
   };
   const suspendHandler = () => {
     setSuspendMessage(suspendMessage);
-    suspend(suspendMessage);
+    suspend();
     setSuspendMessage('');
     onCloseModal(false);
   };
