@@ -176,13 +176,14 @@ describe('toggleSuspendResource', () => {
       alertApi,
       false,
       'Guest',
+      'This is the suspend comment',
     );
 
     // ASSERT we tried to PATCH the resource
     expect(kubernetesApi.proxy).toHaveBeenCalledWith({
       clusterName: 'test-clusterName',
       init: {
-        body: `{"metadata":{"annotations":{"weave.works/suspended-by":"Guest"}},"spec":{"suspend":false}}`,
+        body: `{"metadata":{"annotations":{"weave.works/suspended-by":"Guest","weave.works/suspended-comment":"This is the suspend comment"}},"spec":{"suspend":false}}`,
         headers: {
           'Content-Type': 'application/merge-patch+json',
         },
