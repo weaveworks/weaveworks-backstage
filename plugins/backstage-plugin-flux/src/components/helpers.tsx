@@ -202,7 +202,6 @@ export function GroupAction({
   resource: Source | Deployment | ImagePolicy;
 }) {
   const { sync, isSyncing } = useSyncResource(resource);
-  // const [suspendMessageModalOpen, setSuspendMessageModalOpen] = useState(false);
   const [suspendMessage, setSuspendMessage] = useState('');
 
   const { loading: isSuspending, toggleSuspend } = useToggleSuspendResource(

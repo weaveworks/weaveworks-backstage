@@ -46,5 +46,5 @@ export function FluxEntityTable<T extends object = {}>({
         filters={Boolean(many) ? filters : []}
       />
     );
-  }, [data, title, isLoading, classes.empty, columns]);
+  }, [data.length, title, isLoading, classes.empty, columns, many, filters]);
 }
