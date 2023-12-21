@@ -46,7 +46,7 @@
     "luxon": "^3.3.0",
     "react-use": "^17.4.0",
     "styled-components": "^6.1.1",
-    "use-deep-compare": "^1.2.0",
+    "use-deep-compare": "^1.2.1",
     "yaml": "^2.3.1"
   },
   "peerDependencies": {
