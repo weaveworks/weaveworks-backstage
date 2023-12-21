@@ -35,7 +35,6 @@ import { helm, kubernetes, oci, git, flux } from '../images/icons';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { useGetLatestFluxRelease } from '../hooks/useGetFluxRelease';
-import SuspendMessageModal from './SuspendMessageModal';
 
 export type Source = GitRepository | OCIRepository | HelmRepository;
 export type Deployment = HelmRelease | Kustomization;
@@ -120,18 +119,13 @@ export function SyncButton({
 
 export function SuspendButton({
   resource,
-  toggleSuspend,
   status,
   readOnly,
-  suspendMessage,
-  setSuspendMessage,
 }: {
   resource: Source | Deployment;
   toggleSuspend: () => Promise<void>;
   status: boolean;
   readOnly?: boolean;
-  suspendMessage: string;
-  setSuspendMessage: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [suspendMessageModalOpen, setSuspendMessageModalOpen] = useState(false);
   const classes = useStyles();
@@ -143,6 +137,7 @@ export function SuspendButton({
       <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
         <div>
           <IconButton
+            id={label}
             data-testid={`suspend ${label}`}
             className={classes.actionButton}
             size="small"
@@ -153,13 +148,6 @@ export function SuspendButton({
           </IconButton>
         </div>
       </Tooltip>
-      <SuspendMessageModal
-        open={suspendMessageModalOpen}
-        onCloseModal={setSuspendMessageModalOpen}
-        suspend={toggleSuspend}
-        setSuspendMessage={setSuspendMessage}
-        suspendMessage={suspendMessage}
-      />
     </>
   );
 }
@@ -202,12 +190,10 @@ export function GroupAction({
   resource: Source | Deployment | ImagePolicy;
 }) {
   const { sync, isSyncing } = useSyncResource(resource);
-  const [suspendMessage, setSuspendMessage] = useState('');
 
   const { loading: isSuspending, toggleSuspend } = useToggleSuspendResource(
     resource as Source | Deployment,
     true,
-    suspendMessage,
   );
   const { loading: isResuming, toggleSuspend: toogleResume } =
     useToggleSuspendResource(resource as Source | Deployment, false);
@@ -233,8 +219,6 @@ export function GroupAction({
                 readOnly={readOnly}
                 resource={resource as Source | Deployment}
                 toggleSuspend={toggleSuspend}
-                suspendMessage={suspendMessage}
-                setSuspendMessage={setSuspendMessage}
                 status={isSuspending}
               />
               <ResumeButton

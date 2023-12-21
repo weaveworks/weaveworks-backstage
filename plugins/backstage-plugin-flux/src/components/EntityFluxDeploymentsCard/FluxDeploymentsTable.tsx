@@ -33,6 +33,8 @@ type Props = {
   isLoading: boolean;
   columns: TableColumn<Deployment>[];
   many?: boolean;
+  setSelectedRow?: React.Dispatch<React.SetStateAction<string>>;
+  setSuspendMessageModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const FluxDeploymentsTable = ({
@@ -40,6 +42,8 @@ export const FluxDeploymentsTable = ({
   isLoading,
   columns,
   many,
+  setSelectedRow,
+  setSuspendMessageModalOpen,
 }: Props) => {
   let helmChart = {} as HelmChart;
   let path = '';
@@ -99,6 +103,8 @@ export const FluxDeploymentsTable = ({
       isLoading={isLoading}
       filters={filters}
       many={many}
+      setSelectedRow={setSelectedRow}
+      setSuspendMessageModalOpen={setSuspendMessageModalOpen}
     />
   );
 };

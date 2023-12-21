@@ -57,6 +57,7 @@ type Props = {
   isLoading: boolean;
   columns: TableColumn<any>[];
   many?: boolean;
+  setSelectedRow?: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const FluxSourcesTable = ({
@@ -64,6 +65,7 @@ export const FluxSourcesTable = ({
   isLoading,
   columns,
   many,
+  setSelectedRow,
 }: Props) => {
   let provider = '';
   let isVerifiable = false;
@@ -117,6 +119,7 @@ export const FluxSourcesTable = ({
       isLoading={isLoading}
       filters={filters}
       many={many}
+      setSelectedRow={setSelectedRow}
     />
   );
 };
