@@ -137,14 +137,13 @@ export function SuspendButton({
       <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
         <div>
           <IconButton
-            id={label}
             data-testid={`suspend ${label}`}
             className={classes.actionButton}
             size="small"
             onClick={() => setSuspendMessageModalOpen(!suspendMessageModalOpen)}
             disabled={resource.suspended || readOnly}
           >
-            <PauseIcon />
+            <PauseIcon id={`suspend ${label}`} />
           </IconButton>
         </div>
       </Tooltip>

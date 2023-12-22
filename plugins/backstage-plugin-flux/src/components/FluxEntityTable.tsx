@@ -40,11 +40,12 @@ export function FluxEntityTable<T extends object = {}>({
           columnsButton: true,
         }}
         onRowClick={row => {
-          console.log(row);
-          console.log(row?.target?.ownerDocument?.activeElement?.id);
-          setSelectedRow &&
-            setSelectedRow(row?.target?.ownerDocument?.activeElement?.id);
-          setSuspendMessageModalOpen && setSuspendMessageModalOpen(true);
+          const { id } = row?.target;
+          const resource = id.split(' ')[1];
+          setSelectedRow && setSelectedRow(resource);
+          if (id.includes('suspend')) {
+            setSuspendMessageModalOpen && setSuspendMessageModalOpen(true);
+          }
         }}
         data={data}
         isLoading={isLoading}

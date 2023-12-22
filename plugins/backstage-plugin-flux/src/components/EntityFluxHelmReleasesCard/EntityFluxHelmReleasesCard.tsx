@@ -22,8 +22,6 @@ const HelmReleasePanel = ({ many }: { many?: boolean }) => {
     d => `${d.obj.metadata.namespace}/${d.obj.metadata.name}` === selectedRow,
   );
 
-  console.log(resource);
-
   const { toggleSuspend } = useToggleSuspendResource(
     resource as Source | Deployment,
     true,
