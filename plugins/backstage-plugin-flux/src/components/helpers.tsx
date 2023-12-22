@@ -536,9 +536,7 @@ export const updatedColumn = <T extends FluxObject>() => {
       }),
     ...sortAndFilterOptions(
       resource =>
-        DateTime.fromISO(automationLastUpdated(resource)).toRelative({
-          locale: 'en',
-        }) as string,
+        automationLastUpdated(resource)
     ),
     minWidth: '130px',
   } as TableColumn<T>;
