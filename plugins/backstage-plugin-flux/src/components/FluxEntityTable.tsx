@@ -12,11 +12,9 @@ export function FluxEntityTable<T extends object = {}>({
   filters,
   many,
   setSelectedRow,
-  setSuspendMessageModalOpen,
 }: TableProps<T> & {
   many?: boolean;
   setSelectedRow?: React.Dispatch<React.SetStateAction<string>>;
-  setSuspendMessageModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const classes = useStyles();
 
@@ -43,9 +41,6 @@ export function FluxEntityTable<T extends object = {}>({
           const { id } = row?.target;
           const resource = id.split(' ')[1];
           setSelectedRow && setSelectedRow(resource);
-          if (id.includes('suspend')) {
-            setSuspendMessageModalOpen && setSuspendMessageModalOpen(true);
-          }
         }}
         data={data}
         isLoading={isLoading}
@@ -69,6 +64,5 @@ export function FluxEntityTable<T extends object = {}>({
     many,
     filters,
     setSelectedRow,
-    setSuspendMessageModalOpen,
   ]);
 }

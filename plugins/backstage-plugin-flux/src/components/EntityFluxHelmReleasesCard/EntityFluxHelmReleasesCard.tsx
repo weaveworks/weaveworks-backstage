@@ -7,26 +7,12 @@ import {
   FluxDeploymentsTable,
   defaultColumns,
 } from '../EntityFluxDeploymentsCard/FluxDeploymentsTable';
-import { useToggleSuspendResource } from '../../hooks/useToggleSuspendResource';
-import { Deployment, Source } from '../helpers';
 import SuspendMessageModal from '../SuspendMessageModal';
 
 const HelmReleasePanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useHelmReleases(entity);
-  const [selectedRow, setSelectedRow] = useState('');
-  const [suspendMessage, setSuspendMessage] = useState('');
-  const [suspendMessageModalOpen, setSuspendMessageModalOpen] = useState(false);
-
-  const resource = data?.find(
-    d => `${d.obj.metadata.namespace}/${d.obj.metadata.name}` === selectedRow,
-  );
-
-  const { toggleSuspend } = useToggleSuspendResource(
-    resource as Source | Deployment,
-    true,
-    suspendMessage,
-  );
+  const [selectedRow, setSelectedRow] = useState<string>('');
 
   if (errors) {
     return (
@@ -49,14 +35,11 @@ const HelmReleasePanel = ({ many }: { many?: boolean }) => {
         columns={defaultColumns}
         many={many}
         setSelectedRow={setSelectedRow}
-        setSuspendMessageModalOpen={setSuspendMessageModalOpen}
       />
       <SuspendMessageModal
-        open={suspendMessageModalOpen}
-        onCloseModal={setSuspendMessageModalOpen}
-        suspend={toggleSuspend}
-        setSuspendMessage={setSuspendMessage}
-        suspendMessage={suspendMessage}
+        data={data}
+        selectedRow={selectedRow}
+        setSelectedRow={setSelectedRow}
       />
     </InfoCard>
   );

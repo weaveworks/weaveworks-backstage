@@ -1,16 +1,16 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Flex from './Flex';
 import Modal from './Modal';
 import { Button } from '@material-ui/core';
+import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
+import { Deployment, Source } from './helpers';
 
 export type Props = {
-  onCloseModal: Dispatch<SetStateAction<boolean>>;
-  open: boolean;
-  setSuspendMessage: Dispatch<SetStateAction<string>>;
-  suspend: () => Promise<void>;
-  suspendMessage: string;
+  data?: (Source | Deployment)[];
+  selectedRow: string | null;
   className?: string;
+  setSelectedRow: Dispatch<SetStateAction<string>>;
 };
 
 const MessageTextarea = styled.textarea`
@@ -28,25 +28,40 @@ const MessageTextarea = styled.textarea`
 `;
 
 function SuspendMessageModal({
+  data,
+  selectedRow,
   className,
-  onCloseModal,
-  open,
-  setSuspendMessage,
-  suspend,
-  suspendMessage,
+  setSelectedRow,
 }: Props) {
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [suspendMessage, setSuspendMessage] = useState('');
+  const selectedResource = data?.find(
+    d => `${d.obj.metadata.namespace}/${d.obj.metadata.name}` === selectedRow,
+  );
+
+  const { toggleSuspend } = useToggleSuspendResource(
+    selectedResource as Source | Deployment,
+    true,
+    suspendMessage,
+  );
+
   const closeHandler = () => {
     setSuspendMessage('');
-    onCloseModal(false);
+    setOpenModal(false);
+    setSelectedRow('');
   };
+
   const suspendHandler = () => {
     setSuspendMessage(suspendMessage);
-    suspend();
+    toggleSuspend();
     setSuspendMessage('');
-    onCloseModal(false);
+    setOpenModal(false);
+    setSelectedRow('');
   };
 
   const onClose = () => closeHandler();
+
+  useEffect(() => setOpenModal(selectedRow !== ''), [selectedRow]);
 
   const content = (
     <>
@@ -65,7 +80,7 @@ function SuspendMessageModal({
 
   return (
     <Modal
-      open={open}
+      open={openModal}
       onClose={onClose}
       title="Suspend Reason"
       description="Add reason for suspending"
