@@ -40,7 +40,9 @@ export function FluxEntityTable<T extends object = {}>({
         onRowClick={row => {
           const { id } = row?.target;
           const resource = id.split(' ')[1];
-          setSelectedRow && setSelectedRow(resource);
+          if (id.includes('suspend')) {
+            setSelectedRow && setSelectedRow(resource);
+          }
         }}
         data={data}
         isLoading={isLoading}

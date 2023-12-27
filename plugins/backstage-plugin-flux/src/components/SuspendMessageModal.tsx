@@ -5,6 +5,7 @@ import Modal from './Modal';
 import { Button } from '@material-ui/core';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 import { Deployment, Source } from './helpers';
+import { useDeepCompareMemo } from 'use-deep-compare';
 
 export type Props = {
   data?: (Source | Deployment)[];
@@ -78,16 +79,18 @@ function SuspendMessageModal({
     </>
   );
 
-  return (
-    <Modal
-      open={openModal}
-      onClose={onClose}
-      title="Suspend Reason"
-      description="Add reason for suspending"
-      children={content}
-      className={className}
-    />
-  );
+  return useDeepCompareMemo(() => {
+    return (
+      <Modal
+        open={openModal}
+        onClose={onClose}
+        title="Suspend Reason"
+        description="Add reason for suspending"
+        children={content}
+        className={className}
+      />
+    );
+  }, [openModal, className, content, onClose]);
 }
 
 export default SuspendMessageModal;
