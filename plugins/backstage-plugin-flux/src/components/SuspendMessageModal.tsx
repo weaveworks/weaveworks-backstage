@@ -6,9 +6,10 @@ import { Button } from '@material-ui/core';
 import { useToggleSuspendResource } from '../hooks/useToggleSuspendResource';
 import { Deployment, Source } from './helpers';
 import { useDeepCompareMemo } from 'use-deep-compare';
+import { ImagePolicy } from '../objects';
 
 export type Props = {
-  data?: (Source | Deployment)[];
+  data?: (Source | Deployment | ImagePolicy)[];
   selectedRow: string | null;
   className?: string;
   setSelectedRow: Dispatch<SetStateAction<string>>;

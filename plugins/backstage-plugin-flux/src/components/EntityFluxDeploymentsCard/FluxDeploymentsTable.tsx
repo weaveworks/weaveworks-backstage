@@ -33,7 +33,7 @@ type Props = {
   isLoading: boolean;
   columns: TableColumn<Deployment>[];
   many?: boolean;
-  setSelectedRow?: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedRow: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const FluxDeploymentsTable = ({

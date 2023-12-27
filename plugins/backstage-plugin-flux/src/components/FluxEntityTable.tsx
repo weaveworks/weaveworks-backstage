@@ -14,7 +14,7 @@ export function FluxEntityTable<T extends object = {}>({
   setSelectedRow,
 }: TableProps<T> & {
   many?: boolean;
-  setSelectedRow?: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedRow: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const classes = useStyles();
 
@@ -38,10 +38,10 @@ export function FluxEntityTable<T extends object = {}>({
           columnsButton: true,
         }}
         onRowClick={row => {
-          const { id } = row?.target;
+          const { id } = row?.target as HTMLButtonElement;
           const resource = id.split(' ')[1];
           if (id.includes('suspend')) {
-            setSelectedRow && setSelectedRow(resource);
+            setSelectedRow(resource);
           }
         }}
         data={data}

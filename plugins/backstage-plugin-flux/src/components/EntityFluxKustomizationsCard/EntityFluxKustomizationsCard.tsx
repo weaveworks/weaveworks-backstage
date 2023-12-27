@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
@@ -7,10 +7,12 @@ import {
   FluxDeploymentsTable,
   defaultColumns,
 } from '../EntityFluxDeploymentsCard/FluxDeploymentsTable';
+import SuspendMessageModal from '../SuspendMessageModal';
 
 const KustomizationPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useKustomizations(entity);
+  const [selectedRow, setSelectedRow] = useState<string>('');
 
   if (errors) {
     return (
@@ -32,6 +34,12 @@ const KustomizationPanel = ({ many }: { many?: boolean }) => {
         isLoading={loading && !data}
         columns={defaultColumns}
         many={many}
+        setSelectedRow={setSelectedRow}
+      />
+      <SuspendMessageModal
+        data={data}
+        selectedRow={selectedRow}
+        setSelectedRow={setSelectedRow}
       />
     </InfoCard>
   );

@@ -57,7 +57,7 @@ type Props = {
   isLoading: boolean;
   columns: TableColumn<any>[];
   many?: boolean;
-  setSelectedRow?: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedRow: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const FluxSourcesTable = ({

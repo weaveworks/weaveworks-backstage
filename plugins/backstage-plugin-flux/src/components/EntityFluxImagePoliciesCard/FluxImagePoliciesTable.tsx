@@ -34,6 +34,7 @@ type Props = {
   isLoading: boolean;
   columns: TableColumn<ImagePolicy>[];
   many?: boolean;
+  setSelectedRow: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const FluxImagePoliciesTable = ({
@@ -41,6 +42,7 @@ export const FluxImagePoliciesTable = ({
   isLoading,
   columns,
   many,
+  setSelectedRow,
 }: Props) => {
   const data = imagePolicies.map(d => {
     const {
@@ -77,6 +79,7 @@ export const FluxImagePoliciesTable = ({
       isLoading={isLoading}
       filters={filters}
       many={many}
+      setSelectedRow={setSelectedRow}
     />
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard } from '@backstage/core-components';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
@@ -7,10 +7,12 @@ import {
   FluxImagePoliciesTable,
   defaultColumns,
 } from './FluxImagePoliciesTable';
+import SuspendMessageModal from '../SuspendMessageModal';
 
 const ImagePolicyPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useImagePolicies(entity);
+  const [selectedRow, setSelectedRow] = useState<string>('');
 
   if (errors) {
     return (
@@ -32,6 +34,12 @@ const ImagePolicyPanel = ({ many }: { many?: boolean }) => {
         isLoading={loading && !data}
         columns={defaultColumns}
         many={many}
+        setSelectedRow={setSelectedRow}
+      />
+      <SuspendMessageModal
+        data={data}
+        selectedRow={selectedRow}
+        setSelectedRow={setSelectedRow}
       />
     </InfoCard>
   );
