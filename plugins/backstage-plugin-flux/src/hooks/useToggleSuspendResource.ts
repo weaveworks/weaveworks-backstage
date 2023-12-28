@@ -145,7 +145,7 @@ export function useToggleSuspendResource(
   const [{ loading }, toggleSuspend] = useAsyncFn(
     () =>
       toggleSuspendResource(resource, kubernetesApi, alertApi, suspend, user),
-    [resource, kubernetesApi, alert, user],
+    [resource, kubernetesApi, alertApi, suspend, user],
   );
 
   return { loading, toggleSuspend };
