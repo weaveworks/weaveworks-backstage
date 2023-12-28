@@ -161,7 +161,7 @@ export function useSyncResource(resource: Source | Deployment | ImagePolicy) {
 
   const [{ loading }, sync] = useAsyncFn(
     () => syncResource(resource, kubernetesApi, alertApi),
-    [resource, kubernetesApi, alert],
+    [resource, kubernetesApi, alertApi],
   );
 
   return { sync, isSyncing: loading };
