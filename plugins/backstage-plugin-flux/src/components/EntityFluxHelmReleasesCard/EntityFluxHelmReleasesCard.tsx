@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard } from '@backstage/core-components';
 import { useHelmReleases } from '../../hooks/query';
@@ -7,10 +7,12 @@ import {
   FluxDeploymentsTable,
   defaultColumns,
 } from '../EntityFluxDeploymentsCard/FluxDeploymentsTable';
+import SuspendMessageModal from '../SuspendMessageModal';
 
 const HelmReleasePanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useHelmReleases(entity);
+  const [selectedRow, setSelectedRow] = useState<string>('');
 
   if (errors) {
     return (
@@ -32,6 +34,12 @@ const HelmReleasePanel = ({ many }: { many?: boolean }) => {
         isLoading={loading && !data}
         columns={defaultColumns}
         many={many}
+        setSelectedRow={setSelectedRow}
+      />
+      <SuspendMessageModal
+        data={data}
+        selectedRow={selectedRow}
+        setSelectedRow={setSelectedRow}
       />
     </InfoCard>
   );

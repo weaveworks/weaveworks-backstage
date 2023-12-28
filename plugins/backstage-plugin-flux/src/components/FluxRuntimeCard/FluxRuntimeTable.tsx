@@ -81,6 +81,7 @@ export const FluxRuntimeTable = ({
       isLoading={isLoading}
       filters={filters}
       many={many}
+      setSelectedRow={() => {}}
     />
   );
 };

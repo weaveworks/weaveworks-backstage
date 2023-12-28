@@ -77,6 +77,7 @@ export const FluxImagePoliciesTable = ({
       isLoading={isLoading}
       filters={filters}
       many={many}
+      setSelectedRow={() => {}}
     />
   );
 };

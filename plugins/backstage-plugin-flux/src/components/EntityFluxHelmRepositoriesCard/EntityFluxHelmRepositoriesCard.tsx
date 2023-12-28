@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { InfoCard, TableColumn } from '@backstage/core-components';
 import { useHelmRepositories } from '../../hooks';
@@ -8,10 +8,12 @@ import {
   FluxSourcesTable,
 } from '../EntityFluxSourcesCard/FluxSourcesTable';
 import { Source } from '../helpers';
+import SuspendMessageModal from '../SuspendMessageModal';
 
 const HelmRepositoriesPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useHelmRepositories(entity);
+  const [selectedRow, setSelectedRow] = useState<string>('');
 
   if (errors) {
     return (
@@ -33,6 +35,12 @@ const HelmRepositoriesPanel = ({ many }: { many?: boolean }) => {
         isLoading={loading && !data}
         columns={helmDefaultColumns as TableColumn<Source>[]}
         many={many}
+        setSelectedRow={setSelectedRow}
+      />
+      <SuspendMessageModal
+        data={data}
+        selectedRow={selectedRow}
+        setSelectedRow={setSelectedRow}
       />
     </InfoCard>
   );
