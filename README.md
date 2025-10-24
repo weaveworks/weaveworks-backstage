@@ -1,3 +1,15 @@
+# DEPRECATION NOTICE
+
+The plugin within this repository has been migrated to backstage/community-repos. You can find the code under the new [flux workspace](https://github.com/backstage/community-plugins/tree/main/workspaces/flux).
+
+the new package is available at the following locations:
+
+* [@backstage-community/plugin-flux](https://www.npmjs.com/package/@backstage-community/plugin-flux)
+
+Looking to contribute or help maintain? Check out the contributing guide in the community plugins repository.
+
+---
+
 This repo contains the [Backstage](https://backstage.io) plugins created and maintained by [Weaveworks](https://www.weave.works/).
 
 The following plugins can be found within this repo:
@@ -5,8 +17,6 @@ The following plugins can be found within this repo:
 - [FluxPlugin](https://github.com/weaveworks/weaveworks-backstage/blob/main/plugins/backstage-plugin-flux/)
 
 Installation instructions for the plugins can be found in their individual README files.
-
-##
 
 ## Getting Started
 
