@@ -11,7 +11,11 @@ export function FluxEntityTable<T extends object = {}>({
   columns,
   filters,
   many,
-}: TableProps<T> & { many?: boolean }) {
+  setSelectedRow,
+}: TableProps<T> & {
+  many?: boolean;
+  setSelectedRow: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const classes = useStyles();
 
   // We use this memo not really for performance, but to avoid
@@ -33,6 +37,13 @@ export function FluxEntityTable<T extends object = {}>({
           emptyRowsWhenPaging: false,
           columnsButton: true,
         }}
+        onRowClick={row => {
+          const { id } = row?.target as HTMLButtonElement;
+          const resource = id.split(' ')[1];
+          if (id.includes('suspend')) {
+            setSelectedRow(resource);
+          }
+        }}
         data={data}
         isLoading={isLoading}
         emptyContent={
@@ -46,5 +57,14 @@ export function FluxEntityTable<T extends object = {}>({
         filters={Boolean(many) ? filters : []}
       />
     );
-  }, [data, title, isLoading, classes.empty, columns]);
+  }, [
+    data,
+    title,
+    isLoading,
+    classes.empty,
+    columns,
+    many,
+    filters,
+    setSelectedRow,
+  ]);
 }

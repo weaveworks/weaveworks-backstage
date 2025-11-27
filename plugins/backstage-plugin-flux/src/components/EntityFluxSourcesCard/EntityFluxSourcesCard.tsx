@@ -1,13 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { useFluxSources } from '../../hooks';
-import {
-  FluxSourcesTable,
-  sourceDefaultColumns,
-} from './FluxSourcesTable';
+import { FluxSourcesTable, sourceDefaultColumns } from './FluxSourcesTable';
 import { WeaveGitOpsContext } from '../WeaveGitOpsContext';
 import { InfoCard, TableColumn } from '@backstage/core-components';
 import { GitRepository, HelmRepository, OCIRepository } from '../../objects';
+import SuspendMessageModal from '../SuspendMessageModal';
 
 export type GH = GitRepository & HelmRepository;
 export type OH = OCIRepository & HelmRepository;
@@ -15,6 +13,7 @@ export type OH = OCIRepository & HelmRepository;
 const SourcesPanel = ({ many }: { many?: boolean }) => {
   const { entity } = useEntity();
   const { data, loading, errors } = useFluxSources(entity);
+  const [selectedRow, setSelectedRow] = useState<string>('');
 
   if (errors) {
     return (
@@ -36,6 +35,12 @@ const SourcesPanel = ({ many }: { many?: boolean }) => {
         isLoading={loading && !data}
         columns={sourceDefaultColumns as TableColumn<GH | OH>[]}
         many={many}
+        setSelectedRow={setSelectedRow}
+      />
+      <SuspendMessageModal
+        data={data}
+        selectedRow={selectedRow}
+        setSelectedRow={setSelectedRow}
       />
     </InfoCard>
   );

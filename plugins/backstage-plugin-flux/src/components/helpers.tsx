@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { DateTime } from 'luxon';
 import {
@@ -119,7 +119,6 @@ export function SyncButton({
 
 export function SuspendButton({
   resource,
-  toggleSuspend,
   status,
   readOnly,
 }: {
@@ -128,24 +127,27 @@ export function SuspendButton({
   status: boolean;
   readOnly?: boolean;
 }) {
+  const [suspendMessageModalOpen, setSuspendMessageModalOpen] = useState(false);
   const classes = useStyles();
   const label = `${resource.namespace}/${resource.name}`;
   const title = status ? `Suspending ${label}` : `Suspend ${label}`;
 
   return (
-    <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
-      <div>
-        <IconButton
-          data-testid={`suspend ${label}`}
-          className={classes.actionButton}
-          size="small"
-          onClick={toggleSuspend}
-          disabled={resource.suspended || readOnly}
-        >
-          <PauseIcon />
-        </IconButton>
-      </div>
-    </Tooltip>
+    <>
+      <Tooltip title={readOnly ? 'Read-only mode is enabled' : title}>
+        <div>
+          <IconButton
+            data-testid={`suspend ${label}`}
+            className={classes.actionButton}
+            size="small"
+            onClick={() => setSuspendMessageModalOpen(!suspendMessageModalOpen)}
+            disabled={resource.suspended || readOnly}
+          >
+            <PauseIcon id={`suspend ${label}`} />
+          </IconButton>
+        </div>
+      </Tooltip>
+    </>
   );
 }
 
